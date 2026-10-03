@@ -1,0 +1,16 @@
+{
+  "appId": "com.creatorbooth.app",
+  "appName": "Creator Booth",
+  "webDir": "www",
+  "backgroundColor": "#1a1918",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "CapacitorUpdater": {
+      "autoUpdate": false,
+      "resetWhenUpdate": true,
+      "statsUrl": ""
+    }
+  }
+}

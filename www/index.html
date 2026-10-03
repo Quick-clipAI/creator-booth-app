@@ -1,0 +1,3316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Creator Booth</title>
+<meta name="theme-color" content="#1a1918"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon.ico" sizes="48x48"/>
+<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta property="og:title" content="Creator Booth — Football AI"/>
+<meta property="og:image" content="https://creator-boot.vercel.app/icon-512.png"/>
+<meta name="twitter:card" content="summary"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#1a1918; --surface:#232220; --surface2:#2b2a27; --surface3:#302f2c;
+  --border:#3a3835; --border-soft:#2f2e2b;
+  --accent:#c96442; --accent-dim:#8f4a32; --brand:#FF6A1A;
+  --verified:#7f9d72; --verified-dim:#5e7a54;
+  --text:#f2ede4; --text-dim:#948f86; --text-faint:#5f5b54;
+  --serif:'Source Serif 4',serif; --sans:'Inter',sans-serif; --mono:'JetBrains Mono',monospace;
+}
+html,body{height:100%;width:100%}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--sans);
+  line-height:1.55; display:flex; flex-direction:column; height:100vh; height:100dvh; overflow:hidden;
+}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
+.hdr-icon{width:22px;height:22px;color:var(--text-dim);cursor:pointer}
+.hdr-title{font-size:13px;font-weight:600;color:var(--text-dim);letter-spacing:.02em}
+.hdr-tagline{font-size:8.5px;font-weight:600;color:var(--accent-dim);letter-spacing:.14em}
+.hdr-title-wrap{display:flex;flex-direction:column;align-items:center;gap:1px}
+.hdr-version{font-size:9.5px;color:var(--text-faint);font-family:var(--mono);letter-spacing:.02em}
+
+/* thread */
+.thread{flex:1;overflow-y:auto;padding:0 18px;display:flex;flex-direction:column;gap:22px;scroll-behavior:smooth}
+.thread::-webkit-scrollbar{width:0}
+#scroll-spacer{flex-shrink:0;height:0;margin-top:-22px}
+
+.hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding-bottom:60px}
+.hero-mark{color:var(--brand);display:block}
+.hero-title{font-family:var(--serif);font-weight:500;font-size:26px;color:var(--text)}
+.hero-sub{font-size:13px;color:var(--text-faint);max-width:280px}
+
+/* Home quick-start cards — small, low-key entry points into the four football workflows,
+   not dashboard tiles. Route into the same Chat/football pipeline with a pre-filled starter
+   rather than opening separate screens (those data-heavy screens need more than the current
+   API-Football free-tier coverage can reliably back — see the app's README). */
+.quickstart-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:360px;margin-top:6px}
+.quickstart-card{
+  display:flex;align-items:center;gap:10px;text-align:left;
+  background:var(--surface);border:1px solid var(--border-soft);border-radius:14px;
+  padding:12px 12px;cursor:pointer;transition:.15s;font-family:var(--sans);
+}
+.quickstart-card:hover{border-color:var(--border);background:var(--surface2)}
+.qc-icon{
+  width:32px;height:32px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:15px;
+}
+.qc-icon.qc-match{background:rgba(127,157,114,.18);color:var(--verified)}
+.qc-icon.qc-player{background:rgba(99,125,163,.18);color:#8fa6d1}
+.qc-icon.qc-research{background:rgba(201,142,66,.18);color:#d4a457}
+.qc-icon.qc-script{background:rgba(201,100,66,.18);color:var(--accent)}
+.qc-icon.qc-banter{background:rgba(201,100,66,.18);color:var(--accent)}
+.qc-banter-card{grid-column:1 / -1;border-style:dashed;border-color:var(--accent-dim)}
+.qc-text{display:flex;flex-direction:column;gap:1px;min-width:0}
+.qc-title{font-size:12.5px;font-weight:600;color:var(--text)}
+.qc-sub{font-size:11px;color:var(--text-faint)}
+
+.msg{max-width:88%;display:flex;flex-direction:column;gap:6px;animation:rise .35s ease}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.msg.assistant{align-self:flex-start;align-items:flex-start;max-width:96%}
+
+.bubble-user{background:var(--surface2);border:1px solid var(--border-soft);border-radius:16px 16px 4px 16px;padding:11px 15px;font-size:14.5px}
+.bubble-assistant{font-size:14.5px;color:var(--text);overflow-wrap:anywhere}
+.bubble-assistant p{margin:0 0 10px}
+.bubble-assistant ul,.bubble-assistant ol{margin:0 0 10px;padding-left:20px}
+.bubble-assistant li{margin-bottom:4px}
+.bubble-assistant strong{font-weight:600}
+.bubble-assistant .md-h{font-weight:600;margin:14px 0 6px}
+.bubble-assistant > :last-child{margin-bottom:0}
+.bubble-assistant.typing > p:last-child::after,
+.bubble-assistant.typing > ul:last-child > li:last-child::after,
+.bubble-assistant.typing > ol:last-child > li:last-child::after{content:'▍';color:var(--accent);animation:blink 1s step-start infinite;margin-left:1px}
+@keyframes blink{50%{opacity:0}}
+
+/* status pipeline — the signature element */
+.pipeline{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--text-dim);font-family:var(--mono);letter-spacing:.01em}
+.pipeline .eq{color:var(--brand);flex-shrink:0;display:block;animation:logoPulse 1.3s ease-in-out infinite}
+@keyframes logoPulse{0%,100%{opacity:.45;transform:scale(.86)}50%{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.pipeline .eq{animation:none}}
+.pipeline .stage{transition:opacity .25s}
+
+.sources{margin-top:8px;animation:rise .3s ease}
+.sources-toggle{
+  display:flex;align-items:center;gap:7px;background:none;border:none;padding:2px 0;
+  cursor:pointer;font-family:var(--sans);font-size:11.5px;color:var(--text-faint);
+}
+.sources-toggle:hover{color:var(--text-dim)}
+.sources-mini-stack{display:flex;align-items:center}
+.sources-mini-favicon{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--bg);margin-left:-6px;background:var(--surface2)}
+.sources-mini-stack .sources-mini-favicon:first-child{margin-left:0}
+.sources-toggle-chev{transition:transform .2s ease;font-size:13px}
+.sources-toggle.open .sources-toggle-chev{transform:rotate(90deg)}
+.sources-panel{margin-top:8px;animation:rise .2s ease}
+.sources-panel[hidden]{display:none}
+.sources-fallback-note{font-size:11px;color:var(--text-faint)}
+.suggestions-row{display:flex;flex-direction:column;gap:6px;margin-top:10px;animation:rise .25s ease}
+.suggestions-lead{font-size:12px;color:var(--text-faint);margin-bottom:2px}
+.suggestion-chip{
+  align-self:flex-start;max-width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--border-soft);color:var(--text-dim);
+  border-radius:16px;padding:7px 13px;font-family:var(--sans);font-size:12.5px;cursor:pointer;transition:.15s;
+}
+.suggestion-chip:hover{border-color:var(--accent-dim);background:var(--surface2);color:var(--text)}
+.suggestion-chip::before{content:'↳ ';color:var(--text-faint)}
+.sources-head{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);margin-bottom:6px}
+.sources-list{display:flex;flex-direction:column;gap:6px}
+.source-card{
+  display:flex;align-items:center;gap:9px;text-decoration:none;
+  background:var(--surface);border:1px solid var(--border-soft);border-radius:11px;
+  padding:8px 10px;transition:.15s;
+}
+.source-card:hover{border-color:var(--border);background:var(--surface2)}
+.source-favicon{width:16px;height:16px;border-radius:4px;flex-shrink:0;object-fit:cover}
+.source-favicon-fallback{display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-faint);background:var(--surface2)}
+.source-card-body{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.source-card-title{font-size:12px;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.source-card-host{font-size:10.5px;color:var(--text-faint)}
+.source-card-arrow{font-size:12px;color:var(--text-faint);flex-shrink:0}
+
+/* subtle "checked against live football data" badge — muted green, not a loud banner */
+.verified-badge{
+  margin-bottom:9px;background:rgba(127,157,114,.08);border:1px solid rgba(127,157,114,.28);
+  border-radius:11px;padding:8px 11px;animation:rise .25s ease;
+}
+.verified-badge-head{font-size:10.5px;font-weight:600;color:var(--verified);letter-spacing:.02em}
+.verified-badge-sub{font-weight:400;color:var(--text-faint)}
+.verified-badge-items{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:5px;font-size:11px;color:var(--text-dim)}
+.sources span{background:var(--surface2);border-radius:6px;padding:3px 8px}
+.sources a{color:var(--accent);text-decoration:none}
+.sources a:hover{text-decoration:underline}
+
+.err{font-size:13px;color:#d98a7a;background:#2a1f1c;border:1px solid #4a2f28;border-radius:10px;padding:10px 13px}
+.msg-transient-note{margin-bottom:8px;font-size:12px;animation:rise .25s ease}
+
+.msg-actions{display:flex;gap:2px;margin-top:8px;margin-left:-6px;animation:rise .3s ease}
+.msg-action-btn{
+  width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+  color:var(--text-faint);cursor:pointer;background:transparent;border:none;transition:.15s;
+}
+.msg-action-btn:hover{color:var(--text-dim);background:var(--surface2)}
+.msg-action-btn.copied{color:var(--accent)}
+.msg-action-btn.active{color:var(--accent);background:var(--surface2)}
+
+.msg-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:0 2px}
+
+/* user message edit (only ever shown on the single most-recent user turn) */
+.user-actions{display:flex;justify-content:flex-end;gap:2px;margin-top:4px}
+.edit-wrap{width:100%}
+.edit-note{font-size:11px;color:var(--text-faint);text-align:right;margin-bottom:6px;line-height:1.4}
+.edit-textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border-soft);border-radius:16px;
+  color:var(--text);font-family:var(--sans);font-size:14.5px;padding:11px 15px;resize:none;
+  min-height:44px;box-sizing:border-box;
+}
+.edit-textarea:focus{outline:none;border-color:var(--accent-dim)}
+.edit-btn-row{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.edit-btn{
+  font-family:var(--sans);font-size:12.5px;padding:7px 14px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--border-soft);background:transparent;color:var(--text-dim);transition:.15s;
+}
+.edit-btn:hover{background:var(--surface2)}
+.edit-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.edit-btn.primary:hover{background:var(--accent-dim)}
+.msg-footer-logo{color:var(--brand);flex-shrink:0}
+.msg-footer-disclaimer{font-size:10.5px;color:var(--text-faint);text-align:right;line-height:1.4}
+
+/* sidebar drawer */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:30;opacity:0;pointer-events:none;transition:.2s}
+.overlay.open{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;left:0;bottom:0;width:270px;max-width:82vw;background:var(--surface);
+  border-right:1px solid var(--border);z-index:31;transform:translateX(-100%);transition:.25s ease;
+  display:flex;flex-direction:column;padding:18px 14px;
+}
+.drawer.open{transform:translateX(0)}
+.drawer-brand{font-family:var(--serif);font-size:20px;margin-bottom:18px;padding:0 4px;display:flex;align-items:center;gap:10px}
+.drawer-logo{color:var(--brand);flex-shrink:0}
+.drawer-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:14px;color:var(--text-dim);cursor:pointer;transition:.15s}
+.drawer-item:hover{background:var(--surface2);color:var(--text)}
+.drawer-item.accent{color:var(--accent)}
+.drawer-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);padding:14px 10px 6px}
+.drawer-chats{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.drawer-chat{padding:9px 10px;border-radius:9px;font-size:13.5px;color:var(--text-dim);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:.15s}
+.drawer-chat.pending{color:var(--text-faint);font-style:italic}
+.drawer-chat:hover{background:var(--surface2);color:var(--text)}
+.drawer-chat.active{background:var(--surface2);color:var(--text)}
+.drawer-account{border-top:1px solid var(--border-soft);padding-top:12px;margin-top:8px}
+.account-row{display:flex;align-items:center;gap:10px;padding:6px 4px;cursor:pointer;border-radius:9px;transition:.15s}
+.account-row:hover{background:var(--surface3)}
+.avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.account-name{flex:1;font-size:13.5px;color:var(--text)}
+.signin-row{display:flex;gap:6px;padding:4px}
+.signin-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:8px 10px;font-size:13px;outline:none}
+.signin-row button{background:var(--accent);border:none;border-radius:8px;color:var(--bg);padding:8px 12px;font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap}
+.signin-note{font-size:11px;color:var(--text-faint);padding:6px 4px 0}
+.signin-btn{width:100%;background:var(--accent);border:none;border-radius:9px;color:var(--bg);padding:10px;font-weight:600;font-size:13.5px;cursor:pointer}
+.signin-btn:hover{filter:brightness(1.08)}
+.google-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:9px;color:var(--text);padding:9px;font-weight:600;font-size:13px;cursor:pointer;margin-bottom:8px;
+}
+.google-btn:hover{border-color:var(--border2,var(--border))}
+.divider-row{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--text-faint);margin:8px 0}
+.divider-row::before,.divider-row::after{content:'';flex:1;height:1px;background:var(--border-soft)}
+.back-link{font-size:11px;color:var(--text-faint);cursor:pointer;padding:6px 4px 0;text-align:center}
+.back-link:hover{color:var(--text-dim)}
+
+/* full-screen auth take-over (Claude-app style landing) */
+.auth-view{
+  position:fixed;inset:0;background:var(--bg);z-index:40;display:none;flex-direction:column;
+  padding:calc(20px + env(safe-area-inset-top)) 28px calc(26px + env(safe-area-inset-bottom));
+}
+.auth-view.open{display:flex}
+#auth-screen-main,#auth-screen-checkemail{flex:1;display:flex;flex-direction:column;min-height:0}
+.auth-close{align-self:flex-start;width:34px;height:34px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;flex-shrink:0;margin-bottom:6px}
+.auth-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:22px}
+.auth-mark{color:var(--brand)}
+.auth-brand{font-family:var(--serif);font-weight:500;font-size:28px;color:var(--text)}
+.auth-tagline{font-size:14.5px;color:var(--text-faint);max-width:260px;line-height:1.5}
+.auth-bottom{flex-shrink:0;display:flex;flex-direction:column;gap:14px}
+.auth-google-btn{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:var(--text);
+  border:none;border-radius:28px;color:var(--bg);font-weight:600;font-size:15px;padding:15px;cursor:pointer;
+}
+.auth-google-btn:hover{filter:brightness(.96)}
+.auth-divider{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--text-faint)}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border-soft)}
+.auth-email-row{
+  display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);
+  border-radius:28px;padding:6px 6px 6px 18px;
+}
+.auth-email-row input{
+  flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:var(--sans);font-size:15px;padding:9px 0;
+}
+.auth-email-row input::placeholder{color:var(--text-faint)}
+.auth-email-send{
+  width:38px;height:38px;border-radius:50%;background:var(--accent);border:none;color:var(--bg);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:.15s;
+}
+.auth-email-send:disabled{background:var(--surface3);color:var(--text-faint);cursor:not-allowed}
+.auth-email-send:hover:not(:disabled){filter:brightness(1.1)}
+.auth-note{font-size:12px;color:var(--text-dim);text-align:center;min-height:16px}
+.auth-terms{font-size:11.5px;color:var(--text-faint);text-align:center;line-height:1.6}
+.auth-terms a{color:var(--text-dim);text-decoration:underline}
+
+.check-email-title{font-size:16px;font-weight:600;color:var(--text);max-width:280px}
+.check-email-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 18px;
+  width:100%;max-width:300px;font-size:13.5px;color:var(--text-dim);display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.check-email-address{font-weight:700;color:var(--text);word-break:break-all;margin-top:2px}
+.check-email-sender{font-size:12.5px;color:var(--text-faint);max-width:290px;line-height:1.55}
+.check-email-sender strong{color:var(--text-dim)}
+
+/* full-screen onboarding survey, shown once right after a genuinely new sign-in */
+.onboard-view{
+  position:fixed;inset:0;background:var(--bg);z-index:41;display:none;flex-direction:column;
+  padding:calc(20px + env(safe-area-inset-top)) 22px calc(18px + env(safe-area-inset-bottom));
+}
+.onboard-view.open{display:flex}
+.onboard-scroll{flex:1;overflow-y:auto;min-height:0;padding-bottom:6px}
+.onboard-hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:10px 6px 4px}
+.onboard-hero .auth-tagline{max-width:320px}
+.required-mark{color:var(--accent);font-weight:600}
+.optional-mark{color:var(--text-faint)}
+.chip-select{display:flex;flex-wrap:wrap;gap:8px}
+.chip-opt{
+  background:var(--surface);border:1px solid var(--border);color:var(--text-dim);border-radius:20px;
+  padding:8px 14px;font-size:13px;font-family:var(--sans);cursor:pointer;transition:.15s;
+}
+.chip-opt:hover{border-color:var(--accent-dim)}
+.chip-opt.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.onboard-note{font-size:12px;color:var(--text-faint);line-height:1.55;margin-top:22px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 15px}
+.onboard-note a{color:var(--text-dim);text-decoration:underline}
+.onboard-bottom{flex-shrink:0;padding-top:12px}
+.onboard-error{font-size:12.5px;color:#d98a7a;text-align:center;min-height:16px;margin-bottom:2px}
+#ob-skip{margin-top:10px}
+
+/* header incognito toggle */
+.hdr-icon.active{color:var(--accent)}
+.hdr-right{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border-soft);border-radius:20px;padding:7px 11px}
+.hdr-right .hdr-icon{width:19px;height:19px}
+.hdr-right #incognito-btn{margin-right:2px}
+.temp-banner{font-size:11.5px;color:var(--accent);text-align:center;padding:6px 0 2px;flex-shrink:0}
+
+body.incognito header{background:rgba(201,100,66,.07)}
+body.incognito .composer-card{border-color:var(--accent-dim)}
+
+.incognito-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;padding-bottom:60px;color:var(--accent)}
+.incognito-hero-title{font-family:var(--serif);font-weight:500;font-size:22px;color:var(--text)}
+.incognito-hero-sub{font-size:13px;color:var(--text-faint);max-width:260px}
+
+.dots-menu{
+  position:absolute;top:calc(100% + 8px);right:0;background:var(--surface2);border:1px solid var(--border);
+  border-radius:14px;padding:6px;display:none;flex-direction:column;gap:1px;min-width:170px;
+  box-shadow:0 16px 34px -12px rgba(0,0,0,.65);z-index:20;
+}
+.dots-menu.open{display:flex}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:50;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.open{display:flex}
+.modal-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:20px;max-width:320px;width:100%}
+.modal-msg{font-size:14px;color:var(--text);line-height:1.5;margin-bottom:16px}
+.modal-actions{display:flex;gap:10px}
+.modal-btn{flex:1;border-radius:10px;padding:10px;font-size:13.5px;font-weight:600;cursor:pointer;border:1px solid var(--border)}
+.modal-btn.ghost{background:transparent;color:var(--text-dim)}
+.modal-btn.danger{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.export-actions{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.export-option-btn{
+  display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:11px 13px;font-size:13.5px;color:var(--text);cursor:pointer;text-align:left;width:100%;
+}
+.export-option-btn:hover{border-color:var(--accent-dim);background:var(--surface3)}
+.export-option-btn.done{color:var(--accent);border-color:var(--accent-dim)}
+
+/* image attachment preview */
+.attach-preview{display:flex;align-items:center;gap:8px;padding:10px 14px 0;flex-wrap:wrap}
+.attach-thumb{position:relative;width:52px;height:52px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.attach-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.attach-thumb .x{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer}
+.bubble-user-imgs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.bubble-user-img{max-width:140px;max-height:140px;border-radius:12px;display:block;object-fit:cover}
+.attach-warn{font-size:11.5px;color:var(--accent);text-align:center;padding:6px 14px 0}
+
+/* settings + profile views */
+.view{flex:1;overflow-y:auto;padding:16px 16px 30px;display:none}
+.view.open{display:block}
+.settings-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.plan-badge{background:var(--text);color:var(--bg);font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px}
+.app-version{text-align:center;font-size:11.5px;color:var(--text-faint);margin-top:24px;font-family:var(--mono)}
+.settings-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border-soft);padding:13px 16px;font-size:14px;cursor:pointer;color:var(--text)}
+.settings-row:first-child{border-radius:12px 12px 0 0}
+.settings-row:last-child{border-radius:0 0 12px 12px;border-top:none}
+.settings-row + .settings-row{border-top:none;margin-top:-1px}
+.settings-group{margin-bottom:14px}
+.settings-row .chev{margin-left:auto;color:var(--text-faint)}
+.settings-row.danger{color:#d98a7a}
+.settings-row.danger svg{color:#d98a7a}
+
+.field-label{font-size:12.5px;color:var(--text-dim);margin:16px 0 6px}
+.field-input,.field-textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:11px 13px;font-size:14px;font-family:var(--sans);outline:none}
+.field-textarea{min-height:90px;resize:vertical}
+.primary-btn{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:10px;color:var(--text-dim);padding:11px;font-weight:600;font-size:13.5px;margin-top:10px;cursor:pointer}
+.primary-btn.ready{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint);margin:20px 0 8px}
+
+/* composer */
+.composer{flex-shrink:0;width:100%;box-sizing:border-box;padding:0 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 65%,transparent);transition:padding .25s ease}
+/* On a brand-new empty chat, lift the composer off the bottom edge and center it with the
+   greeting instead of pinning it to the screen edge — mirrors the "premium" centered-input
+   feel of other AI apps' landing states. Only applies while the hero (no messages yet) shows. */
+body.new-chat .composer{
+  position:fixed;left:50%;bottom:11%;top:auto;transform:translateX(-50%);
+  width:calc(100% - 56px);max-width:480px;padding:0;background:none;z-index:5;
+}
+body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
+.composer-card{
+  width:100%;box-sizing:border-box;
+  background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;
+}
+.composer textarea{
+  width:100%;background:transparent;border:none;outline:none;resize:none;color:var(--text);
+  font-family:var(--sans);font-size:15px;max-height:130px;line-height:1.45;padding:14px 16px 6px;
+}
+.composer textarea::placeholder{color:var(--text-faint)}
+.composer-controls{display:flex;align-items:center;gap:8px;padding:6px 8px 9px}
+.composer-controls .spacer{flex:1}
+.mode-pill-wrap{position:relative}
+.mode-pill{
+  display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border);
+  border-radius:20px;color:var(--text-dim);font-size:12.5px;font-weight:500;padding:7px 12px;
+}
+.mode-pill .mp-icon{display:inline-flex;align-items:center;color:var(--accent)}
+.mode-pill .mp-icon svg{width:14px;height:14px}
+.icon-btn{
+  width:34px;height:34px;border-radius:50%;background:transparent;border:none;
+  color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+}
+.send-btn{
+  width:34px;height:34px;border-radius:50%;background:var(--accent);border:none;color:var(--bg);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:.15s;
+}
+.send-btn:disabled{background:var(--surface3);color:var(--text-faint);cursor:not-allowed}
+.send-btn:hover:not(:disabled){filter:brightness(1.1)}
+.plus-btn{
+  width:34px;height:34px;border-radius:50%;background:transparent;border:1px solid var(--border);
+  color:var(--text-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+}
+
+/* .mode-menu-item / .mi-icon are still used by the chat-options dropdown (rename/delete) even
+   though the mode-picker dropdown itself is gone — see the markup around #dots-menu. */
+.mode-menu-item{
+  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;font-size:13.5px;
+  color:var(--text);cursor:pointer;background:transparent;border:none;text-align:left;width:100%;font-family:var(--sans);
+}
+.mode-menu-item:hover{background:var(--surface3)}
+.mode-menu-item.active{color:var(--accent)}
+.mode-menu-item .mi-icon{width:18px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;color:var(--text-dim)}
+.mode-menu-item .mi-icon svg{width:15px;height:15px}
+
+/* session banner */
+.banner{display:flex;align-items:center;gap:10px;background:var(--surface2);border-bottom:1px solid var(--border-soft);padding:10px 14px;font-size:12px;color:var(--text-dim);max-height:80px;overflow:hidden;transition:max-height .28s ease,padding .28s ease,opacity .2s ease;opacity:1}
+.banner.closing{max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-bottom-color:transparent}
+.banner .x{margin-left:auto;cursor:pointer;color:var(--text-faint);flex-shrink:0}
+/* --- v1.8.0: long-press message menu, select-text sheet, toast, retry block, unsaved warning --- */
+@media (pointer:coarse){
+  .bubble-assistant,.bubble-user-text{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  .bubble-user-img{pointer-events:none;-webkit-touch-callout:none}
+}
+.edit-textarea{-webkit-user-select:text;user-select:text}
+.msg-pressed{outline:1.5px solid var(--accent-dim);outline-offset:4px;border-radius:14px}
+.msg-menu{
+  position:fixed;z-index:60;display:none;min-width:200px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:14px;padding:6px;box-shadow:0 14px 40px rgba(0,0,0,.55);
+}
+.msg-menu.open{display:block;animation:rise .15s ease}
+.msg-menu button{
+  display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;color:var(--text);
+  font-family:var(--sans);font-size:14px;padding:11px 12px;border-radius:9px;cursor:pointer;text-align:left;
+}
+.msg-menu button:active,.msg-menu button:hover{background:var(--surface3)}
+.msg-menu button svg{width:16px;height:16px;flex-shrink:0;color:var(--text-dim)}
+.msg-menu button.active,.msg-menu button.active svg{color:var(--accent)}
+.toast{
+  position:fixed;left:50%;bottom:120px;transform:translate(-50%,8px);background:var(--surface3);color:var(--text);
+  border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-size:13px;opacity:0;pointer-events:none;
+  transition:.2s;z-index:70;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.select-card{max-width:420px}
+.select-hint{font-size:11.5px;color:var(--text-faint);margin-bottom:10px}
+.select-body{
+  max-height:48vh;overflow-y:auto;background:var(--surface);border:1px solid var(--border-soft);border-radius:10px;
+  padding:12px;font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;
+  -webkit-user-select:text;user-select:text;margin-bottom:14px;
+}
+.retry-block{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.retry-note{font-size:13px;color:var(--text-faint)}
+.retry-btn{
+  display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);
+  color:var(--text-dim);border-radius:16px;padding:7px 13px;font-family:var(--sans);font-size:12.5px;cursor:pointer;
+}
+.retry-btn:hover{border-color:var(--accent-dim);color:var(--text)}
+.save-warning{margin-top:6px;font-size:11px;color:#d98a7a}
+
+/* Responsive: this was built mobile-first with no width cap, so on a desktop browser or a
+   tablet the header/thread/composer stretched edge-to-edge — fine down to narrow phones
+   (~360dp), bad on anything wider. Cap the content column and center it once the viewport
+   gets wider than a large phone; below that breakpoint, nothing here changes. */
+@media (min-width:720px){
+  header, .thread, .drawer-account, .onboard-scroll, .onboard-bottom{
+    padding-left:max(20px, calc(50% - 340px));
+    padding-right:max(20px, calc(50% - 340px));
+  }
+  .composer{padding-left:max(16px, calc(50% - 340px));padding-right:max(16px, calc(50% - 340px))}
+  body.new-chat .composer{padding-left:0;padding-right:0} /* already centered independently, fixed-positioned */
+  .msg{max-width:72%}
+  .msg.assistant{max-width:78%}
+  .view{max-width:680px;margin:0 auto;width:100%}
+}
+@media (min-width:720px) and (min-height:640px){
+  .quickstart-grid{max-width:420px}
+}
+
+/* ---- Desktop layout ----------------------------------------------------------------
+   Phones are untouched (nothing below applies under 900px).
+   >= 900px : wider reading column, larger type, roomier home screen.
+   >= 1100px: chat list pinned as a permanent left sidebar (no hamburger, no dimming overlay),
+              the way desktop AI apps work. */
+@media (min-width:900px){
+  header, .thread, .drawer-account, .onboard-scroll, .onboard-bottom{
+    padding-left:max(24px, calc(50% - 400px));
+    padding-right:max(24px, calc(50% - 400px));
+  }
+  .composer{padding-left:max(24px, calc(50% - 400px));padding-right:max(24px, calc(50% - 400px))}
+  .view{max-width:800px}
+  .msg{max-width:78%}
+  .msg.assistant{max-width:100%}
+  .bubble-user,.bubble-assistant{font-size:16px;line-height:1.65}
+  .hdr-title{font-size:15px}.hdr-tagline{font-size:9.5px}.hdr-version{font-size:10.5px}
+  .hero{gap:16px;padding-bottom:210px}
+  .hero-title{font-size:38px}
+  .hero-sub{font-size:16px;max-width:440px}
+  .quickstart-grid{max-width:600px;gap:12px}
+  .quickstart-card{padding:14px 16px}
+  body.new-chat .composer{max-width:720px;width:calc(100% - 96px);bottom:9vh}
+  .composer textarea{font-size:16px}
+}
+@media (min-width:900px) and (min-height:640px){ .quickstart-grid{max-width:600px} }
+/* short desktop windows (small laptops, split screens): tighten the home screen so nothing collides */
+@media (min-width:900px) and (max-height:749px){
+  .hero-sub{display:none}
+  .hero{gap:12px;padding-bottom:190px}
+  .hero-title{font-size:32px}
+  .quickstart-card{padding:10px 14px}
+  body.new-chat .composer{bottom:4vh}
+}
+@media (min-width:1100px){
+  :root{--sb:280px}
+  body{padding-left:var(--sb)}
+  .drawer{transform:none;width:var(--sb);max-width:none;transition:none;z-index:10}
+  .overlay{display:none}
+  #menu-btn{visibility:hidden;pointer-events:none}
+  body.new-chat .composer{left:calc(50% + var(--sb) / 2)}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="cb-logo" viewBox="236 262 782 681"><g fill="currentColor" fill-rule="evenodd"><path d="M 559,267 L 562,524 L 559,525 L 527,493 L 527,490 L 521,484 L 517,483 L 515,478 L 512,477 L 509,472 L 507,472 L 474,439 L 474,436 L 468,433 L 410,374 L 410,372 L 402,366 L 386,349 L 380,346 L 299,427 L 299,430 L 301,430 L 304,435 L 307,435 L 314,442 L 314,444 L 317,444 L 417,529 L 466,573 L 485,588 L 483,596 L 475,598 L 243,598 L 243,672 L 241,673 L 241,681 L 243,682 L 243,713 L 493,679 L 494,682 L 454,721 L 450,722 L 436,738 L 332,832 L 324,837 L 320,844 L 406,927 L 408,927 L 482,842 L 507,811 L 511,811 L 511,806 L 517,800 L 521,793 L 525,791 L 525,788 L 530,784 L 553,753 L 558,750 L 558,747 L 570,733 L 574,732 L 583,744 L 583,749 L 588,750 L 590,756 L 593,757 L 602,769 L 602,772 L 604,772 L 613,784 L 613,787 L 618,790 L 618,794 L 624,798 L 626,804 L 628,804 L 634,812 L 634,817 L 637,817 L 638,820 L 642,822 L 644,827 L 648,830 L 712,916 L 730,938 L 732,938 L 882,841 L 882,839 L 847,837 L 836,838 L 835,836 L 829,837 L 806,832 L 771,819 L 742,803 L 720,786 L 710,776 L 710,774 L 708,774 L 694,760 L 658,712 L 657,707 L 654,706 L 648,697 L 648,694 L 642,688 L 641,683 L 713,682 L 787,722 L 791,722 L 857,688 L 857,652 L 860,650 L 857,588 L 792,557 L 713,603 L 640,603 L 639,600 L 645,593 L 645,590 L 651,580 L 655,578 L 656,573 L 663,563 L 667,560 L 679,543 L 690,533 L 690,531 L 719,504 L 757,477 L 794,457 L 827,444 L 859,436 L 883,433 L 911,433 L 911,431 L 897,424 L 893,420 L 889,420 L 855,408 L 826,403 L 788,403 L 763,407 L 742,413 L 710,426 L 692,438 L 689,438 L 684,434 L 684,422 L 682,421 L 684,418 L 684,415 L 682,414 L 682,331 L 683,324 L 685,323 L 685,316 L 683,315 L 683,267 Z"/><path d="M 940,725 L 862,699 L 796,734 L 773,790 L 771,800 L 797,811 L 817,816 L 831,817 L 832,819 L 852,819 L 853,817 L 867,816 L 893,808 L 911,799 L 938,778 Z"/><path d="M 780,480 L 800,547 L 862,578 L 872,575 L 942,543 L 942,527 L 938,495 L 916,477 L 889,464 L 863,458 L 833,459 L 805,467 Z"/><path d="M 1011,648 L 996,644 L 953,719 L 953,732 L 951,734 L 947,734 L 947,739 L 953,743 L 953,754 L 950,755 L 950,759 L 952,760 L 952,775 L 964,767 L 965,763 L 978,749 L 997,714 L 1009,675 Z"/><path d="M 953,502 L 956,550 L 981,595 L 992,623 L 999,631 L 1011,635 L 1013,630 L 1011,629 L 1011,614 L 1008,596 L 997,561 L 974,521 L 963,510 L 961,505 Z"/></g></symbol></svg>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-brand"><svg class="drawer-logo" width="26" height="23" aria-hidden="true"><use href="#cb-logo"/></svg><span>Creator Booth</span></div>
+  <div class="drawer-item accent" id="new-chat-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+    New chat
+  </div>
+  <div class="drawer-label">Chats</div>
+  <div class="drawer-chats" id="drawer-chats"></div>
+  <div class="drawer-account" id="drawer-account">
+    <!-- filled by JS: signed-out shows email input, signed-in shows avatar row -->
+  </div>
+</div>
+
+<div class="auth-view" id="auth-view">
+  <svg class="auth-close" id="auth-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+
+  <div id="auth-screen-main">
+    <div class="auth-hero">
+      <svg class="auth-mark" width="46" height="40" aria-hidden="true"><use href="#cb-logo"/></svg>
+      <div class="auth-brand">Creator Booth</div>
+      <div class="auth-tagline">Research-backed scripts, drafted in seconds</div>
+    </div>
+    <div class="auth-bottom">
+      <button class="auth-google-btn" id="auth-google-btn" type="button">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.6 5.1 29.6 3 24 3c-7.7 0-14.4 4.4-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.5 0 10.4-1.9 14.2-5.1l-6.6-5.4C29.6 36.3 27 37 24 37c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.5 40.5 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.4l6.6 5.4C40.9 36 44 30.5 44 24c0-1.3-.1-2.7-.4-3.9z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider">OR</div>
+      <div class="auth-email-row">
+        <input id="auth-email-input" type="email" placeholder="Enter your email">
+        <button class="auth-email-send" id="auth-email-send" disabled type="button">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+      </div>
+      <div class="auth-note" id="auth-note"></div>
+      <div class="auth-terms">By continuing, you agree to Creator Booth's <a href="/terms.html" target="_blank" rel="noopener">Terms</a> and acknowledge the <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+    </div>
+  </div>
+
+  <div id="auth-screen-checkemail" style="display:none">
+    <div class="auth-hero" style="gap:16px">
+      <div class="check-email-title">Check your email to finish signing in</div>
+      <div class="check-email-card">
+        <div>We sent a sign-in link to</div>
+        <div class="check-email-address" id="check-email-address"></div>
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin-top:6px">
+          <rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 6.5l9 6.5 9-6.5"/>
+        </svg>
+      </div>
+      <div class="check-email-sender">This email comes from <strong>Supabase Auth</strong>, our sign-in provider — that's expected. Check spam/junk if it doesn't show up within a minute or two.</div>
+      <div class="back-link" id="check-email-back">Use a different email</div>
+    </div>
+  </div>
+</div>
+
+<div class="onboard-view" id="onboard-view">
+  <div class="onboard-scroll">
+    <div class="onboard-hero">
+      <svg class="auth-mark" width="39" height="34" aria-hidden="true"><use href="#cb-logo"/></svg>
+      <div class="auth-brand" style="font-size:22px">Welcome to Creator Booth</div>
+      <div class="auth-tagline">A few quick questions so we can personalize things — every field except your surname is optional, and you can change any of this later in Settings → Profile.</div>
+    </div>
+
+    <div class="field-label" style="margin-top:22px">Surname <span class="required-mark">(required)</span></div>
+    <input class="field-input" id="ob-surname" placeholder="Your surname">
+    <div class="field-label">Other names <span class="optional-mark">(optional)</span></div>
+    <input class="field-input" id="ob-othernames" placeholder="First / middle names">
+    <div class="field-label">What should we call you? <span class="optional-mark">(optional)</span></div>
+    <input class="field-input" id="ob-nickname" placeholder="Nickname or preferred name">
+
+    <div class="field-label">How did you hear about us? <span class="optional-mark">(optional)</span></div>
+    <div class="chip-select" id="ob-referral-chips">
+      <button type="button" class="chip-opt" data-value="Google search">Google search</button>
+      <button type="button" class="chip-opt" data-value="Social media">Social media</button>
+      <button type="button" class="chip-opt" data-value="Ads">Ads</button>
+      <button type="button" class="chip-opt" data-value="Friend invitation">Friend invitation</button>
+      <button type="button" class="chip-opt" data-value="Other">Other</button>
+    </div>
+    <input class="field-input" id="ob-referral-other" placeholder="Please specify" style="display:none;margin-top:8px">
+
+    <div class="field-label">What do you plan to use Creator Booth for? <span class="optional-mark">(optional)</span></div>
+    <textarea class="field-textarea" id="ob-usecase" placeholder="e.g. weekly match-day recaps for my TikTok"></textarea>
+    <div class="field-label">Favorite club <span class="optional-mark">(optional)</span></div>
+    <input class="field-input" id="ob-club" placeholder="e.g. Real Madrid">
+    <div class="field-label">Anything else useful for us to know? <span class="optional-mark">(optional)</span></div>
+    <textarea class="field-textarea" id="ob-notes" placeholder="Anything that'll help us tailor your experience"></textarea>
+
+    <div class="onboard-note">Everything above is used only to personalize your experience (like how we greet you and tailor scripts) — never for anything else, never sold. You can view, change, or clear it anytime in Settings → Profile. See our <a href="/terms.html" target="_blank" rel="noopener">Terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+  </div>
+  <div class="onboard-bottom">
+    <div class="onboard-error" id="ob-error"></div>
+    <button class="auth-google-btn" id="ob-continue" type="button">Continue</button>
+    <div class="back-link" id="ob-skip">Skip for now</div>
+  </div>
+</div>
+
+
+<header>
+  <svg class="hdr-icon" id="menu-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  <svg class="hdr-icon" id="back-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none"><path d="M15 18l-6-6 6-6"/></svg>
+  <div class="hdr-title-wrap">
+    <span class="hdr-title" id="hdr-title">CREATOR BOOTH</span>
+    <span class="hdr-tagline">FOOTBALL AI</span>
+    <span class="hdr-version" id="hdr-version"></span>
+  </div>
+  <div class="hdr-right" id="hdr-right">
+    <svg class="hdr-icon" id="incognito-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" title="Temporary chat">
+      <path d="M5 20V11a7 7 0 0114 0v9l-2.5-2-2 2-2-2-2 2-2-2L5 20z"/>
+      <circle cx="9.5" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11" r=".9" fill="currentColor" stroke="none"/>
+    </svg>
+    <svg class="hdr-icon" id="header-export-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none" title="Export chat"><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 9l5-5 5 5M12 4v12"/></svg>
+    <svg class="hdr-icon" id="header-newchat-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none" title="New chat"><path d="M12 5v14M5 12h14"/></svg>
+    <div class="hdr-dots-wrap" style="position:relative;display:none" id="header-dots-wrap">
+      <svg class="hdr-icon" id="header-dots-btn" viewBox="0 0 24 24" fill="currentColor" title="Chat options"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+      <div class="dots-menu" id="dots-menu">
+        <button class="mode-menu-item" id="dots-rename">Rename chat</button>
+        <button class="mode-menu-item" id="dots-delete" style="color:#d98a7a">Delete chat</button>
+      </div>
+    </div>
+    <svg class="hdr-icon" id="header-delete-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="display:none" title="Delete incognito chat"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+  </div>
+</header>
+<div class="temp-banner" id="temp-banner" style="display:none">Temporary chat — this one won't be saved</div>
+
+<div class="modal-overlay" id="export-modal-overlay">
+  <div class="modal-card">
+    <div class="modal-msg">Export this chat</div>
+    <div class="export-actions">
+      <button class="export-option-btn" id="export-copy-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>
+        Copy to clipboard
+      </button>
+      <button class="export-option-btn" id="export-pdf-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M12 18v-6M9.5 15.5L12 18l2.5-2.5"/></svg>
+        Download as PDF
+      </button>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn ghost" id="export-cancel-btn" style="flex:1">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="select-overlay">
+  <div class="modal-card select-card">
+    <div class="modal-msg">Select text</div>
+    <div class="select-hint">Touch and hold a word, then drag the handles to choose what to copy.</div>
+    <div class="select-body" id="select-body"></div>
+    <div class="modal-actions">
+      <button class="modal-btn ghost" id="select-done-btn">Done</button>
+      <button class="modal-btn danger" id="select-copyall-btn">Copy all</button>
+    </div>
+  </div>
+</div>
+<div class="msg-menu" id="msg-menu"></div>
+<div class="toast" id="toast"></div>
+
+<div class="thread" id="thread">
+  <div class="hero" id="hero">
+    <svg class="hero-mark" id="hero-mark" width="48" height="42" aria-hidden="true"><use href="#cb-logo"/></svg>
+    <div class="hero-title" id="hero-title">What are we making today?</div>
+    <div class="hero-sub" id="hero-sub">Search a match, a player, or a topic — I'll gather what I can and draft it.</div>
+    <div class="quickstart-grid" id="quickstart-grid">
+      <button type="button" class="quickstart-card" data-icon-cls="qc-match" data-prefix="Analyze this match: ">
+        <span class="qc-icon qc-match"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M12 17v4M4.5 9l3 1M16.5 9l3 1M6 17l2.5-3M18 17l-2.5-3"/></svg></span>
+        <span class="qc-text"><span class="qc-title">Match Analysis</span><span class="qc-sub">Analyze a match</span></span>
+      </button>
+      <button type="button" class="quickstart-card" data-icon-cls="qc-player" data-prefix="Give me a player analysis of ">
+        <span class="qc-icon qc-player"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span>
+        <span class="qc-text"><span class="qc-title">Player Analysis</span><span class="qc-sub">Scout a player</span></span>
+      </button>
+      <button type="button" class="quickstart-card" data-icon-cls="qc-research" data-prefix="Find the latest news about ">
+        <span class="qc-icon qc-research"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="14" height="15" rx="1.5"/><path d="M17 8h3a1 1 0 011 1v9a2 2 0 01-2 2H6"/><path d="M6.5 8.5h6M6.5 12h8M6.5 15h8" stroke-width="1.3"/></svg></span>
+        <span class="qc-text"><span class="qc-title">Football Research</span><span class="qc-sub">Find the latest</span></span>
+      </button>
+      <button type="button" class="quickstart-card" data-icon-cls="qc-script" data-prefix="Write a script about ">
+        <span class="qc-icon qc-script"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>
+        <span class="qc-text"><span class="qc-title">Script Studio</span><span class="qc-sub">Turn research into a script</span></span>
+      </button>
+      <button type="button" class="quickstart-card qc-banter-card" data-icon-cls="qc-banter" data-prefix="Give me some banter about ">
+        <span class="qc-icon qc-banter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2c2 3 4 5 4 8a4 4 0 01-8 0c0-1 .3-1.8.8-2.6.2.7.2 1.4.7 1.6.3-2 1-3.5 2.5-5z"/><path d="M8.5 16c.5 2 1.8 3.5 3.5 4 1.7-.5 3-2 3.5-4"/></svg></span>
+        <span class="qc-text"><span class="qc-title">Banter</span><span class="qc-sub">Rival jokes &amp; hot takes — just for fun</span></span>
+      </button>
+    </div>
+  </div>
+  <div class="incognito-hero" id="incognito-hero" style="display:none">
+    <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+      <path d="M5 20V11a7 7 0 0114 0v9l-2.5-2-2 2-2-2-2 2-2-2L5 20z"/>
+      <circle cx="9.5" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+    <div class="incognito-hero-title">Incognito chat</div>
+    <div class="incognito-hero-sub">This chat won't be saved to your account or this device once it ends.</div>
+  </div>
+  <div id="scroll-spacer" aria-hidden="true"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-msg" id="modal-msg"></div>
+    <div class="modal-actions">
+      <button class="modal-btn ghost" id="modal-cancel">Cancel</button>
+      <button class="modal-btn danger" id="modal-confirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="settings-view">
+  <div class="settings-card">
+    <span id="settings-email">you@email.com</span>
+    <span class="plan-badge">Free</span>
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-row" id="row-profile">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      Profile
+      <span class="chev">›</span>
+    </div>
+    <div class="settings-row" id="row-voice">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10v4M9 6v12M14 3v18M19 8v8"/></svg>
+      Voice
+      <span class="chev">›</span>
+    </div>
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-row" id="row-privacy">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>
+      Privacy
+      <span class="chev">›</span>
+    </div>
+    <div class="settings-row" id="row-help">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 10c0-1.7 1.3-3 3-3s3 1.3 3 3-3 2-3 4M12 17.5v.01"/></svg>
+      Help &amp; FAQ
+      <span class="chev">›</span>
+    </div>
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-row danger" id="row-logout">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Log out
+    </div>
+  </div>
+
+  <div class="app-version" id="settings-app-version"></div>
+</div>
+
+<div class="view" id="profile-view">
+  <div class="field-label">Surname <span class="required-mark">(required)</span></div>
+  <input class="field-input" id="profile-surname" placeholder="Your surname">
+  <div class="field-label">Other names</div>
+  <input class="field-input" id="profile-othernames" placeholder="First / middle names">
+  <div class="field-label">What should we call you?</div>
+  <input class="field-input" id="profile-nickname" placeholder="Nickname or preferred name">
+  <div class="field-label">How did you hear about us?</div>
+  <div class="chip-select" id="profile-referral-chips">
+    <button type="button" class="chip-opt" data-value="Google search">Google search</button>
+    <button type="button" class="chip-opt" data-value="Social media">Social media</button>
+    <button type="button" class="chip-opt" data-value="Ads">Ads</button>
+    <button type="button" class="chip-opt" data-value="Friend invitation">Friend invitation</button>
+    <button type="button" class="chip-opt" data-value="Other">Other</button>
+  </div>
+  <input class="field-input" id="profile-referral-other" placeholder="Please specify" style="display:none;margin-top:8px">
+  <div class="field-label">What do you use Creator Booth for?</div>
+  <textarea class="field-textarea" id="profile-usecase" placeholder="e.g. weekly match-day recaps for my TikTok"></textarea>
+  <div class="field-label">Favorite club</div>
+  <input class="field-input" id="profile-club" placeholder="e.g. Real Madrid">
+  <div class="field-label">Anything else useful for us to know?</div>
+  <textarea class="field-textarea" id="profile-notes" placeholder="Anything that'll help us tailor your experience"></textarea>
+  <button class="primary-btn" id="save-profile-btn">Update Profile</button>
+  <div class="onboard-note" style="margin-top:14px">This is used only to personalize your experience — never sold, never used for anything else. See our <a href="/terms.html" target="_blank" rel="noopener">Terms</a> and <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+
+  <div class="section-label">Script preferences</div>
+  <div class="field-label" style="margin-top:0">What should Creator Booth consider when writing your scripts?</div>
+  <textarea class="field-textarea" id="profile-preferences" placeholder="e.g. keep it punchy, avoid transfer rumors, always mention the manager's reaction…"></textarea>
+  <button class="primary-btn" id="save-prefs-btn">Save Preferences</button>
+
+  <div class="section-label">Account actions</div>
+  <div class="settings-row danger" id="row-delete-account" style="border-radius:12px">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg>
+    Delete Account
+  </div>
+</div>
+
+<div class="composer">
+  <div class="composer-card">
+    <div class="banner" id="session-banner">
+      <span>Not signed in — chats save on this device.</span>
+      <span class="x" id="banner-close">✕</span>
+    </div>
+    <textarea id="input" rows="1" placeholder="Real Madrid latest signing…"></textarea>
+    <div class="attach-preview" id="attach-preview" style="display:none"></div>
+    <input type="file" id="attach-file-input" accept="image/*" multiple style="display:none">
+    <div class="composer-controls">
+      <button class="icon-btn" id="attach-btn" title="Attach an image">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <div class="mode-pill-wrap">
+        <div class="mode-pill" id="mode-pill">
+          <span class="mp-icon" id="mode-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M12 17v4M4.5 9l3 1M16.5 9l3 1M6 17l2.5-3M18 17l-2.5-3"/></svg></span>
+          <span id="mode-pill-label">Football</span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="icon-btn" title="Voice input">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3z"/><path d="M19 11a7 7 0 01-14 0M12 18v3"/></svg>
+      </button>
+      <button class="send-btn" id="send" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+const SUPABASE_URL = 'https://krmjvfemsufduqdofuqy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybWp2ZmVtc3VmZHVxZG9mdXF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwMjQ1OTMsImV4cCI6MjEwMDYwMDU5M30.ftTtPul4dCVCBgjB60NH9bdKJJAEWomipYipffRFaK4';
+
+// Same-origin relative paths ('/api/gemini' etc.) only work when this page is actually served
+// from creator-boot.vercel.app. The Android app bundles this exact file locally instead (so it
+// loads instantly offline), which means those calls would otherwise resolve against the app's
+// own local origin and fail. Using the absolute production URL works identically in both
+// places — same-origin on the website, cross-origin (now CORS-enabled server-side) in the app.
+const API_ORIGIN = 'https://creator-boot.vercel.app';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// --- Native (Android app) support. Everything tied to these constants is inert in a normal
+// browser tab: window.NativeBridge only exists inside the app (the build script injects it).
+const NATIVE = !!(window.NativeBridge && window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+const APP_AUTH_REDIRECT = 'com.creatorbooth.app://login-callback';
+const UPDATE_REPO = '__GITHUB_REPO__'; // the app build replaces this with "owner/repo"
+const nativePlugin = (name) => (window.NativeBridge && window.NativeBridge[name]) || null;
+
+const USER_NAME_FALLBACK = 'there'; // used until a real signed-in name/email is available
+
+/* ------------------------------------------------------------------ */
+/* Modes — one pipeline, six system prompts. Adding a mode = add an    */
+/* entry here; nothing else in the pipeline needs to change.           */
+/* ------------------------------------------------------------------ */
+// The UI renders assistant replies as plain text (no markdown rendering), so every mode's
+// system prompt gets this appended — otherwise the model's own "**bold**" or "# heading"
+// syntax shows up as literal asterisks/hashes instead of formatting.
+const PLAIN_TEXT_NOTE = ' Formatting: a spoken video script must be plain prose — no markdown, no headers, no bullets. For any other answer (research, explanations, roundups, advice), structure it so it is easy to scan on a phone: short paragraphs separated by blank lines, "- " bullet lines for lists of items, numbered lines ("1. ") for ordered steps, and **bold** for key names or figures. Never use # headings, tables, code blocks, or HTML.';
+
+const MODES = [
+  {
+    id: 'football', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M12 17v4M4.5 9l3 1M16.5 9l3 1M6 17l2.5-3M18 17l-2.5-3"/></svg>', label: 'Football',
+    placeholder: 'Real Madrid latest signing…',
+    heroSub: "Search a match, a player, or a topic — I'll gather what I can and draft it.",
+    system:
+`You are a dedicated football (soccer) AI for a content creator. This tool's entire focus is football, and it works in two registers — read which one a message actually calls for, rather than defaulting to the same tone every time:
+
+OFFICIAL register (research, match/player/club analysis, tactical breakdowns, video scripts, historical facts): be accurate, respect verified data (see below), and say plainly when you can't verify something rather than guessing.
+
+BANTER register (jokes, hot takes, rivalry banter, roasts, playful trash talk): only when the person actually asks for a joke, banter, a roast, or a hot take. Be genuinely funny and exaggerated for comic effect, the way real football banter culture is — but ground it in real, well-known context (an actual trophy drought, an actual bad run of form, an actual managerial merry-go-round), never inventing a specific false incident, score, or quote and stating it as fact. Banter is opinion and comedy, clearly framed as such, not a factual claim.
+
+Match the format to what's asked: a video script should be a punchy, spoken-style script (roughly 60-90 seconds read aloud) — no headers, no markdown, no stage directions unless asked. A direct question, a planning question (content ideas, channel/page setup, a presenter persona), or a banter request should just get a direct, natural answer in whatever format actually fits — don't force script prose onto something that isn't one, and don't bolt on an unrelated script or "bio" nobody asked for.
+
+If a block labeled "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth and never contradict it, even if it conflicts with what you remember — both come from a live sports data feed checked moments ago, which is more current than your training data. Use web search for anything those blocks don't cover, and never invent a stat, score, quote, or current manager/coach you can't support — in either register.
+
+If someone asks about something with no football angle at all, you can still just help them — don't force a football connection onto an unrelated request, but keep in mind football is this tool's actual purpose.` + PLAIN_TEXT_NOTE
+  }
+];
+let currentModeId = 'football';
+function currentMode(){ return MODES.find(m => m.id === currentModeId) || MODES[0]; }
+
+function nameForGreeting(){
+  if (currentProfile){
+    if (currentProfile.nickname && currentProfile.nickname.trim()) return currentProfile.nickname.trim();
+    if (currentProfile.other_names && currentProfile.other_names.trim()) return currentProfile.other_names.trim().split(/\s+/)[0];
+    if (currentProfile.surname && currentProfile.surname.trim()) return currentProfile.surname.trim();
+  }
+  if (currentUser?.email) return currentUser.email.split('@')[0];
+  return USER_NAME_FALLBACK;
+}
+
+function pickGreeting(){
+  const name = nameForGreeting();
+  const hour = new Date().getHours();
+  const timeGreetings = hour < 12
+    ? [`Morning, ${name}`, `Coffee and scripts, ${name}?`]
+    : hour < 17
+      ? [`Afternoon, ${name}`, `Back for more, ${name}?`]
+      : [`Evening, ${name}`, `${name} returns`];
+  const generic = ['Time to brainstorm', 'What are we making today?', 'Ready when you are'];
+  const isReturning = chats.some(c => c.title !== 'New chat');
+  const pool = (isReturning && Math.random() < 0.65) ? timeGreetings : generic;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function refreshGreeting(){
+  const el = document.getElementById('hero-title');
+  if (el) el.textContent = pickGreeting();
+  const sub = document.getElementById('hero-sub');
+  if (sub) sub.textContent = currentMode().heroSub;
+}
+
+// --- DOM refs ---
+const drawer = document.getElementById('drawer');
+const overlay = document.getElementById('overlay');
+const menuBtn = document.getElementById('menu-btn');
+const drawerChats = document.getElementById('drawer-chats');
+const drawerAccount = document.getElementById('drawer-account');
+const newChatBtn = document.getElementById('new-chat-btn');
+const thread = document.getElementById('thread');
+const hero = document.getElementById('hero');
+const scrollSpacer = document.getElementById('scroll-spacer');
+const input = document.getElementById('input');
+const sendBtn = document.getElementById('send');
+const banner = document.getElementById('session-banner');
+const bannerClose = document.getElementById('banner-close');
+
+menuBtn.addEventListener('click', () => { drawer.classList.add('open'); overlay.classList.add('open'); });
+overlay.addEventListener('click', () => { drawer.classList.remove('open'); overlay.classList.remove('open'); });
+bannerClose.addEventListener('click', () => {
+  banner.classList.add('closing');
+  setTimeout(() => banner.remove(), 300);
+});
+
+// --- View switching: chat / settings / profile ---
+const backBtn = document.getElementById('back-btn');
+const hdrTitleEl = document.getElementById('hdr-title');
+const settingsView = document.getElementById('settings-view');
+const profileView = document.getElementById('profile-view');
+const composerEl = document.querySelector('.composer');
+
+// Single source of truth for the version shown in the header and in Settings.
+// Bump this on every deploy — see README.md's "Versioning" section.
+const APP_VERSION = '1.2.2';
+document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
+const settingsVersionEl = document.getElementById('settings-app-version');
+if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
+
+function showView(name){
+  const isChat = name === 'chat';
+  thread.style.display = isChat ? 'flex' : 'none';
+  composerEl.style.display = isChat ? 'flex' : 'none';
+  if (banner) banner.style.display = (isChat && !signedIn) ? 'flex' : 'none';
+  settingsView.classList.toggle('open', name === 'settings');
+  profileView.classList.toggle('open', name === 'profile');
+  menuBtn.style.display = isChat ? 'block' : 'none';
+  backBtn.style.display = isChat ? 'none' : 'block';
+  hdrTitleEl.textContent = name === 'settings' ? 'Settings' : name === 'profile' ? 'Profile' : 'CREATOR BOOTH';
+  document.getElementById('hdr-version').style.display = isChat ? 'block' : 'none';
+  document.getElementById('hdr-right').style.display = isChat ? 'flex' : 'none';
+  if (isChat) updateHeaderState();
+}
+backBtn.addEventListener('click', () => showView(profileView.classList.contains('open') ? 'settings' : 'chat'));
+
+document.getElementById('row-profile').addEventListener('click', async () => {
+  await loadProfile();
+  const p = currentProfile || emptyProfile();
+  document.getElementById('profile-surname').value = p.surname || '';
+  document.getElementById('profile-othernames').value = p.other_names || '';
+  document.getElementById('profile-nickname').value = p.nickname || '';
+  document.getElementById('profile-usecase').value = p.use_case || '';
+  document.getElementById('profile-club').value = p.favorite_club || '';
+  document.getElementById('profile-notes').value = p.notes || '';
+  document.getElementById('profile-preferences').value = p.script_preferences || '';
+  const otherInput = document.getElementById('profile-referral-other');
+  document.querySelectorAll('#profile-referral-chips .chip-opt').forEach(b => {
+    b.classList.toggle('active', b.dataset.value === p.referral_source);
+  });
+  otherInput.style.display = p.referral_source === 'Other' ? 'block' : 'none';
+  otherInput.value = p.referral_other || '';
+  showView('profile');
+});
+document.querySelectorAll('#profile-referral-chips .chip-opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#profile-referral-chips .chip-opt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const otherInput = document.getElementById('profile-referral-other');
+    otherInput.style.display = btn.dataset.value === 'Other' ? 'block' : 'none';
+    if (btn.dataset.value === 'Other') otherInput.focus();
+  });
+});
+['row-voice','row-privacy','row-help'].forEach(id => {
+  document.getElementById(id).addEventListener('click', function(){
+    const original = this.querySelector('.chev').textContent;
+    this.querySelector('.chev').textContent = 'soon';
+    setTimeout(() => { this.querySelector('.chev').textContent = original; }, 1200);
+  });
+});
+
+// --- Mode pill: tap opens a picker; picking a mode updates the pipeline ---
+// Mode pill is now a static badge — its icon/label are already correct in the HTML, and with
+// only one mode left there's nothing left to wire up here.
+
+// Home quick-start cards: pre-fill a starter phrase and hand off to the composer for the
+// person to finish typing — same chat pipeline, no separate screen.
+document.querySelectorAll('.quickstart-card').forEach(card => {
+  card.addEventListener('click', () => {
+    input.value = card.dataset.prefix || '';
+    input.dispatchEvent(new Event('input'));
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
+});
+
+document.getElementById('row-logout').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  showView('chat');
+});
+document.getElementById('row-delete-account').addEventListener('click', async () => {
+  if (!confirm('Delete all your saved chats and personalization data? This cannot be undone.')) return;
+  if (currentUser){
+    await supabase.from('chats').delete().eq('user_id', currentUser.id); // messages cascade via FK
+    await supabase.from('profiles').delete().eq('user_id', currentUser.id);
+    await cacheClearAll();
+  } else {
+    localStorage.removeItem('cb_guest_chats');
+    localStorage.removeItem(GUEST_PROFILE_KEY);
+  }
+  currentProfile = emptyProfile();
+  chats = [];
+  currentChatId = null;
+  await createChat();
+  showView('chat');
+  await openChat(currentChatId);
+});
+document.getElementById('save-profile-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('save-profile-btn');
+  const selectedChip = document.querySelector('#profile-referral-chips .chip-opt.active');
+  const referral = selectedChip ? selectedChip.dataset.value : '';
+  btn.disabled = true;
+  await saveProfile({
+    surname: document.getElementById('profile-surname').value.trim(),
+    other_names: document.getElementById('profile-othernames').value.trim(),
+    nickname: document.getElementById('profile-nickname').value.trim(),
+    referral_source: referral,
+    referral_other: referral === 'Other' ? document.getElementById('profile-referral-other').value.trim() : '',
+    use_case: document.getElementById('profile-usecase').value.trim(),
+    favorite_club: document.getElementById('profile-club').value.trim(),
+    notes: document.getElementById('profile-notes').value.trim()
+  });
+  btn.disabled = false;
+  btn.classList.add('ready'); btn.textContent = 'Saved';
+  setTimeout(() => { btn.classList.remove('ready'); btn.textContent = 'Update Profile'; }, 1400);
+  if (!hasMessages()) refreshGreeting();
+});
+document.getElementById('save-prefs-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('save-prefs-btn');
+  btn.disabled = true;
+  await saveProfile({ script_preferences: document.getElementById('profile-preferences').value });
+  btn.disabled = false;
+  btn.classList.add('ready'); btn.textContent = 'Saved';
+  setTimeout(() => { btn.classList.remove('ready'); btn.textContent = 'Save Preferences'; }, 1400);
+});
+
+// --- Reusable confirmation modal (replaces browser confirm() for a consistent look) ---
+const modalOverlay = document.getElementById('modal-overlay');
+const modalMsg = document.getElementById('modal-msg');
+const modalCancel = document.getElementById('modal-cancel');
+const modalConfirm = document.getElementById('modal-confirm');
+function confirmDialog(message, confirmLabel){
+  modalMsg.textContent = message;
+  modalConfirm.textContent = confirmLabel || 'Confirm';
+  modalOverlay.classList.add('open');
+  return new Promise((resolve) => {
+    function cleanup(result){
+      modalOverlay.classList.remove('open');
+      modalCancel.removeEventListener('click', onCancel);
+      modalConfirm.removeEventListener('click', onConfirm);
+      resolve(result);
+    }
+    function onCancel(){ cleanup(false); }
+    function onConfirm(){ cleanup(true); }
+    modalCancel.addEventListener('click', onCancel);
+    modalConfirm.addEventListener('click', onConfirm);
+  });
+}
+
+// --- Incognito / temporary chat ---
+let temporaryMode = false;
+const incognitoBtn = document.getElementById('incognito-btn');
+const tempBanner = document.getElementById('temp-banner');
+const incognitoHero = document.getElementById('incognito-hero');
+const headerNewChatBtn = document.getElementById('header-newchat-btn');
+const headerExportBtn = document.getElementById('header-export-btn');
+const headerDotsWrap = document.getElementById('header-dots-wrap');
+const headerDotsBtn = document.getElementById('header-dots-btn');
+const dotsMenu = document.getElementById('dots-menu');
+const headerDeleteBtn = document.getElementById('header-delete-btn');
+
+function hasMessages(){ return thread.querySelectorAll('.msg').length > 0; }
+
+// Header shows one of three states: ghost toggle (empty thread) / +&dots (normal chat, has messages) / +&trash (incognito chat, has messages)
+// Export is available in every state that has messages, incognito included — it's exactly the
+// chat that's about to disappear that you'd most want a copy of.
+function updateHeaderState(){
+  const started = hasMessages();
+  incognitoBtn.style.display = started ? 'none' : 'block';
+  headerExportBtn.style.display = started ? 'block' : 'none';
+  headerNewChatBtn.style.display = started ? 'block' : 'none';
+  headerDotsWrap.style.display = (started && !temporaryMode) ? 'block' : 'none';
+  headerDeleteBtn.style.display = (started && temporaryMode) ? 'block' : 'none';
+  document.body.classList.toggle('incognito', temporaryMode);
+  // Centered-composer landing state — only while a chat is genuinely empty.
+  document.body.classList.toggle('new-chat', !started);
+}
+
+// --- Export chat: "Me: ... / Creator Booth: ..." transcript, as copy or PDF ---
+function transcriptSpeakerLabel(){
+  return (signedIn && currentUser && currentUser.email) ? currentUser.email.split('@')[0] : 'Me';
+}
+function buildTranscriptTurns(){
+  const meLabel = transcriptSpeakerLabel();
+  const turns = [];
+  thread.querySelectorAll('.msg').forEach(msgEl => {
+    if (msgEl.classList.contains('user')){
+      const t = msgEl.querySelector('.bubble-user-text');
+      if (t && t.textContent.trim()) turns.push({ speaker: meLabel, text: t.textContent.trim() });
+    } else if (msgEl.classList.contains('assistant')){
+      const b = msgEl.querySelector('.bubble-assistant');
+      const rawText = b ? stripMarkdown(bubbleRawText(b)).trim() : '';
+      if (rawText) turns.push({ speaker: 'Creator Booth', text: rawText });
+    }
+    // pipeline-in-progress messages have neither .bubble-user-text nor .bubble-assistant yet,
+    // and are skipped automatically since both querySelector calls come back null.
+  });
+  return turns;
+}
+function buildTranscriptText(){
+  return buildTranscriptTurns().map(t => `${t.speaker}:- ${t.text}`).join('\n\n');
+}
+
+const exportModalOverlay = document.getElementById('export-modal-overlay');
+const exportCopyBtn = document.getElementById('export-copy-btn');
+const exportPdfBtn = document.getElementById('export-pdf-btn');
+const exportCancelBtn = document.getElementById('export-cancel-btn');
+
+headerExportBtn.addEventListener('click', () => exportModalOverlay.classList.add('open'));
+exportCancelBtn.addEventListener('click', () => exportModalOverlay.classList.remove('open'));
+
+exportCopyBtn.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(buildTranscriptText());
+    exportCopyBtn.classList.add('done');
+    const original = exportCopyBtn.innerHTML;
+    exportCopyBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg> Copied';
+    setTimeout(() => { exportCopyBtn.classList.remove('done'); exportCopyBtn.innerHTML = original; exportModalOverlay.classList.remove('open'); }, 900);
+  } catch (e) {
+    exportCopyBtn.textContent = "Couldn't copy — check clipboard permission";
+  }
+});
+
+let jsPDFLoadPromise = null;
+function loadJsPDF(){
+  if (window.jspdf && window.jspdf.jsPDF) return Promise.resolve(window.jspdf.jsPDF);
+  if (!jsPDFLoadPromise){
+    jsPDFLoadPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload = () => resolve(window.jspdf.jsPDF);
+      s.onerror = () => reject(new Error('Could not load the PDF library — check your connection.'));
+      document.head.appendChild(s);
+    });
+  }
+  return jsPDFLoadPromise;
+}
+
+exportPdfBtn.addEventListener('click', async () => {
+  const original = exportPdfBtn.innerHTML;
+  exportPdfBtn.innerHTML = original.replace('Download as PDF', 'Preparing PDF…');
+  try {
+    const JsPDF = await loadJsPDF();
+    const doc = new JsPDF({ unit: 'pt', format: 'a4' });
+    const marginX = 44, maxWidth = 507, lineHeight = 15, pageBottom = 780;
+    let y = 54;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
+    doc.text('Creator Booth — Chat Export', marginX, y);
+    y += 18;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+    doc.setTextColor(120);
+    doc.text(new Date().toLocaleString(), marginX, y);
+    doc.setTextColor(20);
+    y += 26;
+
+    buildTranscriptTurns().forEach(turn => {
+      if (y > pageBottom){ doc.addPage(); y = 54; }
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
+      doc.text(turn.speaker + ':-', marginX, y);
+      y += lineHeight;
+      doc.setFont('helvetica', 'normal');
+      doc.splitTextToSize(turn.text, maxWidth).forEach(line => {
+        if (y > pageBottom){ doc.addPage(); y = 54; }
+        doc.text(line, marginX, y);
+        y += lineHeight;
+      });
+      y += 12;
+    });
+
+    doc.save('creator-booth-chat.pdf');
+    exportModalOverlay.classList.remove('open');
+    exportPdfBtn.innerHTML = original;
+  } catch (e) {
+    exportPdfBtn.textContent = e.message || 'PDF export failed — try again';
+    setTimeout(() => { exportPdfBtn.innerHTML = original; }, 2400);
+  }
+});
+
+function showIncognitoHero(){
+  hero.style.display = 'none';
+  incognitoHero.style.display = 'flex';
+}
+function showNormalHero(){
+  incognitoHero.style.display = 'none';
+  hero.style.display = 'flex';
+  refreshGreeting();
+}
+
+incognitoBtn.addEventListener('click', async () => {
+  // Starting incognito always begins a brand new chat, per Claude's own behavior.
+  temporaryMode = true;
+  currentChatId = null;
+  lastAssistantMsgEl = null;
+  lastUserMsgEl = null;
+  thread.querySelectorAll('.msg').forEach(el => el.remove());
+  resetSpacer();
+  tempBanner.style.display = 'block';
+  incognitoBtn.classList.add('active');
+  showIncognitoHero();
+  updateHeaderState();
+  drawer.classList.remove('open'); overlay.classList.remove('open');
+});
+
+async function exitIncognitoToNormalChat(){
+  temporaryMode = false;
+  tempBanner.style.display = 'none';
+  incognitoBtn.classList.remove('active');
+  thread.querySelectorAll('.msg').forEach(el => el.remove());
+  await createChat();
+  showNormalHero();
+  updateHeaderState();
+}
+
+async function clearIncognitoStayIncognito(){
+  currentChatId = null;
+  lastAssistantMsgEl = null;
+  lastUserMsgEl = null;
+  thread.querySelectorAll('.msg').forEach(el => el.remove());
+  resetSpacer();
+  showIncognitoHero();
+  updateHeaderState();
+}
+
+headerNewChatBtn.addEventListener('click', async () => {
+  if (!temporaryMode){
+    await createChat();
+    thread.querySelectorAll('.msg').forEach(el => el.remove());
+    showNormalHero();
+    updateHeaderState();
+    return;
+  }
+  const ok = await confirmDialog("Starting a new chat will delete this incognito conversation — it was never saved. Continue?", 'Start new chat');
+  if (ok) await exitIncognitoToNormalChat();
+});
+
+headerDeleteBtn.addEventListener('click', async () => {
+  const ok = await confirmDialog('Delete this incognito conversation? This can\'t be undone.', 'Delete');
+  if (ok) await clearIncognitoStayIncognito();
+});
+
+headerDotsBtn.addEventListener('click', (e) => { e.stopPropagation(); dotsMenu.classList.toggle('open'); });
+document.addEventListener('click', (e) => { if (!dotsMenu.contains(e.target) && e.target !== headerDotsBtn) dotsMenu.classList.remove('open'); });
+
+document.getElementById('dots-rename').addEventListener('click', async () => {
+  dotsMenu.classList.remove('open');
+  const next = window.prompt('Rename chat', currentChatTitle || '');
+  if (!next || !next.trim()) return;
+  currentChatTitle = next.trim();
+  if (currentUser) await supabase.from('chats').update({ title: currentChatTitle }).eq('id', currentChatId);
+  else { const list = loadGuestChats(); const c = list.find(c => c.id === currentChatId); if (c){ c.title = currentChatTitle; saveGuestChats(list); } }
+  await refreshChatList();
+});
+document.getElementById('dots-delete').addEventListener('click', async () => {
+  dotsMenu.classList.remove('open');
+  const ok = await confirmDialog('Delete this chat? This can\'t be undone.', 'Delete');
+  if (!ok) return;
+  if (currentUser){ await supabase.from('chats').delete().eq('id', currentChatId); cacheDeleteByChat(currentChatId); }
+  else { const list = loadGuestChats().filter(c => c.id !== currentChatId); saveGuestChats(list); }
+  currentChatId = null;
+  await createChat();
+  thread.querySelectorAll('.msg').forEach(el => el.remove());
+  showNormalHero();
+  updateHeaderState();
+});
+
+// --- Data layer: Supabase for signed-in users, localStorage fallback for guests ---
+let currentUser = null;
+let signedIn = false;
+let currentProfile = null;   // personalization survey data: { surname, other_names, nickname, referral_source, referral_other, use_case, favorite_club, notes, onboarded }
+let chats = [];              // sidebar list: [{id, title}]
+let currentChatId = null;
+let currentChatTitle = 'New chat';
+
+function loadGuestChats(){ return JSON.parse(localStorage.getItem('cb_guest_chats') || '[]'); }
+function saveGuestChats(list){ localStorage.setItem('cb_guest_chats', JSON.stringify(list)); }
+
+/* ------------------------------------------------------------------ */
+/* Local cache (IndexedDB) for signed-in users — a READ CACHE of their */
+/* Supabase chats/messages, not a replacement for them. Supabase stays */
+/* the source of truth (so signing in on a second phone still works);   */
+/* this only exists so chats/messages are still readable with no       */
+/* connection. Guests already store everything in localStorage and     */
+/* never touch this. IndexedDB (not localStorage) because its quota is */
+/* realistically hundreds of MB+ rather than ~5-10MB, on both the       */
+/* website and inside the Android app (same WebView storage engine).   */
+/*                                                                      */
+/* Scoped per account on purpose: the whole DB is wiped whenever the    */
+/* signed-in user changes (see the auth handler) — including when a    */
+/* different person signs in on the same device — rather than trying   */
+/* to filter a shared cache by user id and risk one person's cached     */
+/* chats leaking into another's session.                               */
+/* ------------------------------------------------------------------ */
+const CACHE_DB_NAME = 'cb_cache';
+const CACHE_DB_VERSION = 1;
+let cacheDbPromise = null;
+function openCacheDb(){
+  if (cacheDbPromise) return cacheDbPromise;
+  cacheDbPromise = new Promise((resolve) => {
+    if (!('indexedDB' in window)) { resolve(null); return; }
+    let req;
+    try { req = indexedDB.open(CACHE_DB_NAME, CACHE_DB_VERSION); }
+    catch (e) { resolve(null); return; }
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('chats')) db.createObjectStore('chats', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('messages')){
+        const st = db.createObjectStore('messages', { keyPath: 'id' });
+        st.createIndex('chat_id', 'chat_id');
+      }
+      if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta', { keyPath: 'key' });
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => resolve(null); // best-effort — a cache failure should never block the app
+  });
+  return cacheDbPromise;
+}
+function cacheTx(storeNames, mode){
+  return openCacheDb().then(db => db ? db.transaction(storeNames, mode) : null);
+}
+async function cacheGetOne(storeName, key){
+  const db = await openCacheDb();
+  if (!db) return null;
+  return new Promise(resolve => {
+    try {
+      const req = db.transaction(storeName, 'readonly').objectStore(storeName).get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    } catch (e) { resolve(null); }
+  });
+}
+async function cacheGetAll(storeName, indexName, value){
+  const db = await openCacheDb();
+  if (!db) return [];
+  return new Promise(resolve => {
+    try {
+      const store = db.transaction(storeName, 'readonly').objectStore(storeName);
+      const target = indexName ? store.index(indexName) : store;
+      const req = value !== undefined ? target.getAll(value) : target.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve([]);
+    } catch (e) { resolve([]); }
+  });
+}
+async function cachePutAll(storeName, rows){
+  if (!rows || !rows.length) return;
+  const db = await openCacheDb();
+  if (!db) return;
+  return new Promise(resolve => {
+    try {
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      rows.forEach(r => store.put(r));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch (e) { resolve(); }
+  });
+}
+async function cacheDeleteByChat(chatId){
+  const msgs = await cacheGetAll('messages', 'chat_id', chatId);
+  const db = await openCacheDb();
+  if (!db || !msgs.length) return;
+  return new Promise(resolve => {
+    try {
+      const tx = db.transaction(['chats', 'messages'], 'readwrite');
+      tx.objectStore('chats').delete(chatId);
+      const store = tx.objectStore('messages');
+      msgs.forEach(m => store.delete(m.id));
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch (e) { resolve(); }
+  });
+}
+async function cacheGetMeta(key){
+  const db = await openCacheDb();
+  if (!db) return null;
+  return new Promise(resolve => {
+    try {
+      const req = db.transaction('meta', 'readonly').objectStore('meta').get(key);
+      req.onsuccess = () => resolve(req.result ? req.result.value : null);
+      req.onerror = () => resolve(null);
+    } catch (e) { resolve(null); }
+  });
+}
+async function cacheSetMeta(key, value){
+  const db = await openCacheDb();
+  if (!db) return;
+  return new Promise(resolve => {
+    try {
+      const tx = db.transaction('meta', 'readwrite');
+      tx.objectStore('meta').put({ key, value });
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch (e) { resolve(); }
+  });
+}
+async function cacheClearAll(){
+  const db = await openCacheDb();
+  if (!db) return;
+  return new Promise(resolve => {
+    try {
+      const tx = db.transaction(['chats', 'messages', 'meta'], 'readwrite');
+      tx.objectStore('chats').clear();
+      tx.objectStore('messages').clear();
+      tx.objectStore('meta').clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    } catch (e) { resolve(); }
+  });
+}
+// Called once per sign-in, right after we know who's signed in: wipes the whole cache if it
+// belonged to a different account (or no one), so a second person on this device never sees
+// the first person's cached chats. A no-op if the same account is still signed in.
+async function ensureCacheOwnedBy(userId){
+  const owner = await cacheGetMeta('owner');
+  if (owner === userId) return;
+  await cacheClearAll();
+  await cacheSetMeta('owner', userId);
+}
+
+// --- Personalization profile: Supabase-backed for signed-in users (syncs across devices),
+// localStorage fallback for guests. Powers the onboarding survey, the Profile settings screen,
+// and the name used in greetings. Best-effort: if the `profiles` table doesn't exist yet
+// (see README for the SQL), profile features quietly no-op rather than breaking sign-in.
+const GUEST_PROFILE_KEY = 'cb_guest_profile';
+function emptyProfile(){
+  return { surname: '', other_names: '', nickname: '', referral_source: '', referral_other: '', use_case: '', favorite_club: '', notes: '', script_preferences: '', onboarded: false };
+}
+function loadGuestProfile(){
+  try { return { ...emptyProfile(), ...JSON.parse(localStorage.getItem(GUEST_PROFILE_KEY) || '{}') }; }
+  catch (e) { return emptyProfile(); }
+}
+function saveGuestProfile(profile){ localStorage.setItem(GUEST_PROFILE_KEY, JSON.stringify(profile)); }
+
+async function loadProfile(){
+  if (currentUser){
+    try {
+      const { data, error } = await supabase.from('profiles').select('*').eq('user_id', currentUser.id).maybeSingle();
+      if (error) throw error;
+      currentProfile = data ? { ...emptyProfile(), ...data } : null;
+    } catch (e) {
+      currentProfile = null; // table missing or query failed — treat as "no profile yet", don't block sign-in
+    }
+  } else {
+    currentProfile = loadGuestProfile();
+  }
+  return currentProfile;
+}
+
+// fields: plain object with the editable columns above (not including onboarded/user_id)
+async function saveProfile(fields, opts = {}){
+  const merged = { ...emptyProfile(), ...(currentProfile || {}), ...fields };
+  if (opts.onboarded) merged.onboarded = true;
+  if (currentUser){
+    try {
+      const row = { user_id: currentUser.id, surname: merged.surname, other_names: merged.other_names, nickname: merged.nickname,
+        referral_source: merged.referral_source, referral_other: merged.referral_other, use_case: merged.use_case,
+        favorite_club: merged.favorite_club, notes: merged.notes, script_preferences: merged.script_preferences,
+        onboarded: merged.onboarded, updated_at: new Date().toISOString() };
+      const { error } = await supabase.from('profiles').upsert(row, { onConflict: 'user_id' });
+      if (error) throw error;
+    } catch (e) {
+      // Best-effort: personalization isn't critical-path, so a failed save shouldn't block the UI.
+    }
+  } else {
+    saveGuestProfile(merged);
+  }
+  currentProfile = merged;
+  return merged;
+}
+
+async function createChat(){
+  lastAssistantMsgEl = null;
+  if (currentUser){
+    try {
+      const { data, error } = await supabase.from('chats').insert({ user_id: currentUser.id }).select('id,title').single();
+      if (error) throw error;
+      currentChatId = data.id; currentChatTitle = data.title;
+      cachePutAll('chats', [{ ...data, user_id: currentUser.id }]);
+      await refreshChatList();
+      return data;
+    } catch (e) {
+      console.error('createChat failed', e);
+      showToast(isOffline() ? "Can't start a new chat while offline" : "Couldn't start a new chat — try again");
+      return null;
+    }
+  } else {
+    const list = loadGuestChats();
+    const chat = { id: 'g' + Date.now(), title: 'New chat', messages: [] };
+    list.unshift(chat);
+    saveGuestChats(list);
+    currentChatId = chat.id; currentChatTitle = chat.title;
+    await refreshChatList();
+    return chat;
+  }
+}
+
+newChatBtn.addEventListener('click', async () => {
+  if (temporaryMode){
+    const ok = await confirmDialog("Starting a new chat will delete this incognito conversation — it was never saved. Continue?", 'Start new chat');
+    if (!ok) return;
+    temporaryMode = false;
+    tempBanner.style.display = 'none';
+    incognitoBtn.classList.remove('active');
+  }
+  await createChat();
+  thread.querySelectorAll('.msg').forEach(el => el.remove());
+  incognitoHero.style.display = 'none';
+  hero.style.display = 'flex';
+  refreshGreeting();
+  updateHeaderState();
+  drawer.classList.remove('open'); overlay.classList.remove('open');
+});
+
+function renderAccountArea(){
+  const emailEl = document.getElementById('settings-email');
+  if (emailEl) emailEl.textContent = signedIn ? currentUser.email : 'Guest — not signed in';
+  if (signedIn){
+    const label = (currentUser.email || '?')[0].toUpperCase();
+    drawerAccount.innerHTML = `
+      <div class="account-row" id="account-row">
+        <div class="avatar">${label}</div>
+        <div class="account-name">${currentUser.email}</div>
+        <svg class="hdr-icon" id="settings-gear" style="width:17px;height:17px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>`;
+    if (banner) banner.style.display = 'none';
+    document.getElementById('account-row').addEventListener('click', () => { drawer.classList.remove('open'); overlay.classList.remove('open'); showView('settings'); });
+    return;
+  }
+  if (banner) banner.style.display = 'flex';
+  drawerAccount.innerHTML = `<button class="signin-btn" id="open-signin">Sign in</button>`;
+  document.getElementById('open-signin').addEventListener('click', () => {
+    drawer.classList.remove('open'); overlay.classList.remove('open');
+    openAuthView();
+  });
+}
+
+// --- Full-screen auth take-over (Google + email magic link) ---
+const authView = document.getElementById('auth-view');
+const authClose = document.getElementById('auth-close');
+const authEmailInput = document.getElementById('auth-email-input');
+const authEmailSend = document.getElementById('auth-email-send');
+const authNote = document.getElementById('auth-note');
+const authScreenMain = document.getElementById('auth-screen-main');
+const authScreenCheckEmail = document.getElementById('auth-screen-checkemail');
+const checkEmailAddress = document.getElementById('check-email-address');
+const checkEmailBack = document.getElementById('check-email-back');
+
+function openAuthView(){
+  authNote.textContent = '';
+  authEmailInput.value = '';
+  authEmailSend.disabled = true;
+  authScreenMain.style.display = 'flex';
+  authScreenCheckEmail.style.display = 'none';
+  authView.classList.add('open');
+}
+function closeAuthView(){ authView.classList.remove('open'); }
+
+// --- Onboarding survey: shown once, right after a genuinely new sign-in whose profile isn't
+// marked onboarded yet. Guests never see it (there's no account to attach it to) — they get
+// the same fields later via Profile settings instead, saved to this device only.
+const onboardView = document.getElementById('onboard-view');
+const obSurname = document.getElementById('ob-surname');
+const obOtherNames = document.getElementById('ob-othernames');
+const obNickname = document.getElementById('ob-nickname');
+const obReferralChips = document.getElementById('ob-referral-chips');
+const obReferralOther = document.getElementById('ob-referral-other');
+const obUseCase = document.getElementById('ob-usecase');
+const obClub = document.getElementById('ob-club');
+const obNotes = document.getElementById('ob-notes');
+const obError = document.getElementById('ob-error');
+const obContinue = document.getElementById('ob-continue');
+const obSkip = document.getElementById('ob-skip');
+let obSelectedReferral = '';
+
+function openOnboarding(){
+  obSurname.value = ''; obOtherNames.value = ''; obNickname.value = '';
+  obUseCase.value = ''; obClub.value = ''; obNotes.value = '';
+  obReferralOther.value = ''; obReferralOther.style.display = 'none';
+  obSelectedReferral = '';
+  obError.textContent = '';
+  obReferralChips.querySelectorAll('.chip-opt').forEach(b => b.classList.remove('active'));
+  onboardView.classList.add('open');
+}
+function closeOnboarding(){ onboardView.classList.remove('open'); }
+
+obReferralChips.querySelectorAll('.chip-opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    obReferralChips.querySelectorAll('.chip-opt').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    obSelectedReferral = btn.dataset.value;
+    obReferralOther.style.display = obSelectedReferral === 'Other' ? 'block' : 'none';
+    if (obSelectedReferral === 'Other') obReferralOther.focus();
+  });
+});
+
+async function submitOnboarding(){
+  const surname = obSurname.value.trim();
+  if (!surname){ obError.textContent = 'Surname is required — or tap "Skip for now".'; obSurname.focus(); return; }
+  obContinue.disabled = true; obContinue.textContent = 'Saving…';
+  await saveProfile({
+    surname,
+    other_names: obOtherNames.value.trim(),
+    nickname: obNickname.value.trim(),
+    referral_source: obSelectedReferral,
+    referral_other: obSelectedReferral === 'Other' ? obReferralOther.value.trim() : '',
+    use_case: obUseCase.value.trim(),
+    favorite_club: obClub.value.trim(),
+    notes: obNotes.value.trim()
+  }, { onboarded: true });
+  obContinue.disabled = false; obContinue.textContent = 'Continue';
+  closeOnboarding();
+  if (!hasMessages()) refreshGreeting();
+}
+obContinue.addEventListener('click', submitOnboarding);
+obSkip.addEventListener('click', async () => {
+  await saveProfile({}, { onboarded: true }); // mark as seen so it doesn't nag again; fields stay blank
+  closeOnboarding();
+});
+
+
+authClose.addEventListener('click', closeAuthView);
+authEmailInput.addEventListener('input', () => { authEmailSend.disabled = authEmailInput.value.trim().length === 0; });
+authEmailInput.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !authEmailSend.disabled) authEmailSend.click(); });
+checkEmailBack.addEventListener('click', () => {
+  authScreenCheckEmail.style.display = 'none';
+  authScreenMain.style.display = 'flex';
+  authEmailInput.focus();
+});
+
+document.getElementById('auth-google-btn').addEventListener('click', async () => {
+  if (NATIVE){
+    // Inside the app Google must open in the phone's real browser (Google blocks sign-in inside
+    // an embedded WebView). The browser sends the user back via the com.creatorbooth.app:// link,
+    // which handleAuthDeepLink() below picks up.
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google', options: { redirectTo: APP_AUTH_REDIRECT, skipBrowserRedirect: true }
+      });
+      if (error) throw error;
+      const Browser = nativePlugin('Browser');
+      if (!Browser) throw new Error('Browser plugin unavailable');
+      await Browser.open({ url: data.url });
+    } catch (err) {
+      authNote.textContent = 'Could not start Google sign-in: ' + (err && err.message ? err.message : err);
+    }
+    return;
+  }
+  await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+});
+authEmailSend.addEventListener('click', async () => {
+  const email = authEmailInput.value.trim();
+  if (!email) return;
+  authEmailSend.disabled = true;
+  const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: NATIVE ? APP_AUTH_REDIRECT : window.location.href } });
+  if (error){
+    authNote.textContent = error.message;
+    authEmailSend.disabled = false;
+    return;
+  }
+  // Full-screen confirmation, same pattern as Claude's own "check your email" screen —
+  // rather than a small note buried under the input.
+  checkEmailAddress.textContent = email;
+  authScreenMain.style.display = 'none';
+  authScreenCheckEmail.style.display = 'flex';
+});
+
+async function refreshChatList(){
+  if (currentUser){
+    try {
+      const { data, error } = await supabase.from('chats').select('id,title')
+        .eq('user_id', currentUser.id).order('created_at', { ascending: false });
+      if (error) throw error;
+      chats = data || [];
+      cachePutAll('chats', chats.map(c => ({ ...c, user_id: currentUser.id }))); // write-through, best-effort
+    } catch (e) {
+      // Offline or Supabase unreachable — read whatever this account's cache last saw instead
+      // of leaving the drawer empty. Still the person's own chats; just possibly stale.
+      console.warn('refreshChatList: Supabase unreachable, using local cache', e);
+      const cached = await cacheGetAll('chats');
+      chats = cached.filter(c => c.user_id === currentUser.id).map(c => ({ id: c.id, title: c.title }));
+    }
+  } else {
+    chats = loadGuestChats().map(c => ({ id: c.id, title: c.title }));
+  }
+  drawerChats.innerHTML = '';
+  chats.forEach(c => {
+    const el = document.createElement('div');
+    const pending = c.title === 'Generating title…';
+    el.className = 'drawer-chat' + (c.id === currentChatId ? ' active' : '') + (pending ? ' pending' : '');
+    el.textContent = c.title;
+    el.onclick = () => openChat(c.id);
+    drawerChats.appendChild(el);
+  });
+}
+
+let openChatToken = 0; // stale-response guard: if a newer openChat() call starts before an older one's fetch resolves, the older one's render is dropped
+async function openChat(chatId){
+  temporaryMode = false;
+  tempBanner.style.display = 'none';
+  incognitoBtn.classList.remove('active');
+  incognitoHero.style.display = 'none';
+  currentChatId = chatId;
+  const myToken = ++openChatToken;
+  thread.querySelectorAll('.msg').forEach(el => el.remove());
+  resetSpacer();
+  lastAssistantMsgEl = null;
+  lastUserMsgEl = null;
+  let messages = [];
+  if (currentUser){
+    const chatRow = chats.find(c => c.id === chatId);
+    currentChatTitle = chatRow ? chatRow.title : 'New chat';
+    try {
+      const { data, error } = await supabase.from('messages').select('*').eq('chat_id', chatId).order('created_at', { ascending: true });
+      if (error) throw error;
+      messages = data || [];
+      cachePutAll('messages', messages.map(m => ({ ...m, chat_id: chatId }))); // write-through, best-effort
+    } catch (e) {
+      console.warn('openChat: Supabase unreachable, using local cache', e);
+      messages = await cacheGetAll('messages', 'chat_id', chatId);
+      messages.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+    }
+  } else {
+    const list = loadGuestChats();
+    const chat = list.find(c => c.id === chatId);
+    currentChatTitle = chat ? chat.title : 'New chat';
+    messages = chat ? chat.messages : [];
+  }
+  if (myToken !== openChatToken) return; // a newer call has since taken over — don't render stale data
+  hero.style.display = messages.length ? 'none' : 'flex';
+  if (!messages.length) refreshGreeting();
+
+  // Which reply is "the last one" (gets Regenerate + footer)? Only if it actually answers the
+  // final message — if the chat ends on a user message with no reply (an interrupted
+  // generation), that message gets its own "Get a reply" block instead, and no older answer is
+  // ever wired to regenerate for the wrong question.
+  let lastAssistantIdx = -1, lastUserIdx = -1;
+  messages.forEach((m, i) => { if (m.role === 'user') lastUserIdx = i; else lastAssistantIdx = i; });
+  const endsOnUnanswered = messages.length > 0 && messages[messages.length - 1].role === 'user';
+  const rowRefFor = (i) => currentUser
+    ? { chatId, type: 'supabase', id: messages[i].id }
+    : { chatId, type: 'guest', index: i };
+
+  let precedingUserText = '';
+  let precedingUserImgs = [];
+  messages.forEach((m, i) => {
+    if (m.role === 'user'){
+      const atts = attachmentsFromMedia(m.media);
+      const isLastUser = i === lastUserIdx;
+      const el = renderUserBubble(m.content, atts.map(a => a.dataUrl), isLastUser, m.created_at);
+      msgRowRef.set(el, rowRefFor(i));
+      if (isLastUser) lastUserMsgEl = el;
+      precedingUserText = m.content;
+      precedingUserImgs = atts;
+    } else {
+      const isLast = (i === lastAssistantIdx) && !endsOnUnanswered;
+      const el = renderAssistantBubble(m.content, m.media || [], m.created_at);
+      el.insertAdjacentHTML('beforeend', buildMsgActionsHtml(isLast));
+      // Each reply is wired to the user message that came right before IT — not the chat's last one.
+      wireMsgActions(el, m.content, precedingUserText, precedingUserImgs, isLast);
+      msgRowRef.set(el, rowRefFor(i));
+      if (m.feedback === 'up') el.querySelector('[data-action="up"]').classList.add('active');
+      if (m.feedback === 'down') el.querySelector('[data-action="down"]').classList.add('active');
+      if (isLast) lastAssistantMsgEl = el;
+    }
+  });
+  if (endsOnUnanswered) renderOrphanReply(precedingUserText, precedingUserImgs);
+
+  await refreshChatList();
+  updateHeaderState();
+  drawer.classList.remove('open'); overlay.classList.remove('open');
+  scrollDown();
+}
+
+// Every rendered message remembers the storage row it lives in (Supabase id, or a guest chat's
+// array index), keyed by its DOM element. Every update-in-place — regenerate, edit, thumbs —
+// goes through THIS, never through a global "last row" pointer. The old pointer could end up
+// aimed at the wrong row (after a failed insert, or after a reload) and silently overwrite an
+// older message with a newer answer.
+const msgRowRef = new WeakMap();
+
+// Monotonic client-side timestamps: message order in the database follows the order messages
+// were CREATED on screen, not when each network request happened to land.
+let lastTs = 0;
+function nextTimestamp(){ lastTs = Math.max(Date.now(), lastTs + 1); return new Date(lastTs).toISOString(); }
+
+// Returns: a row ref on success · null if intentionally not saved (incognito) · false on failure.
+async function saveMessage(role, content, media = [], opts = {}){
+  if (temporaryMode) return null;
+  if (!currentChatId) await createChat();
+  const chatId = currentChatId;
+  const createdAt = opts.createdAt || nextTimestamp();
+  const target = (opts.replaceRef && opts.replaceRef.chatId === chatId) ? opts.replaceRef : null;
+  let ref = null;
+
+  if (currentUser){
+    try {
+      if (target){
+        const { error } = await supabase.from('messages').update({ content, media }).eq('id', target.id);
+        if (error){ console.warn('Message update failed', error); return false; }
+        ref = target;
+      } else {
+        let row = null;
+        for (let attempt = 0; attempt < 2 && !row; attempt++){
+          if (attempt) await new Promise(r => setTimeout(r, 1200));
+          const res = await supabase.from('messages').insert({ chat_id: chatId, role, content, media, created_at: createdAt }).select('id').single();
+          if (res.error) console.warn('Message insert failed', res.error); else row = res.data;
+        }
+        if (!row) return false;
+        ref = { chatId, type: 'supabase', id: row.id };
+      }
+      if (role === 'user' && currentChatTitle === 'New chat'){
+        currentChatTitle = 'Generating title…';
+        await supabase.from('chats').update({ title: currentChatTitle }).eq('id', chatId);
+      }
+      // A replace (edit/regenerate) only changes content/media in Supabase — feedback on that
+      // row is untouched there, so the cache write has to carry the existing cached feedback
+      // forward too, or the offline-read fallback would incorrectly show it as cleared.
+      const existingFeedback = target ? ((await cacheGetOne('messages', target.id)) || {}).feedback || null : null;
+      cachePutAll('messages', [{ id: ref.id, chat_id: chatId, role, content, media, created_at: createdAt, feedback: existingFeedback }]);
+    } catch (e) {
+      // A genuine network failure (offline, DNS hiccup) throws here rather than resolving with
+      // an { error } object — without this catch, that exception would go unhandled and the
+      // message would silently hang with no warning and no queued retry at all.
+      console.warn('Message save failed (network)', e);
+      return false;
+    }
+  } else {
+    try {
+      const list = loadGuestChats();
+      const chat = list.find(c => c.id === chatId);
+      if (!chat) return false;
+      if (target && target.type === 'guest' && chat.messages[target.index]){
+        chat.messages[target.index] = { ...chat.messages[target.index], role, content, media };
+        ref = target;
+      } else {
+        chat.messages.push({ role, content, media, created_at: createdAt });
+        ref = { chatId, type: 'guest', index: chat.messages.length - 1 };
+      }
+      if (role === 'user' && chat.title === 'New chat'){ chat.title = 'Generating title…'; currentChatTitle = chat.title; }
+      saveGuestChats(list);
+    } catch (e) { console.warn('Guest save failed', e); return false; }
+  }
+  await refreshChatList();
+  return ref;
+}
+
+// Real chat titles instead of "first 40 characters of your message" — a lightweight, tool-free
+// Gemini call summarizes the exchange into a short title once the first reply actually lands.
+// Fire-and-forget: never blocks the UI, and best-effort (a failed call just leaves the chat
+// showing "Generating title…", which is an honest enough fallback if titling quietly fails).
+async function generateChatTitle(userText, assistantText){
+  try {
+    const res = await fetch(API_ORIGIN + '/api/gemini', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: `User: ${userText}\n\nAssistant: ${(assistantText || '').slice(0, 400)}` }] }],
+        system_instruction: { parts: [{ text: 'Write a short chat title (2-5 words, plain text, no quotes, no trailing punctuation) summarizing what this exchange is about — e.g. "Barcelona vs Madrid recap", "Pedri player scouting", "Man City manager check". Respond with ONLY the title, nothing else.' }] }
+      })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const cand = data && data.candidates && data.candidates[0];
+    const parts = cand && cand.content && cand.content.parts;
+    let title = parts ? parts.map(p => p.text || '').join('').trim() : '';
+    title = title.replace(/^["'`]+|["'`]+$/g, '').replace(/[.!]+$/, '').slice(0, 60);
+    return title || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function maybeGenerateChatTitle(userText, resultText){
+  if (currentChatTitle !== 'Generating title…') return; // already titled, or not the first exchange
+  const chatIdAtStart = currentChatId;
+  const title = await generateChatTitle(userText, resultText);
+  if (!title || currentChatId !== chatIdAtStart) return; // failed, or the person switched chats meanwhile
+  currentChatTitle = title;
+  if (currentUser){
+    await supabase.from('chats').update({ title }).eq('id', chatIdAtStart);
+  } else {
+    const list = loadGuestChats();
+    const chat = list.find(c => c.id === chatIdAtStart);
+    if (chat){ chat.title = title; saveGuestChats(list); }
+  }
+  await refreshChatList();
+}
+
+// Supabase fires onAuthStateChange more than once for the same signed-in session
+// (INITIAL_SESSION, then SIGNED_IN, then periodic TOKEN_REFRESHED) — if each firing
+// re-ran the full chat-loading flow, overlapping async calls could interleave and
+// double-render every message. Only reload when the user actually changed.
+let lastAuthUserId; // undefined until the first event fires
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  const newUserId = session?.user?.id || null;
+  currentUser = session?.user || null;
+  signedIn = !!currentUser;
+  if (signedIn) closeAuthView();
+
+  if (newUserId === lastAuthUserId){
+    // Same user as last time (e.g. a token refresh) — just keep the account UI in sync,
+    // don't touch the chat list or thread.
+    renderAccountArea();
+    return;
+  }
+  lastAuthUserId = newUserId;
+
+  renderAccountArea();
+  await ensureCacheOwnedBy(newUserId); // wipes the local cache if it belonged to someone else (or no one)
+  await loadProfile();
+  chats = [];
+  currentChatId = null;
+  await refreshChatList();
+  if (!chats.length) await createChat();
+  else currentChatId = chats[0].id;
+  await openChat(currentChatId);
+  // Only ever prompted for a real signed-in account, once, right after a genuinely new
+  // session — never for guests, and never again once a profile row is marked onboarded.
+  // Prompted whenever there's no profile row yet, OR there is one but onboarded is still false
+  // — covers brand-new sign-ups AND every pre-existing account that predates this feature,
+  // since those accounts have no profiles row at all (loadProfile returns null for them).
+  if (signedIn && (!currentProfile || !currentProfile.onboarded)) openOnboarding();
+});
+
+// --- Rendering ---
+function scrollDown(){ thread.scrollTop = thread.scrollHeight; }
+// Soft version used while a reply is being anchored/typed out: only actually scrolls if the
+// view is already close to the bottom, so it doesn't fight scrollNewMessageToTop's anchor —
+// once growing content genuinely reaches the fold, it naturally starts following again.
+function scrollDownIfNear(){
+  const gap = thread.scrollHeight - thread.scrollTop - thread.clientHeight;
+  if (gap < 140) thread.scrollTop = thread.scrollHeight;
+}
+// Spacer that always sits AFTER the last message — every message is inserted before it (see
+// appendToThread). Its height is recomputed so the newest user message can be scrolled to the
+// top of the view with blank room underneath for the reply to fill in; as the reply grows the
+// spacer shrinks to nothing, so there is never a permanent void. (v1.6.0 shipped this with two
+// bugs: messages were appended AFTER the spacer, pushing them down into blank space, and its
+// height was never reset on a new chat — both fixed here.)
+let spacerAnchor = null;
+function updateSpacer(){
+  if (!spacerAnchor || !spacerAnchor.isConnected){ scrollSpacer.style.height = '0px'; return; }
+  const tTop = thread.getBoundingClientRect().top;
+  const aTop = spacerAnchor.getBoundingClientRect().top - tTop + thread.scrollTop;
+  const sTop = scrollSpacer.getBoundingClientRect().top - tTop + thread.scrollTop;
+  const needed = Math.max(0, thread.clientHeight - 14 - (sTop - aTop));
+  scrollSpacer.style.height = needed + 'px';
+}
+function resetSpacer(){ spacerAnchor = null; scrollSpacer.style.height = '0px'; }
+function appendToThread(el){ thread.insertBefore(el, scrollSpacer); }
+function scrollNewMessageToTop(msgEl){
+  spacerAnchor = msgEl;
+  updateSpacer();
+  requestAnimationFrame(() => {
+    const tTop = thread.getBoundingClientRect().top;
+    const aTop = msgEl.getBoundingClientRect().top - tTop + thread.scrollTop;
+    thread.scrollTop = Math.max(0, aTop - 14);
+  });
+}
+window.addEventListener('resize', updateSpacer);
+
+// ---- Lightweight markdown: enough structure to make research answers readable on a phone
+// (paragraphs, bullets, numbered steps, bold, short headings). Everything is HTML-escaped FIRST,
+// then only our own tags are added, so model output can never inject markup. ----
+function renderMarkdown(src, streaming){
+  let text = String(src == null ? '' : src).replace(/\r\n/g, '\n');
+  if (streaming && ((text.match(/\*\*/g) || []).length % 2)) text += '**'; // don't flash a raw "**" mid-typing
+  const inline = (t) => escapeHtml(t)
+    .replace(/\*\*([^*\n]+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/(^|[\s(])\*([^*\s][^*\n]*?)\*(?=[\s).,!?:;]|$)/g, '$1<em>$2</em>');
+  const out = [];
+  let para = [], list = null;
+  const flushPara = () => { if (para.length){ out.push('<p>' + para.map(inline).join('<br>') + '</p>'); para = []; } };
+  const flushList = () => { if (list){ out.push('<' + list.type + '>' + list.items.map(i => '<li>' + inline(i) + '</li>').join('') + '</' + list.type + '>'); list = null; } };
+  text.split('\n').forEach(raw => {
+    const line = raw.replace(/\s+$/, '');
+    let m;
+    if (!line.trim()){ flushPara(); flushList(); return; }
+    if ((m = line.match(/^\s*[-*•]\s+(.*)$/))){
+      flushPara(); if (!list || list.type !== 'ul'){ flushList(); list = { type: 'ul', items: [] }; } list.items.push(m[1]); return;
+    }
+    if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))){
+      flushPara(); if (!list || list.type !== 'ol'){ flushList(); list = { type: 'ol', items: [] }; } list.items.push(m[1]); return;
+    }
+    if ((m = line.match(/^\s*#{1,4}\s+(.*)$/))){ flushPara(); flushList(); out.push('<p class="md-h">' + inline(m[1]) + '</p>'); return; }
+    flushList();
+    para.push(line);
+  });
+  flushPara(); flushList();
+  return out.join('');
+}
+// Copy / select / export should hand over clean text, not raw markdown symbols.
+function stripMarkdown(t){
+  return String(t || '').replace(/\*\*([^*\n]+?)\*\*/g, '$1').replace(/^\s*#{1,4}\s+/gm, '').replace(/^(\s*)[-*]\s+/gm, '$1• ');
+}
+// The exact text the model produced for a bubble (the DOM only holds the rendered version).
+function bubbleRawText(bubbleEl){
+  if (!bubbleEl) return '';
+  return (bubbleEl.dataset && bubbleEl.dataset.full) || bubbleEl.textContent || '';
+}
+
+// ---- Conversation memory: rebuilds the earlier turns from the thread itself, relative to the
+// reply slot being generated, so it's correct for a fresh send, a regenerate, an edit, AND a
+// chat reloaded from history. Text only (images from earlier turns aren't re-sent). ----
+function buildHistoryContents(replyEl){
+  let cur = replyEl.previousElementSibling;
+  while (cur && !(cur.classList && cur.classList.contains('user'))) cur = cur.previousElementSibling;
+  const turns = [];
+  for (let el = cur ? cur.previousElementSibling : null; el; el = el.previousElementSibling){
+    if (!el.classList || !el.classList.contains('msg')) continue;
+    if (el.classList.contains('user')){
+      const t = el.querySelector('.bubble-user-text');
+      const text = t ? t.textContent.trim() : '';
+      if (text) turns.unshift({ role: 'user', text });
+    } else {
+      const b = el.querySelector('.bubble-assistant');
+      const text = b ? bubbleRawText(b).trim() : '';
+      if (text) turns.unshift({ role: 'model', text: text.length > 3000 ? text.slice(0, 3000) + '…' : text });
+    }
+  }
+  const merged = [];
+  turns.forEach(t => {
+    const last = merged[merged.length - 1];
+    if (last && last.role === t.role) last.text += '\n\n' + t.text; else merged.push({ role: t.role, text: t.text });
+  });
+  while (merged.length && merged[0].role !== 'user') merged.shift();
+  while (merged.length && merged[merged.length - 1].role !== 'model') merged.pop(); // drop an unanswered trailing question
+  let total = merged.reduce((n, t) => n + t.text.length, 0);
+  while (merged.length > 2 && (merged.length > 16 || total > 14000)){
+    total -= merged[0].text.length + merged[1].text.length;
+    merged.splice(0, 2);
+  }
+  return merged.map(t => ({ role: t.role, parts: [{ text: t.text }] }));
+}
+function conversationNote(){
+  return `This is an ongoing conversation — the earlier turns are included above. Treat the latest message as a continuation of it: resolve pronouns and short or vague follow-ups (for example "what of France and Mbappé?") using the topic already being discussed, instead of answering as if it were a brand-new standalone question, and don't repeat information you've already given unless asked.`;
+}
+
+// ---- Failed / missing replies get an explicit retry instead of a dead end ----
+function isOffline(){ return typeof navigator !== 'undefined' && navigator.onLine === false; }
+
+// Distinguishes "you're offline" from a generic failure, and automatically retries once the
+// connection actually comes back — instead of leaving the person to notice and tap Retry
+// themselves. Only ever holds messages that failed while genuinely offline (see isOffline()
+// checks at each catch site); a normal server/API error still uses the plain retry block.
+let pendingOfflineRetries = [];
+function queueOfflineRetry(msgEl, userText, images){
+  pendingOfflineRetries = pendingOfflineRetries.filter(p => p.msgEl.isConnected);
+  pendingOfflineRetries.push({ msgEl, userText, images: images || [] });
+}
+window.addEventListener('online', () => {
+  if (!pendingOfflineRetries.length) return;
+  showToast('Back online — sending your message…');
+  const queue = pendingOfflineRetries.filter(p => p.msgEl.isConnected);
+  pendingOfflineRetries = [];
+  (async () => { for (const p of queue) await regenerateInPlace(p.msgEl, p.userText, p.images); })();
+});
+
+function offlineBlockHtml(){
+  return `<div class="retry-block"><div class="retry-note">You're offline — this will send automatically once you're back online.</div><button type="button" class="retry-btn" data-action="retry-block">${ICON_RETRY}<span>Try now</span></button></div>`;
+}
+
+function retryBlockHtml(note, isError){
+  return `<div class="retry-block">${isError ? `<div class="err">${escapeHtml(note)}</div>` : `<div class="retry-note">${escapeHtml(note)}</div>`}<button type="button" class="retry-btn" data-action="retry-block">${ICON_RETRY}<span>${isError ? 'Try again' : 'Get a reply'}</span></button></div>`;
+}
+function wireRetryBlock(msgEl, userText, images){
+  const b = msgEl.querySelector('[data-action="retry-block"]');
+  if (b) b.addEventListener('click', () => { if (!isGenerating) regenerateInPlace(msgEl, userText, images || []); });
+}
+function renderOrphanReply(userText, images){
+  const div = document.createElement('div');
+  div.className = 'msg assistant';
+  div.dataset.ts = nextTimestamp();
+  div.innerHTML = retryBlockHtml('No reply was saved for this message.', false);
+  appendToThread(div);
+  wireRetryBlock(div, userText, images);
+  return div;
+}
+function attachmentsFromMedia(media){
+  return (media || []).filter(x => x && x.type === 'image' && x.dataUrl).map(x => ({
+    mimeType: x.mimeType || (x.dataUrl.match(/^data:([^;]+);/) || [])[1] || 'image/jpeg',
+    base64: x.dataUrl.split(',')[1] || '',
+    dataUrl: x.dataUrl
+  }));
+}
+
+// ---- Save tracking: every rendered message remembers the row it lives in ----
+let pendingOfflineSaves = [];
+function trackSave(el, ref, retrySave){
+  if (ref){
+    msgRowRef.set(el, ref);
+    pendingOfflineSaves = pendingOfflineSaves.filter(p => p.el !== el);
+    const w = el.querySelector('.save-warning');
+    if (w) w.remove();
+  } else if (ref === false){
+    markUnsaved(el, retrySave); // null = intentionally unsaved (incognito); false = a real failure
+  }
+}
+function markUnsaved(el, retrySave){
+  if (!el || el.querySelector('.save-warning')) return;
+  const offlineNow = isOffline();
+  const text = offlineNow
+    ? "You're offline — this message will save automatically once you're back online."
+    : "⚠ Couldn't save this message — it may be missing after you reload.";
+  el.insertAdjacentHTML('beforeend', `<div class="save-warning">${escapeHtml(text)}</div>`);
+  if (offlineNow && retrySave){
+    pendingOfflineSaves = pendingOfflineSaves.filter(p => p.el.isConnected);
+    pendingOfflineSaves.push({ el, retrySave });
+  }
+}
+window.addEventListener('online', () => {
+  if (!pendingOfflineSaves.length) return;
+  const queue = pendingOfflineSaves.filter(p => p.el.isConnected);
+  pendingOfflineSaves = [];
+  queue.forEach(p => p.retrySave());
+});
+
+// Only the single most-recent user turn ever shows an edit button — matches the "edit last
+// message" pattern rather than letting every past turn be rewritten. addUserMsg strips the
+// button off whatever used to be last before adding the new one.
+let lastUserMsgEl = null;
+
+function addUserMsg(text, imgDataUrls){
+  hero.style.display = 'none';
+  incognitoHero.style.display = 'none';
+  if (lastUserMsgEl) removeUserEditButton(lastUserMsgEl);
+  const div = renderUserBubble(text, imgDataUrls, true);
+  lastUserMsgEl = div;
+  updateHeaderState();
+  scrollNewMessageToTop(div);
+}
+function renderUserBubble(text, imgDataUrls, isLast, ts){
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.dataset.ts = ts || nextTimestamp();
+  const imgs = imgDataUrls || [];
+  const imgHtml = imgs.length
+    ? `<div class="bubble-user-imgs">${imgs.map(u => `<img class="bubble-user-img" src="${u}">`).join('')}</div>`
+    : '';
+  div.innerHTML = `<div class="bubble-user">${imgHtml}<span class="bubble-user-text"></span></div>`;
+  div.querySelector('.bubble-user-text').textContent = text;
+  if (isLast) div.insertAdjacentHTML('beforeend', `<div class="user-actions"><button class="msg-action-btn" data-action="edit" title="Edit">${ICON_EDIT}</button></div>`);
+  appendToThread(div);
+  if (isLast) wireUserEditButton(div);
+  return div;
+}
+function removeUserEditButton(msgEl){
+  const row = msgEl.querySelector('.user-actions');
+  if (row) row.remove();
+}
+function wireUserEditButton(msgEl){
+  const btn = msgEl.querySelector('[data-action="edit"]');
+  if (btn) btn.addEventListener('click', () => enterUserEditMode(msgEl));
+}
+
+// Swaps the bubble for a textarea pre-filled with the current text, plus a notice that saving
+// will regenerate the response below it. Cancel restores the original bubble untouched.
+function enterUserEditMode(msgEl){
+  const textSpan = msgEl.querySelector('.bubble-user-text');
+  if (!textSpan) return;
+  const originalText = textSpan.textContent;
+  const bubble = msgEl.querySelector('.bubble-user');
+  const actionsRow = msgEl.querySelector('.user-actions');
+  const originalBubbleHtml = bubble.innerHTML;
+  if (actionsRow) actionsRow.style.display = 'none';
+
+  bubble.innerHTML = `<div class="edit-wrap">
+    <div class="edit-note">Editing will regenerate the response below — your current reply will be replaced.</div>
+    <textarea class="edit-textarea" rows="1"></textarea>
+    <div class="edit-btn-row">
+      <button class="edit-btn" data-action="cancel">Cancel</button>
+      <button class="edit-btn primary" data-action="save">Save</button>
+    </div>
+  </div>`;
+  const textarea = bubble.querySelector('.edit-textarea');
+  textarea.value = originalText;
+  textarea.style.height = 'auto';
+  textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+  textarea.addEventListener('input', () => { textarea.style.height = 'auto'; textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'; });
+  textarea.focus();
+  textarea.setSelectionRange(originalText.length, originalText.length);
+
+  const restore = () => {
+    bubble.innerHTML = originalBubbleHtml;
+    if (actionsRow) actionsRow.style.display = '';
+  };
+  bubble.querySelector('[data-action="cancel"]').addEventListener('click', restore);
+  bubble.querySelector('[data-action="save"]').addEventListener('click', () => {
+    const newText = textarea.value.trim();
+    if (!newText || newText === originalText){ restore(); return; }
+    submitUserEdit(msgEl, newText, originalText, originalBubbleHtml);
+  });
+}
+
+// Commits an edited user message: updates the bubble + storage, then regenerates the assistant
+// reply that followed it in place — same snapshot/restore-on-failure behavior as regenerateInPlace,
+// so a failed regeneration doesn't lose the previous good answer.
+async function submitUserEdit(msgEl, newText, originalText, originalBubbleHtml){
+  const bubble = msgEl.querySelector('.bubble-user');
+  const actionsRow = msgEl.querySelector('.user-actions');
+  bubble.innerHTML = originalBubbleHtml;
+  bubble.querySelector('.bubble-user-text').textContent = newText;
+  if (actionsRow) actionsRow.style.display = '';
+  wireUserEditButton(msgEl);
+
+  // Preserve any images already attached to this message — editing the text shouldn't silently
+  // wipe them, since saveMessage's replace path overwrites both content and media together.
+  const existingImgs = Array.from(bubble.querySelectorAll('.bubble-user-img')).map(img => img.src);
+  const mediaForStorage = existingImgs.map(src => ({ type: 'image', dataUrl: src }));
+  const doSaveEdit = () => saveMessage('user', newText, mediaForStorage, { replaceRef: msgRowRef.get(msgEl), createdAt: msgEl.dataset.ts }).then(ref => trackSave(msgEl, ref, doSaveEdit));
+  doSaveEdit();
+
+  // Find the assistant message immediately following this user turn, if any — it's the one
+  // whose response is now stale and needs regenerating against the edited text.
+  let assistantEl = msgEl.nextElementSibling;
+  while (assistantEl && !assistantEl.classList.contains('assistant')) assistantEl = assistantEl.nextElementSibling;
+  if (assistantEl){
+    await regenerateInPlace(assistantEl, newText, []);
+  }
+}
+function renderAssistantBubble(text, media, ts){
+  const div = document.createElement('div');
+  div.className = 'msg assistant';
+  div.dataset.ts = ts || nextTimestamp();
+  const mediaHtml = (media || []).map(m => `<div class="sources"><span>${escapeHtml(m.label || '')}</span></div>`).join('');
+  div.innerHTML = `<div class="bubble-assistant">${renderMarkdown(text)}</div>${mediaHtml}`;
+  div.querySelector('.bubble-assistant').dataset.full = text;
+  appendToThread(div);
+  return div;
+}
+
+function addPipeline(){
+  const div = document.createElement('div');
+  div.className = 'msg assistant';
+  div.innerHTML = `<div class="pipeline">${PIPELINE_EQ_SVG}<span class="stage">Thinking…</span></div>`;
+  div.dataset.ts = nextTimestamp();
+  appendToThread(div);
+  scrollDownIfNear();
+  return div.querySelector('.stage');
+}
+function setStage(stageEl, text){ stageEl.style.opacity = 0; setTimeout(()=>{ stageEl.textContent = text; stageEl.style.opacity = 1; }, 150); }
+function replacePipelineWithResult(pipelineMsgEl, html){ pipelineMsgEl.innerHTML = html; scrollDown(); }
+
+function escapeHtml(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+// Typewriter-style reveal for a freshly-generated reply — reveals the already-fetched text
+// word by word rather than dumping it in all at once. This is NOT real token streaming (the
+// full response already arrived from Gemini/Groq by this point); it's a client-side replay.
+// True streaming would mean switching the backend to Gemini's :streamGenerateContent and
+// piping chunks through the Vercel function — doable, but it complicates the Gemini->Groq
+// automatic fallback (you can't know a stream will fail until it's partway through) and the
+// grounding source links (which arrive as a single block, not incrementally) — bigger lift,
+// not done here. Speed adapts to length so a long script doesn't take forever to finish.
+function revealWords(el, text, onDone){
+  el.classList.add('typing');
+  el.dataset.full = text;
+  const words = text.split(' ');
+  const delay = Math.max(10, Math.min(38, 3200 / Math.max(words.length, 1)));
+  let i = 0;
+  function step(){
+    if (i >= words.length){
+      el.classList.remove('typing');
+      el.innerHTML = renderMarkdown(text);
+      updateSpacer();
+      if (onDone) onDone();
+      return;
+    }
+    i++;
+    el.innerHTML = renderMarkdown(words.slice(0, i).join(' '), true);
+    updateSpacer();
+    scrollDownIfNear();
+    setTimeout(step, delay);
+  }
+  step();
+}
+
+/* ------------------------------------------------------------------ */
+/* Gemini → Groq automatic fallback (ported from the deployed backend  */
+/* logic). Groq has no built-in web-search tool, so a fallback answer  */
+/* has no grounding — that's surfaced to the user, not hidden.         */
+/* ------------------------------------------------------------------ */
+const GROQ_MODEL = 'openai/gpt-oss-120b';
+// Only 2 Groq models currently support vision (image input): Llama 4 Scout / Maverick.
+// Used only as the fallback when Gemini fails AND the request includes an image.
+const GROQ_VISION_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
+
+function requestHasImage(contents){
+  return (contents || []).some(turn => (turn.parts || []).some(p => p.inline_data));
+}
+
+function geminiToolsToOpenAI(tools){
+  if (!tools || !tools.length) return undefined;
+  const decls = [];
+  tools.forEach(t => (t.functionDeclarations || []).forEach(d => decls.push(d)));
+  if (!decls.length) return undefined;
+  return decls.map(d => ({ type: 'function', function: { name: d.name, description: d.description, parameters: d.parameters } }));
+}
+
+function geminiContentsToOpenAIMessages(systemText, contents){
+  const messages = [];
+  if (systemText) messages.push({ role: 'system', content: systemText });
+  (contents || []).forEach(turn => {
+    const parts = turn.parts || [];
+    const role = turn.role === 'model' ? 'assistant' : 'user';
+    const imageParts = parts.filter(p => p.inline_data);
+    if (imageParts.length){
+      // OpenAI-compatible vision format: content is an array mixing text and image_url blocks.
+      // NOTE: this sends the image as a base64 data: URI. Groq's docs show hosted-URL examples;
+      // if their API rejects inline base64, this fallback path will surface that as an error
+      // rather than silently mishandling the image.
+      const contentArr = [];
+      parts.forEach(p => {
+        if (p.text) contentArr.push({ type: 'text', text: p.text });
+        if (p.inline_data) contentArr.push({ type: 'image_url', image_url: { url: `data:${p.inline_data.mime_type};base64,${p.inline_data.data}` } });
+      });
+      messages.push({ role, content: contentArr });
+    } else {
+      const textParts = parts.filter(p => p.text).map(p => p.text).join('\n');
+      messages.push({ role, content: textParts });
+    }
+  });
+  return messages;
+}
+
+function openAIResponseToGeminiShape(data){
+  const choice = data && data.choices && data.choices[0];
+  const msg = choice && choice.message;
+  if (!msg) return { candidates: [] };
+  const parts = [];
+  if (msg.content) parts.push({ text: msg.content });
+  return { candidates: [{ content: { parts } }] };
+}
+
+// Drop-in replacement for a raw fetch('/api/gemini', ...) call: tries Gemini first
+// (with whatever tools/system_instruction were requested — including google_search
+// grounding), and falls back to Groq automatically on ANY Gemini failure. Groq drops
+// the grounding tool silently (it doesn't support it), so a Groq-sourced answer comes
+// from the model's training data rather than live search — flagged via `provider`.
+function callAI(requestBody){
+  return fetch(API_ORIGIN + '/api/gemini', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
+  }).then(res => {
+    if (res.ok) return res.json().then(data => ({ data, provider: 'gemini' }));
+
+    return res.json().catch(() => ({})).then(err => {
+      const geminiMsg = (err && err.error && err.error.message) || ('status ' + res.status);
+      const systemText = requestBody.system_instruction && requestBody.system_instruction.parts &&
+        requestBody.system_instruction.parts.map(p => p.text).join('\n');
+      const messages = geminiContentsToOpenAIMessages(systemText, requestBody.contents);
+      const openAITools = geminiToolsToOpenAI(requestBody.tools);
+      const hasImage = requestHasImage(requestBody.contents);
+      const fallbackModel = hasImage ? GROQ_VISION_MODEL : GROQ_MODEL;
+
+      return fetch(API_ORIGIN + '/api/groq', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: fallbackModel, messages, tools: openAITools })
+      }).then(res2 => {
+        if (!res2.ok){
+          return res2.json().catch(() => ({})).then(err2 => {
+            const groqMsg = (err2 && err2.error && (err2.error.message || err2.error)) || res2.status;
+            const imgNote = hasImage ? ' (including the attached image)' : '';
+            throw new Error('Gemini: ' + geminiMsg + ' — backup (Groq) also failed' + imgNote + ': ' + groqMsg);
+          });
+        }
+        return res2.json().then(data2 => ({ data: openAIResponseToGeminiShape(data2), provider: 'groq' }));
+      });
+    });
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Football mode context: reuses the API-Football proxy to pull real,  */
+/* hard match data for today's fixtures when the user's request        */
+/* mentions a team playing today, and feeds it to Gemini as ground     */
+/* truth alongside its own web search. Best-effort — if nothing        */
+/* matches, Gemini's search grounding still runs on its own.           */
+/* ------------------------------------------------------------------ */
+function todayDateStr(){ return new Date().toISOString().slice(0, 10); }
+
+async function fetchApiFootballFixtureFacts(fixture, dateStr){
+  const fixtureId = fixture && fixture.fixture && fixture.fixture.id;
+  if (!fixtureId) return null;
+
+  const [statsData, eventsData] = await Promise.all([
+    fetch(API_ORIGIN + '/api/football/fixtures/statistics?fixture=' + fixtureId).then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch(API_ORIGIN + '/api/football/fixtures/events?fixture=' + fixtureId).then(r => r.ok ? r.json() : null).catch(() => null)
+  ]);
+
+  const home = fixture.teams.home.name, away = fixture.teams.away.name;
+  const goalsHome = fixture.goals && fixture.goals.home, goalsAway = fixture.goals && fixture.goals.away;
+  const comp = (fixture.league && fixture.league.name) || '';
+  const statusShort = (fixture.fixture && fixture.fixture.status && fixture.fixture.status.short) || '';
+
+  const lines = [`Competition & date: ${comp}, ${dateStr}`, `Status: ${statusShort}`];
+  const labels = ['Competition', 'Match status'];
+  if (goalsHome != null && goalsAway != null){ lines.push(`Score: ${home} ${goalsHome} - ${goalsAway} ${away}`); labels.push('Score'); }
+
+  const events = (eventsData && eventsData.response) || [];
+  const minuteOf = e => { const t = e.time || {}; return t.elapsed + (t.extra ? '+' + t.extra : ''); };
+  const goals = events.filter(e => e.type === 'Goal');
+  const cards = events.filter(e => e.type === 'Card');
+  if (goals.length){ lines.push('Scorers: ' + goals.map(e => `${(e.player && e.player.name) || '?'} (${e.team && e.team.name}, ${minuteOf(e)}')`).join('; ')); labels.push('Scorers'); }
+  if (cards.length){ lines.push('Cards: ' + cards.map(e => `${(e.player && e.player.name) || '?'} (${e.team && e.team.name}, ${minuteOf(e)}', ${e.detail || 'Card'})`).join('; ')); labels.push('Cards'); }
+
+  const statsArr = (statsData && statsData.response) || [];
+  const wantedStats = ['Ball Possession', 'Total Shots', 'Shots on Goal', 'Corner Kicks', 'Fouls', 'Yellow Cards', 'Red Cards'];
+  let statsFound = false;
+  statsArr.forEach(teamStat => {
+    const teamName = (teamStat.team && teamStat.team.name) || '';
+    const picked = (teamStat.statistics || []).filter(st => wantedStats.indexOf(st.type) >= 0 && st.value != null);
+    if (picked.length){ lines.push(`${teamName} stats: ` + picked.map(st => `${st.type}: ${st.value}`).join(', ')); statsFound = true; }
+  });
+  if (statsFound) labels.push('Match statistics');
+
+  return { text: lines.join('\n'), labels };
+}
+
+async function gatherFootballContext(queryText){
+  try {
+    const dateStr = todayDateStr();
+    const res = await fetch(API_ORIGIN + '/api/football/fixtures?date=' + dateStr);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const fixtures = (data && data.response) || [];
+    if (!fixtures.length) return null;
+    const q = queryText.toLowerCase();
+    const hit = fixtures.find(f => {
+      const home = ((f.teams && f.teams.home && f.teams.home.name) || '').toLowerCase();
+      const away = ((f.teams && f.teams.away && f.teams.away.name) || '').toLowerCase();
+      return (home && q.indexOf(home) >= 0) || (away && q.indexOf(away) >= 0);
+    });
+    if (!hit) return null;
+    const facts = await fetchApiFootballFixtureFacts(hit, dateStr);
+    if (!facts) return null;
+    return { text: '=== VERIFIED MATCH DATA (from API-Football, today\'s fixtures) ===\n' + facts.text, labels: facts.labels };
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Club/coach verification — catches stale-memory claims like "Enzo   */
+/* Maresca manages Man City" that Gemini's own search grounding can    */
+/* still miss on a given request. Gemini 2.5 can't mix its built-in    */
+/* google_search tool with custom function declarations in one call    */
+/* (that combo is a Gemini 3-only preview feature), so the model can't */
+/* be handed a "look up the current coach" tool to call itself. This   */
+/* instead runs a small, deterministic extract -> verify -> inject     */
+/* pipeline before the real generation call: a quick tool-free Gemini  */
+/* call pulls out club names mentioned in the request, then each one   */
+/* is looked up directly against API-Football for its current coach.   */
+/* Best-effort throughout — any failure just yields no extra facts,    */
+/* Gemini's own search grounding still carries the rest of the answer. */
+/* ------------------------------------------------------------------ */
+async function extractClubNames(queryText){
+  try {
+    const res = await fetch(API_ORIGIN + '/api/gemini', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: queryText }] }],
+        system_instruction: { parts: [{ text: 'Extract every real football (soccer) club/team name mentioned or clearly implied in the text below. Respond with ONLY a JSON array of club name strings, nothing else — e.g. ["Manchester City","Barcelona"]. If none, respond with exactly [].' }] }
+      })
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const cand = data && data.candidates && data.candidates[0];
+    const parts = cand && cand.content && cand.content.parts;
+    const raw = parts ? parts.map(p => p.text || '').join('') : '[]';
+    const match = raw.match(/\[[\s\S]*\]/);
+    const arr = JSON.parse(match ? match[0] : '[]');
+    return Array.isArray(arr) ? arr.filter(x => typeof x === 'string' && x.trim()).slice(0, 3) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+async function lookupCurrentCoach(clubName){
+  try {
+    const teamRes = await fetch(API_ORIGIN + '/api/football/teams?search=' + encodeURIComponent(clubName));
+    if (!teamRes.ok) return null;
+    const teamData = await teamRes.json();
+    const team = teamData && teamData.response && teamData.response[0] && teamData.response[0].team;
+    if (!team || !team.id) return null;
+    const coachRes = await fetch(API_ORIGIN + '/api/football/coachs?team=' + team.id);
+    if (!coachRes.ok) return null;
+    const coachData = await coachRes.json();
+    const coach = coachData && coachData.response && coachData.response[0];
+    if (!coach || !coach.name) return null;
+    return `${team.name}: current manager/head coach is ${coach.name}.`;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function gatherVerifiedFootballFacts(queryText){
+  const clubs = await extractClubNames(queryText);
+  if (!clubs.length) return null;
+  const results = await Promise.all(clubs.map(lookupCurrentCoach));
+  const lines = results.filter(Boolean);
+  if (!lines.length) return null;
+  return { text: '=== VERIFIED CLUB/COACH DATA (from API-Football, ' + todayDateStr() + ') ===\n' + lines.join('\n'), labels: ['Current club manager/coach'] };
+}
+
+const ICON_COPY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>';
+const ICON_RETRY = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 019-9c2.4 0 4.6.9 6.2 2.5L21 8M21 3v5h-5"/><path d="M21 12a9 9 0 01-9 9c-2.4 0-4.6-.9-6.2-2.5L3 16M3 21v-5h5"/></svg>';
+const ICON_THUMBS_UP = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
+const ICON_THUMBS_DOWN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L13 22h0a3.13 3.13 0 0 1-3-3.88Z"/></svg>';
+const BRAND_MARK_SVG = '<svg class="msg-footer-logo" width="18" height="16" aria-hidden="true"><use href="#cb-logo"/></svg>';
+// Loading indicator — three bars of the brand mark, pulsing tall/short on a stagger, replacing
+// the old blinking dot so the "thinking" state actually looks like Creator Booth's own logo.
+const PIPELINE_EQ_SVG = '<svg class="eq" width="22" height="19" aria-hidden="true"><use href="#cb-logo"/></svg>';
+const ICON_EDIT = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>';
+
+// Every assistant reply gets copy + thumbs up/down. Only the current LAST assistant reply in the
+// thread also gets regenerate, plus the brand/disclaimer footer row — matching the reference
+// layout, where those two are reserved for the most recent response only.
+function buildMsgActionsHtml(isLast){
+  const base = `<button class="msg-action-btn" data-action="copy" title="Copy">${ICON_COPY}</button>
+    <button class="msg-action-btn" data-action="up" title="Good response">${ICON_THUMBS_UP}</button>
+    <button class="msg-action-btn" data-action="down" title="Bad response">${ICON_THUMBS_DOWN}</button>`;
+  const regen = isLast ? `<button class="msg-action-btn" data-action="retry" title="Regenerate">${ICON_RETRY}</button>` : '';
+  const footer = isLast
+    ? `<div class="msg-footer">${BRAND_MARK_SVG}<span class="msg-footer-disclaimer">Creator Booth is AI and can make mistakes. Please double-check responses.</span></div>`
+    : '';
+  return `<div class="msg-actions">${base}${regen}</div>${footer}`;
+}
+
+// Thumbs feedback looks up the message's row via msgRowRef (see saveMessage). Messages that were
+// never saved (incognito) have no entry, so feedback there stays local-only.
+
+async function saveFeedback(ref, value){
+  if (!ref) return;
+  try {
+    if (ref.type === 'supabase'){
+      await supabase.from('messages').update({ feedback: value }).eq('id', ref.id);
+      const cached = await cacheGetOne('messages', ref.id);
+      if (cached) cachePutAll('messages', [{ ...cached, feedback: value }]);
+    } else if (ref.type === 'guest'){
+      const list = loadGuestChats();
+      const chat = list.find(c => c.id === ref.chatId);
+      if (chat && chat.messages[ref.index]) { chat.messages[ref.index].feedback = value; saveGuestChats(list); }
+    }
+  } catch (e) {
+    // Best-effort — a failed feedback save shouldn't disrupt the chat, and the button already
+    // gave the person visual confirmation, so silently dropping it here is the lesser evil.
+  }
+}
+
+function wireMsgActions(msgEl, resultText, userText, imageAttachments, isLast){
+  const copyBtn = msgEl.querySelector('[data-action="copy"]');
+  const upBtn = msgEl.querySelector('[data-action="up"]');
+  const downBtn = msgEl.querySelector('[data-action="down"]');
+  const retryBtn = msgEl.querySelector('[data-action="retry"]');
+
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(stripMarkdown(resultText));
+      copyBtn.classList.add('copied');
+      copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>';
+      setTimeout(() => { copyBtn.classList.remove('copied'); copyBtn.innerHTML = ICON_COPY; }, 1400);
+    } catch (e) { /* clipboard permission denied — silently ignore, button just won't confirm */ }
+  });
+
+  // Thumbs up/down now actually persist (see msgRowRef / saveFeedback) for any message
+  // that was actually saved — tapping the active one again clears the feedback rather than
+  // leaving it stuck on. Mutually exclusive, same as before.
+  upBtn.addEventListener('click', () => {
+    const nowActive = !upBtn.classList.contains('active');
+    upBtn.classList.toggle('active', nowActive);
+    downBtn.classList.remove('active');
+    saveFeedback(msgRowRef.get(msgEl), nowActive ? 'up' : null);
+  });
+  downBtn.addEventListener('click', () => {
+    const nowActive = !downBtn.classList.contains('active');
+    downBtn.classList.toggle('active', nowActive);
+    upBtn.classList.remove('active');
+    saveFeedback(msgRowRef.get(msgEl), nowActive ? 'down' : null);
+  });
+
+  if (retryBtn){
+    retryBtn.addEventListener('click', () => regenerateInPlace(msgEl, userText, imageAttachments));
+  }
+}
+
+// Strips the regenerate button, footer, and suggested-next-question chips from whatever was
+// previously the last assistant message, demoting it to the plain 3-button state — only the
+// true last message keeps them.
+function demoteAssistantMessage(msgEl){
+  if (!msgEl) return;
+  const footer = msgEl.querySelector('.msg-footer');
+  if (footer) footer.remove();
+  const retryBtn = msgEl.querySelector('[data-action="retry"]');
+  if (retryBtn) retryBtn.remove();
+  const suggestionsRow = msgEl.querySelector('.suggestions-row');
+  if (suggestionsRow) suggestionsRow.remove();
+}
+
+let lastAssistantMsgEl = null; // the DOM element of the current last assistant message, or null
+
+// Subtle "we checked this against a live sports feed" badge — only appears when football mode
+// actually found real API-Football data for this specific reply. Deliberately understated (no
+// giant green banner): a small line of checkmarks the reader can skim past or read closely.
+function buildVerifiedHtml(labels){
+  if (!labels || !labels.length){
+    return '';
+  }
+  const unique = [...new Set(labels)];
+  const items = unique.map(l => `<span>✓ ${escapeHtml(l)}</span>`).join('');
+  return `<div class="verified-badge">
+    <div class="verified-badge-head">Verified football data <span class="verified-badge-sub">· API-Football, checked moments ago</span></div>
+    <div class="verified-badge-items">${items}</div>
+  </div>`;
+}
+
+// Collapsed by default: a small favicon stack + "Sources · N" toggle, matching how most chat
+// apps keep sources out of the way until you actually want them, rather than always dumping
+// full cards into the reply. wireSourcesToggle (called right after this HTML is inserted)
+// wires the expand/collapse.
+function buildSourcesHtml(chunks, usedFallback){
+  if (chunks && chunks.length){
+    const favicons = chunks.slice(0, 3).map(c => {
+      const w = c.web || {};
+      let host = '';
+      try { host = new URL(w.uri || '').hostname.replace(/^www\./, ''); } catch (e) {}
+      return host ? `<img class="sources-mini-favicon" src="https://www.google.com/s2/favicons?sz=32&domain=${encodeURIComponent(host)}" alt="" loading="lazy">` : '';
+    }).join('');
+    const cards = chunks.slice(0, 5).map(c => {
+      const w = c.web || {};
+      const uri = w.uri || '#';
+      let host = '';
+      try { host = new URL(uri).hostname.replace(/^www\./, ''); } catch (e) {}
+      const title = escapeHtml(w.title || host || 'Source');
+      const favicon = host ? `https://www.google.com/s2/favicons?sz=32&domain=${encodeURIComponent(host)}` : '';
+      return `<a class="source-card" href="${uri}" target="_blank" rel="noopener">
+        ${favicon ? `<img class="source-favicon" src="${favicon}" alt="" loading="lazy">` : '<span class="source-favicon source-favicon-fallback">◉</span>'}
+        <span class="source-card-body">
+          <span class="source-card-title">${title}</span>
+          ${host ? `<span class="source-card-host">${escapeHtml(host)}</span>` : ''}
+        </span>
+        <span class="source-card-arrow">→</span>
+      </a>`;
+    }).join('');
+    return `<div class="sources">
+      <button type="button" class="sources-toggle" data-action="toggle-sources">
+        <span class="sources-mini-stack">${favicons}</span>
+        <span>Sources · ${chunks.length}</span>
+        <span class="sources-toggle-chev">›</span>
+      </button>
+      <div class="sources-panel" hidden><div class="sources-list">${cards}</div></div>
+    </div>`;
+  }
+  if (usedFallback){
+    return `<div class="sources"><span class="sources-fallback-note">⚠ Backup AI used — no live web search this time, verify facts before using</span></div>`;
+  }
+  return '';
+}
+
+function wireSourcesToggle(msgEl){
+  const toggleBtn = msgEl.querySelector('[data-action="toggle-sources"]');
+  if (!toggleBtn) return;
+  const panel = msgEl.querySelector('.sources-panel');
+  toggleBtn.addEventListener('click', () => {
+    const willOpen = panel.hasAttribute('hidden');
+    if (willOpen) panel.removeAttribute('hidden'); else panel.setAttribute('hidden', '');
+    toggleBtn.classList.toggle('open', willOpen);
+    if (willOpen) scrollDownIfNear();
+  });
+}
+
+// Tappable follow-up prompts, parsed out of the model's own response (see extractSuggestions) —
+// tapping one sends it immediately as the next message, same as typing it and hitting send.
+function buildSuggestionsHtml(suggestions, lead){
+  if (!suggestions || !suggestions.length) return '';
+  const introText = lead || 'A few things I could help with next:';
+  const chips = suggestions.map(s => `<button type="button" class="suggestion-chip" data-suggestion="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join('');
+  return `<div class="suggestions-row"><div class="suggestions-lead">${escapeHtml(introText)}</div>${chips}</div>`;
+}
+function wireSuggestions(msgEl){
+  msgEl.querySelectorAll('.suggestion-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (isGenerating) return;
+      input.value = btn.dataset.suggestion || '';
+      submit();
+    });
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* Real pipeline: mode's system prompt + Gemini with Google Search      */
+/* grounding + (football mode only) verified match data as context.    */
+/* imageAttachments is an array of {mimeType, base64, dataUrl} — 0 to   */
+/* MAX_IMAGES per message.                                              */
+/*                                                                      */
+/* runGeneration is the shared core for both a fresh send (runPipeline) */
+/* and a regenerate (regenerateInPlace) — the only difference is        */
+/* whether the result lands in a brand-new message or overwrites the    */
+/* existing one in place.                                               */
+/* ------------------------------------------------------------------ */
+// Injected into every request's system prompt. Two jobs: (1) tell the model what day it is
+// (it has no idea otherwise, so it can't judge whether a memorized fact might be stale), and
+// (2) explicitly push it toward actually using the search tool for role/roster-type facts
+// instead of trusting its own training data — Gemini decides per-request whether to search,
+// and there's no API setting to force it every time (that existed for older Gemini 1.5 models
+// via dynamicRetrievalConfig, but was removed for the google_search tool used here). This is a
+// nudge, not a guarantee — it measurably improves the odds, it doesn't eliminate the failure mode.
+function currentDateTimeNote(){
+  const now = new Date();
+  const formatted = now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return `Current date/time: ${formatted}. Your training data has a cutoff before this date, so anything that changes over time — club managers, coaching staff, player-club affiliations, injuries, prices, current holders of a role — may be different now even if you feel confident about it from memory. For any such claim, actually use the search tool to verify before stating it, every time, even when you're sure. Do not silently rely on a memorized fact for anything that could plausibly have changed since your training cutoff.`;
+}
+
+// Fixes a real failure mode: asked something like "yesterday's football", the model would
+// check one competition (usually whichever domestic league it defaults to), find nothing
+// scheduled, and flatly answer "no football happened" — wrong and unhelpful during any
+// international break, when qualifiers, continental tournaments, and other domestic leagues
+// are very much still being played.
+function footballScopeNote(){
+  return `When asked broadly about "matches", "football", or "what happened" without a named competition, don't limit your search to one league (e.g. the Premier League) and don't conclude "no football happened" just because that one league has no fixture that day — domestic top-flight leagues regularly pause for international windows (World Cup qualifiers, Nations League, continental qualifiers like AFCON, and friendlies), and other leagues/cups are frequently still active. Search broadly across competitions before answering, and if the most likely competition genuinely has nothing scheduled, say so specifically ("no Premier League match today — it's an international break") rather than implying no football happened anywhere, then offer what actually is happening.`;
+}
+
+// Personalization: the onboarding survey collects a favorite club (see Settings → Profile).
+// When known, it's handed to the model so replies can be lightly tailored — most visibly for
+// explicit requests for banter/jokes, where football culture runs on good-natured rival
+// ribbing. Kept opt-in and low-key: never forced into a straight factual answer.
+function favoriteClubNote(){
+  if (!currentProfile || !currentProfile.favorite_club || !currentProfile.favorite_club.trim()) return '';
+  const club = currentProfile.favorite_club.trim();
+  return `This person's favorite club (from their profile, only relevant if the request calls for it) is ${club}.
+- If — and only if — they explicitly ask for a joke, banter, or something playful, you can lean into good-natured football rivalry humor from a ${club} fan's perspective, referencing real, well-known struggles of a rival club (a trophy drought, a bad run of form, a managerial merry-go-round) — exaggerated for comic effect the way real football banter is, but not fabricating specific false incidents stated as fact (no invented quotes, no made-up events). Keep it affectionate rivalry, not genuine insults, and never bring this up unprompted outside of a request for humor.
+- If you're writing a video SCRIPT (not a neutral research/fact answer) about a match involving ${club}, you may narrate it with a light, natural lean toward a ${club} fan's perspective — e.g. giving their good moments more emphasis, or a charitable read on an ambiguous refereeing decision — the way a fan channel naturally would. This is about narrative framing and word choice ONLY: every score, stat, scorer, card, and factual claim must stay exactly accurate regardless of framing — never soften a loss, invent a better result, or omit a real fact to protect the narrative. If the request is a neutral factual question (e.g. "who won", "who is the manager"), answer neutrally with no lean at all.`;
+}
+
+// Encourages the same "what should I ask next" affordance the person liked elsewhere — parsed
+// out of the visible text client-side (extractSuggestions) and rendered as tappable chips, so
+// none of this delimiter syntax should ever reach the person's eyes.
+// Encourages the same "what should I ask next" affordance the person liked elsewhere — parsed
+// out of the visible text client-side (extractSuggestions) and rendered as tappable chips, so
+// none of this delimiter syntax should ever reach the person's eyes. Includes a short spoken
+// lead-in (varied each time, in the model's own words) so the chips don't just appear as
+// unexplained buttons — that ambiguity was a real complaint: people didn't know why they were
+// there.
+function suggestionsNote(){
+  return `After a substantive answer (skip this for a casual greeting or a single quick fact), end your response with a line containing exactly ===SUGGESTIONS=== followed by:
+- one line starting with "Lead-in:" — a short, natural sentence YOU are saying to introduce the options below, varied in phrasing each time (e.g. "If you want, I can also:", "A few directions I could take this:", "Want me to go deeper on any of these?") — never the same wording twice in a row.
+- then 2-4 short follow-up prompts the person could naturally send next, each on its own line, phrased as something they'd type (e.g. "Compare their head-to-head record"), under 8 words, no numbering or bullet symbols.`;
+}
+
+function extractSuggestions(text){
+  const marker = '===SUGGESTIONS===';
+  const idx = text.indexOf(marker);
+  if (idx === -1) return { text: text.trim(), lead: '', suggestions: [] };
+  const main = text.slice(0, idx).trim();
+  const lines = text.slice(idx + marker.length).split('\n').map(s => s.trim()).filter(Boolean);
+  let lead = '';
+  const suggestions = [];
+  lines.forEach(line => {
+    const m = line.match(/^lead-in:\s*(.*)$/i);
+    if (m) lead = m[1].trim();
+    else suggestions.push(line.replace(/^[-•\d.)\s]+/, '').trim());
+  });
+  return { text: main, lead, suggestions: suggestions.filter(Boolean).slice(0, 4) };
+}
+
+async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerate, restoreCtx){
+  const mode = currentMode();
+
+  let footballContext = '';
+  let verifiedLabels = [];
+  if (mode.id === 'football'){
+    // Checked silently — for a casual message like "hi" there's nothing to find, and the
+    // stage label shouldn't claim we're doing football research when we might not be.
+    const matchData = await gatherFootballContext(userText);
+    if (matchData){
+      setStage(stageEl, "Found today's match data — verifying…");
+      footballContext = matchData.text;
+      verifiedLabels = verifiedLabels.concat(matchData.labels);
+    }
+    const verifiedFacts = await gatherVerifiedFootballFacts(userText);
+    if (verifiedFacts){
+      setStage(stageEl, 'Checking current club/coach info…');
+      footballContext = footballContext ? footballContext + '\n\n' + verifiedFacts.text : verifiedFacts.text;
+      verifiedLabels = verifiedLabels.concat(verifiedFacts.labels);
+    }
+  }
+  if (images.length) setStage(stageEl, images.length > 1 ? 'Looking at your images…' : 'Looking at your image…');
+  setStage(stageEl, 'Searching the web…');
+
+  const promptText = footballContext ? `${footballContext}\n\nUser request: ${userText}` : userText;
+  const userParts = [];
+  images.forEach(img => userParts.push({ inline_data: { mime_type: img.mimeType, data: img.base64 } }));
+  userParts.push({ text: promptText });
+
+  let resultText = '';
+  let chunks = [];
+  let usedFallback = false;
+  let errorMsg = '';
+  let suggestions = [];
+  let suggestionsLead = '';
+  let offline = false;
+  if (isOffline()){
+    offline = true;
+    errorMsg = 'offline';
+  } else {
+    try {
+      setStage(stageEl, 'Putting it together…');
+      const history = buildHistoryContents(pipelineMsg);
+      const extraNotes = [currentDateTimeNote(), suggestionsNote()];
+      if (history.length) extraNotes.push(conversationNote());
+      if (mode.id === 'football'){ extraNotes.push(footballScopeNote()); const clubNote = favoriteClubNote(); if (clubNote) extraNotes.push(clubNote); }
+      const { data, provider } = await callAI({
+        contents: [...history, { role: 'user', parts: userParts }],
+        system_instruction: { parts: [{ text: mode.system + '\n\n' + extraNotes.join('\n\n') }] },
+        tools: [{ google_search: {} }]
+      });
+      usedFallback = provider === 'groq';
+      const cand = data && data.candidates && data.candidates[0];
+      const parts = cand && cand.content && cand.content.parts;
+      let rawText = parts ? parts.map(p => p.text || '').join('') : '';
+      chunks = (cand && cand.groundingMetadata && cand.groundingMetadata.groundingChunks) || [];
+      if (!rawText.trim()) throw new Error('No response came back — try rephrasing your request.');
+      const extracted = extractSuggestions(rawText);
+      resultText = extracted.text;
+      suggestions = extracted.suggestions;
+      suggestionsLead = extracted.lead;
+    } catch (e) {
+      // A network-level failure (as opposed to the API responding with an error) reads as
+      // offline too, even if navigator.onLine hadn't flipped yet — that flag is unreliable on
+      // some connections (e.g. connected to Wi-Fi with no real internet).
+      if (e instanceof TypeError || isOffline()){ offline = true; errorMsg = 'offline'; }
+      else errorMsg = e.message || 'Something went wrong.';
+    }
+  }
+
+  setStage(stageEl, 'Polishing…');
+  await new Promise(r => setTimeout(r, 200));
+
+  if (errorMsg){
+    if (isRegenerate && restoreCtx && restoreCtx.html){
+      // Regeneration failed — restore the previous response rather than leaving an error box
+      // with the old content gone. Buttons need re-wiring since innerHTML doesn't carry
+      // listeners over; the markup itself (bubble/sources/actions) is already intact.
+      pipelineMsg.innerHTML = restoreCtx.html;
+      if (restoreCtx.kind === 'retry'){
+        wireRetryBlock(pipelineMsg, userText, images);
+        if (offline){ queueOfflineRetry(pipelineMsg, userText, images); showTransientNote(pipelineMsg, "Still offline — will retry automatically once you're back online."); }
+        else showTransientNote(pipelineMsg, "Still couldn't get a reply (" + errorMsg + ").");
+      } else {
+        wireMsgActions(pipelineMsg, restoreCtx.resultText, userText, images, true);
+        wireSourcesToggle(pipelineMsg);
+        wireSuggestions(pipelineMsg);
+        showTransientNote(pipelineMsg, offline ? "You're offline — your previous response is unchanged." : "Couldn't regenerate (" + errorMsg + ") — your previous response is unchanged.");
+      }
+    } else {
+      // On a fresh send, the previous last message hasn't been demoted yet at this point,
+      // so it still holds its regenerate/footer — nothing lost here either.
+      if (offline){
+        replacePipelineWithResult(pipelineMsg, offlineBlockHtml());
+        wireRetryBlock(pipelineMsg, userText, images);
+        queueOfflineRetry(pipelineMsg, userText, images);
+      } else {
+        replacePipelineWithResult(pipelineMsg, retryBlockHtml(errorMsg, true));
+        wireRetryBlock(pipelineMsg, userText, images);
+      }
+    }
+    return;
+  }
+
+  if (!isRegenerate) demoteAssistantMessage(lastAssistantMsgEl); // only now that we know this new reply will actually land
+
+  const verifiedHtml = buildVerifiedHtml(verifiedLabels);
+  const sourcesHtml = buildSourcesHtml(chunks, usedFallback);
+  const suggestionsHtml = buildSuggestionsHtml(suggestions, suggestionsLead);
+  const actionsHtml = buildMsgActionsHtml(true); // this message is always the new "last" once it lands
+  pipelineMsg.innerHTML = verifiedHtml + '<div class="bubble-assistant"></div>';
+  const bubbleEl = pipelineMsg.querySelector('.bubble-assistant');
+  scrollDownIfNear();
+  revealWords(bubbleEl, resultText, () => {
+    pipelineMsg.insertAdjacentHTML('beforeend', suggestionsHtml + sourcesHtml + actionsHtml);
+    wireMsgActions(pipelineMsg, resultText, userText, images, true);
+    wireSourcesToggle(pipelineMsg);
+    wireSuggestions(pipelineMsg);
+    scrollDownIfNear();
+  });
+  lastAssistantMsgEl = pipelineMsg;
+  const doSaveReply = () => saveMessage('assistant', resultText, [], { replaceRef: isRegenerate ? msgRowRef.get(pipelineMsg) : null, createdAt: pipelineMsg.dataset.ts }).then(ref => trackSave(pipelineMsg, ref, doSaveReply));
+  doSaveReply();
+  maybeGenerateChatTitle(userText, resultText); // fire-and-forget; no-ops after the first exchange
+}
+
+function showTransientNote(msgEl, text){
+  const note = document.createElement('div');
+  note.className = 'err msg-transient-note';
+  note.textContent = text;
+  msgEl.insertBefore(note, msgEl.firstChild);
+  setTimeout(() => note.remove(), 4500);
+}
+
+let isGenerating = false; // guards against overlapping generations from suggestion chips / quickstart / send firing close together
+
+async function runPipeline(userText, imageAttachments){
+  const images = imageAttachments || [];
+  const stageEl = addPipeline();
+  const pipelineMsg = stageEl.closest('.msg');
+  isGenerating = true;
+  try { await runGeneration(pipelineMsg, stageEl, userText, images, false); }
+  finally { isGenerating = false; }
+}
+
+// Clears the existing message's content and regenerates in place — the old reply is replaced,
+// not appended-below-with-a-duplicate. Reuses the same .msg element throughout. Snapshots the
+// current content first so runGeneration can restore it if the regeneration attempt fails.
+async function regenerateInPlace(msgEl, userText, imageAttachments){
+  const images = imageAttachments || [];
+  const previousHtml = msgEl.innerHTML;
+  const bubbleEl = msgEl.querySelector('.bubble-assistant');
+  const previousResultText = bubbleEl ? bubbleRawText(bubbleEl) : '';
+  const kind = bubbleEl ? 'reply' : 'retry';
+  msgEl.innerHTML = `<div class="pipeline">${PIPELINE_EQ_SVG}<span class="stage">Thinking…</span></div>`;
+  scrollDownIfNear();
+  const stageEl = msgEl.querySelector('.stage');
+  isGenerating = true;
+  try { await runGeneration(msgEl, stageEl, userText, images, true, { html: previousHtml, resultText: previousResultText, kind }); }
+  finally { isGenerating = false; }
+}
+
+function submit(){
+  if (isGenerating) return;
+  const text = input.value.trim();
+  if (!text && !pendingImages.length) return;
+  const imgsForBubble = pendingImages.map(img => img.dataUrl);
+  const imgsForApi = pendingImages.slice();
+  addUserMsg(text || '(image)', imgsForBubble);
+  const userEl = lastUserMsgEl;
+  // Images are persisted as real data (compressed on attach — see compressImage).
+  const mediaForStorage = imgsForApi.map(img => ({ type: 'image', mimeType: img.mimeType, dataUrl: img.dataUrl }));
+  const doSaveUser = () => saveMessage('user', text || '(image)', mediaForStorage, { createdAt: userEl.dataset.ts }).then(ref => trackSave(userEl, ref, doSaveUser));
+  doSaveUser();
+  input.value = '';
+  input.style.height = 'auto';
+  clearAttachments();
+  sendBtn.disabled = true;
+  runPipeline(text, imgsForApi);
+}
+
+input.addEventListener('input', () => {
+  sendBtn.disabled = input.value.trim().length === 0 && pendingImages.length === 0;
+  input.style.height = 'auto';
+  input.style.height = Math.min(input.scrollHeight, 110) + 'px';
+});
+// Enter always makes a new line here — this is a script-writing tool, people type multi-line prompts.
+// Sending only happens via the send button, intentionally.
+sendBtn.addEventListener('click', submit);
+
+// ---------- Long-press message menu (touch devices) ----------
+// Replaces Chrome's native text-selection toolbar / "Web search" popup: long-pressing any message
+// opens our own menu instead — Select text · Copy · (assistant) thumbs up/down + Regenerate on the
+// last reply · (yours) Edit on the last message. Text selection is disabled on touch screens (see
+// the pointer:coarse CSS); "Select text" opens a sheet where selection works normally. Desktop
+// mouse users keep the browser's normal behavior.
+const msgMenu = document.getElementById('msg-menu');
+const toastEl = document.getElementById('toast');
+const selectOverlay = document.getElementById('select-overlay');
+const selectBody = document.getElementById('select-body');
+const ICON_SELECT = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4h6M9 20h6M12 4v16"/></svg>';
+let menuOpenedAt = 0, menuBubble = null;
+
+function showToast(text){
+  toastEl.textContent = text;
+  toastEl.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toastEl.classList.remove('show'), 1500);
+}
+async function copyText(text){
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e2) {}
+    ta.remove();
+  }
+  showToast('Copied');
+}
+function closeMsgMenu(){
+  msgMenu.classList.remove('open');
+  if (menuBubble){ menuBubble.classList.remove('msg-pressed'); menuBubble = null; }
+}
+function openSelectSheet(text){
+  selectBody.textContent = text;
+  selectOverlay.dataset.text = text;
+  selectOverlay.classList.add('open');
+}
+document.getElementById('select-done-btn').addEventListener('click', () => selectOverlay.classList.remove('open'));
+document.getElementById('select-copyall-btn').addEventListener('click', () => copyText(selectOverlay.dataset.text || ''));
+selectOverlay.addEventListener('click', (e) => { if (e.target === selectOverlay) selectOverlay.classList.remove('open'); });
+
+function openMsgMenu(bubbleEl, x, y){
+  const msgEl = bubbleEl.closest('.msg');
+  if (!msgEl) return;
+  const isUser = msgEl.classList.contains('user');
+  const text = isUser
+    ? ((msgEl.querySelector('.bubble-user-text') || {}).textContent || '').trim()
+    : stripMarkdown(bubbleRawText(msgEl.querySelector('.bubble-assistant'))).trim();
+  const items = [];
+  if (text){
+    items.push({ label: 'Select text', icon: ICON_SELECT, run: () => openSelectSheet(text) });
+    items.push({ label: 'Copy', icon: ICON_COPY, run: () => copyText(text) });
+  }
+  if (isUser){
+    const editBtn = msgEl.querySelector('[data-action="edit"]');
+    if (editBtn && !isGenerating) items.push({ label: 'Edit', icon: ICON_EDIT, run: () => editBtn.click() });
+  } else {
+    const up = msgEl.querySelector('[data-action="up"]');
+    const down = msgEl.querySelector('[data-action="down"]');
+    const retry = msgEl.querySelector('[data-action="retry"]');
+    if (up) items.push({ label: 'Good response', icon: ICON_THUMBS_UP, active: up.classList.contains('active'), run: () => up.click() });
+    if (down) items.push({ label: 'Bad response', icon: ICON_THUMBS_DOWN, active: down.classList.contains('active'), run: () => down.click() });
+    if (retry && !isGenerating) items.push({ label: 'Regenerate', icon: ICON_RETRY, run: () => retry.click() });
+  }
+  if (!items.length) return;
+
+  msgMenu.innerHTML = '';
+  items.forEach(it => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    if (it.active) b.classList.add('active');
+    b.innerHTML = `${it.icon}<span>${it.label}</span>`;
+    b.addEventListener('click', () => { closeMsgMenu(); it.run(); });
+    msgMenu.appendChild(b);
+  });
+  if (menuBubble) menuBubble.classList.remove('msg-pressed');
+  menuBubble = bubbleEl;
+  bubbleEl.classList.add('msg-pressed');
+  msgMenu.classList.add('open');
+  const w = msgMenu.offsetWidth, h = msgMenu.offsetHeight;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const left = Math.min(Math.max(12, x - w / 2), vw - w - 12);
+  let top = y - h - 16;
+  if (top < 70) top = Math.min(y + 24, vh - h - 12);
+  msgMenu.style.left = left + 'px';
+  msgMenu.style.top = top + 'px';
+  menuOpenedAt = Date.now();
+}
+
+let lpTimer = null, lpStart = null, lpFired = false;
+const isTouchUI = () => window.matchMedia('(pointer:coarse)').matches;
+thread.addEventListener('touchstart', (e) => {
+  if (!isTouchUI()) return;
+  const bubble = e.target.closest && e.target.closest('.bubble-assistant, .bubble-user');
+  if (!bubble || e.target.closest('.edit-wrap, a, button') || bubble.classList.contains('typing')) return;
+  const t = e.touches[0];
+  lpStart = { x: t.clientX, y: t.clientY };
+  lpFired = false;
+  clearTimeout(lpTimer);
+  lpTimer = setTimeout(() => {
+    lpFired = true;
+    if (navigator.vibrate) navigator.vibrate(12);
+    openMsgMenu(bubble, lpStart.x, lpStart.y);
+  }, 420);
+}, { passive: true });
+thread.addEventListener('touchmove', (e) => {
+  if (!lpTimer) return;
+  const t = e.touches[0];
+  if (Math.abs(t.clientX - lpStart.x) > 10 || Math.abs(t.clientY - lpStart.y) > 10){ clearTimeout(lpTimer); lpTimer = null; }
+}, { passive: true });
+['touchend', 'touchcancel'].forEach(ev => thread.addEventListener(ev, (e) => {
+  clearTimeout(lpTimer); lpTimer = null;
+  if (lpFired && e.cancelable) e.preventDefault(); // swallow the click that would follow the long-press
+}, { passive: false }));
+thread.addEventListener('contextmenu', (e) => {
+  if (isTouchUI() && e.target.closest && e.target.closest('.bubble-assistant, .bubble-user')) e.preventDefault();
+});
+document.addEventListener('pointerdown', (e) => {
+  if (!msgMenu.classList.contains('open') || Date.now() - menuOpenedAt < 450) return;
+  if (!msgMenu.contains(e.target)) closeMsgMenu();
+}, true);
+thread.addEventListener('scroll', closeMsgMenu, { passive: true });
+window.addEventListener('resize', closeMsgMenu);
+
+// --- Image attachment (up to MAX_IMAGES per message) ---
+// Gemini (gemini-2.5-flash) accepts images natively via inline_data. Groq's automatic backup
+// model (openai/gpt-oss-120b) is text-only, so if Gemini is down AND an image is attached, the
+// fallback switches to a vision-capable Groq model (Llama 4 Scout) instead — see callAI below.
+// pendingImages resets after every send, so attaching new images on your NEXT message in the
+// same chat works exactly the same way — this isn't a once-per-chat limit.
+const MAX_IMAGES = 4;
+let pendingImages = []; // [{ mimeType, base64, dataUrl }, ...]
+const attachBtn = document.getElementById('attach-btn');
+const attachFileInput = document.getElementById('attach-file-input');
+const attachPreview = document.getElementById('attach-preview');
+
+// Resizes/re-encodes to a sane max size before it ever touches state — both the request to
+// Gemini/Groq and (new) persisted chat history use this smaller version. Keeps a multi-image
+// message from blowing past Supabase's row/column size in a hurry, and it's plenty of
+// resolution for reading a scoreboard, a stat graphic, or a photo in a script request.
+function compressImage(file, maxDim = 1024, quality = 0.72){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Could not read file'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Could not decode image'));
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim){
+          const scale = maxDim / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve({ mimeType: 'image/jpeg', base64: dataUrl.split(',')[1], dataUrl });
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+attachBtn.addEventListener('click', () => attachFileInput.click());
+attachFileInput.addEventListener('change', () => {
+  const files = Array.from(attachFileInput.files || []).filter(f => f.type.startsWith('image/'));
+  const room = MAX_IMAGES - pendingImages.length;
+  const toAdd = files.slice(0, room);
+  if (files.length > room){
+    authNoteTemp('Up to ' + MAX_IMAGES + ' images per message — extra ones were skipped.');
+  }
+  toAdd.forEach(async file => {
+    try {
+      const img = await compressImage(file);
+      pendingImages.push(img);
+      renderAttachPreview();
+      sendBtn.disabled = input.value.trim().length === 0 && pendingImages.length === 0;
+    } catch (e) {
+      authNoteTemp("Couldn't process that image — try a different one.");
+    }
+  });
+  attachFileInput.value = '';
+});
+function authNoteTemp(msg){
+  // Lightweight inline warning shown briefly above the composer — reuses the attach-preview
+  // area's flow rather than introducing another toast system.
+  const warn = document.createElement('div');
+  warn.className = 'attach-warn';
+  warn.textContent = msg;
+  attachPreview.parentElement.insertBefore(warn, attachPreview);
+  setTimeout(() => warn.remove(), 2600);
+}
+function renderAttachPreview(){
+  if (!pendingImages.length){ attachPreview.style.display = 'none'; attachPreview.innerHTML = ''; return; }
+  attachPreview.style.display = 'flex';
+  attachPreview.innerHTML = pendingImages.map((img, i) =>
+    `<div class="attach-thumb"><img src="${img.dataUrl}"><span class="x" data-idx="${i}">✕</span></div>`
+  ).join('');
+  attachPreview.querySelectorAll('.x').forEach(x => {
+    x.addEventListener('click', () => removeAttachment(parseInt(x.dataset.idx, 10)));
+  });
+}
+function removeAttachment(idx){
+  pendingImages.splice(idx, 1);
+  renderAttachPreview();
+  sendBtn.disabled = input.value.trim().length === 0 && pendingImages.length === 0;
+}
+function clearAttachments(){
+  pendingImages = [];
+  renderAttachPreview();
+  sendBtn.disabled = input.value.trim().length === 0 && pendingImages.length === 0;
+}
+
+// --- Boot ---
+// supabase fires onAuthStateChange once immediately with the current session (or null),
+// and that handler already creates/opens the right chat — nothing else needed here.
+// --- Native bridge: sign-in return trip + in-app updates (no-ops on the website) ---
+let lastDeepLink = '';
+async function handleAuthDeepLink(url){
+  if (typeof url !== 'string' || url.indexOf('com.creatorbooth.app://') !== 0 || url === lastDeepLink) return;
+  lastDeepLink = url;
+  try {
+    const hash = url.indexOf('#'), qs = url.indexOf('?');
+    const query = new URLSearchParams(qs >= 0 ? url.slice(qs + 1, hash > qs ? hash : undefined) : '');
+    const frag = new URLSearchParams(hash >= 0 ? url.slice(hash + 1) : '');
+    const get = (k) => frag.get(k) || query.get(k);
+    const problem = get('error_description') || get('error');
+    if (problem) throw new Error(problem);
+    let result;
+    if (get('code')) result = await supabase.auth.exchangeCodeForSession(get('code'));
+    else if (get('access_token') && get('refresh_token')) result = await supabase.auth.setSession({ access_token: get('access_token'), refresh_token: get('refresh_token') });
+    else return;
+    if (result.error) throw result.error;
+    try { const B = nativePlugin('Browser'); if (B) await B.close(); } catch (e) { /* Android can't close the tab itself; harmless */ }
+  } catch (err) {
+    openAuthView();
+    authNote.textContent = 'Sign-in failed: ' + (err && err.message ? err.message : err);
+  }
+}
+
+let updateState = 'idle'; // idle | checking | ready
+let lastUpdateCheck = 0;
+function showUpdateBanner(bundle){
+  if (document.getElementById('update-banner')) return;
+  const bar = document.createElement('div');
+  bar.id = 'update-banner';
+  bar.style.cssText = 'position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:9999;display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:14px;font-size:13px;color:var(--text);box-shadow:0 6px 24px rgba(0,0,0,.4)';
+  const msg = document.createElement('span');
+  msg.style.flex = '1';
+  msg.textContent = 'A new version is ready.';
+  const btn = document.createElement('button');
+  btn.textContent = 'Restart';
+  btn.style.cssText = 'background:var(--accent);color:#fff;border:0;border-radius:9px;padding:7px 14px;font:inherit;font-weight:600;cursor:pointer';
+  btn.addEventListener('click', async () => {
+    btn.disabled = true; btn.textContent = 'Updating…';
+    try { await nativePlugin('CapacitorUpdater').set({ id: bundle.id }); } catch (e) { btn.disabled = false; btn.textContent = 'Restart'; }
+  });
+  const later = document.createElement('button');
+  later.textContent = 'Later';
+  later.style.cssText = 'background:none;color:var(--text-dim);border:0;font:inherit;cursor:pointer';
+  later.addEventListener('click', () => bar.remove());
+  bar.append(msg, later, btn);
+  document.body.appendChild(bar);
+}
+// Compares the build number shipped inside this copy of the app (./version.json) with the newest
+// one published on GitHub. If newer, downloads just the web files quietly, queues them for the
+// next launch, and offers a one-tap restart. Never blocks or breaks the app if anything fails.
+async function checkForAppUpdate(){
+  if (!NATIVE || updateState !== 'idle' || UPDATE_REPO.indexOf('__') === 0) return;
+  if (Date.now() - lastUpdateCheck < 10 * 60 * 1000) return;
+  const Updater = nativePlugin('CapacitorUpdater'), Http = nativePlugin('CapacitorHttp');
+  if (!Updater || !Http) return;
+  updateState = 'checking'; lastUpdateCheck = Date.now();
+  try {
+    const base = 'https://github.com/' + UPDATE_REPO + '/releases/download/latest/';
+    const local = await fetch('./version.json', { cache: 'no-store' }).then((r) => r.json());
+    const remote = (await Http.get({ url: base + 'version.json?t=' + Date.now(), responseType: 'json' })).data;
+    if (!remote || !(Number(remote.build) > Number(local.build))) { updateState = 'idle'; return; }
+    const bundle = await Updater.download({ url: base + 'bundle.zip', version: String(remote.version) });
+    await Updater.next({ id: bundle.id });   // applies on next launch even if the banner is ignored
+    updateState = 'ready';
+    showUpdateBanner(bundle);
+  } catch (err) {
+    updateState = 'idle'; // offline / GitHub hiccup: try again at the next check
+  }
+}
+if (NATIVE){
+  const AppPlugin = nativePlugin('App');
+  if (AppPlugin){
+    AppPlugin.addListener('appUrlOpen', (e) => handleAuthDeepLink(e && e.url));
+    AppPlugin.getLaunchUrl().then((l) => { if (l && l.url) handleAuthDeepLink(l.url); }).catch(() => {});
+    AppPlugin.addListener('appStateChange', (st) => { if (st && st.isActive) checkForAppUpdate(); });
+  }
+  checkForAppUpdate();
+}
+
+showView('chat');
+// Tell the updater this version started fine. If a downloaded update ever broke startup, this line
+// would never run and the app rolls back to the previous working version by itself.
+if (NATIVE){ try { const U = nativePlugin('CapacitorUpdater'); if (U) U.notifyAppReady(); } catch (e) {} }
+</script>
+</body>
+</html>
