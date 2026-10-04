@@ -19,7 +19,7 @@
     var m=document.querySelector('meta[name="theme-color"]'); if(m)m.setAttribute('content',COL[t]);
     try{
       var SB=window.NativeBridge&&window.NativeBridge.StatusBar;
-      if(SB){ SB.setBackgroundColor({color:COL[t]}).catch(function(){}); SB.setStyle({style:t==='dark'?'DARK':'LIGHT'}).catch(function(){}); }
+      if(SB){ SB.setOverlaysWebView({overlay:false}).catch(function(){}); /* keep the page BELOW the status bar (the plugin defaults to drawing under it) */ SB.setBackgroundColor({color:COL[t]}).catch(function(){}); SB.setStyle({style:t==='dark'?'DARK':'LIGHT'}).catch(function(){}); }
     }catch(e){}
   };
   window.applyTheme();
@@ -52,7 +52,7 @@ body{
 }
 
 /* header */
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;flex-shrink:0}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;padding-top:calc(16px + env(safe-area-inset-top,0px));flex-shrink:0}
 .hdr-icon{width:22px;height:22px;color:var(--text-dim);cursor:pointer}
 .hdr-title{font-size:13px;font-weight:600;color:var(--text-dim);letter-spacing:.02em}
 .hdr-tagline{font-size:8.5px;font-weight:600;color:var(--accent-dim);letter-spacing:.14em}
@@ -1263,7 +1263,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.2.4';
+const APP_VERSION = '1.2.5';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;

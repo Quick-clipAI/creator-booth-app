@@ -1,6 +1,6 @@
 {
   "name": "creator-booth-app",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "private": true,
   "description": "Android wrapper for Creator Booth (creator-boot.vercel.app) \u2014 bundles the same web app locally for instant offline load, with all API calls pointed at the live backend.",
   "scripts": {

@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.2.4)
+# Creator Booth — Android app (v1.2.5)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -15,6 +15,13 @@ icon) need people to install a new APK.
   status bar to match the app colour; everything else in v1.3 arrives as a normal web update.
 - Appearance setting (System / Light / Dark), short/deep reply toggle, offline-first chat loading,
   profile name + Google photo in the sidebar, no auto-scroll while a reply types out, new thinking animation.
+
+## v1.2.5 — header under the status bar (fix)
+
+The StatusBar plugin draws the app under the phone's status bar by default, which hid the top of the header.
+Fixed two ways: the web code now turns that off at startup (arrives as a normal in-app update), and
+`capacitor.config.json` sets it off natively (needs the new APK, once). Android 15+ phones are handled by
+`adjustMarginsForEdgeToEdge: "auto"`.
 
 ## One-time setup
 
@@ -60,7 +67,7 @@ If you change anything native (`package.json` plugins, `assets/` icons, `capacit
 
 ## Version numbers
 
-Only ever bump the **last** number (1.2.4 → 1.2.5), in `package.json` here and `APP_VERSION` in the website's `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
+Only ever bump the **last** number (1.2.5 → 1.2.6), in `package.json` here and `APP_VERSION` in the website's `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
 
 ## What's in here
 

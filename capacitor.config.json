@@ -4,13 +4,19 @@
   "webDir": "www",
   "backgroundColor": "#000000",
   "android": {
-    "allowMixedContent": false
+    "allowMixedContent": false,
+    "adjustMarginsForEdgeToEdge": "auto"
   },
   "plugins": {
     "CapacitorUpdater": {
       "autoUpdate": false,
       "resetWhenUpdate": true,
       "statsUrl": ""
+    },
+    "StatusBar": {
+      "overlaysWebView": false,
+      "backgroundColor": "#000000",
+      "style": "DARK"
     }
   }
 }
