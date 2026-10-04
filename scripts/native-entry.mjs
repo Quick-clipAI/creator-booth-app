@@ -3,6 +3,7 @@
 import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
+import { StatusBar } from '@capacitor/status-bar';
 import { CapacitorUpdater } from '@capgo/capacitor-updater';
 
-window.NativeBridge = { Capacitor, CapacitorHttp, App, Browser, CapacitorUpdater };
+window.NativeBridge = { Capacitor, CapacitorHttp, App, Browser, CapacitorUpdater, StatusBar };

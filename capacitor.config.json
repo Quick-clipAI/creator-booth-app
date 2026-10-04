@@ -2,7 +2,7 @@
   "appId": "com.creatorbooth.app",
   "appName": "Creator Booth",
   "webDir": "www",
-  "backgroundColor": "#1a1918",
+  "backgroundColor": "#000000",
   "android": {
     "allowMixedContent": false
   },
