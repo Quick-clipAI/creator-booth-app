@@ -1,0 +1,14 @@
+{
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 60
+    }
+  },
+  "redirects": [
+    {
+      "source": "/download",
+      "destination": "https://github.com/Quick-clipAI/creator-booth-app/releases/download/latest/creator-booth.apk",
+      "permanent": false
+    }
+  ]
+}
