@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.2.5)
+# Creator Booth — Android app (v1.2.7)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -22,6 +22,20 @@ The StatusBar plugin draws the app under the phone's status bar by default, whic
 Fixed two ways: the web code now turns that off at startup (arrives as a normal in-app update), and
 `capacitor.config.json` sets it off natively (needs the new APK, once). Android 15+ phones are handled by
 `adjustMarginsForEdgeToEdge: "auto"`.
+
+## v1.2.6 — web only
+
+Search tags and website-only visitor counts were added to `index.html`. The visitor-count script never runs in the
+app (its address is https://localhost). No new APK needed.
+
+## v1.2.7 — modes and fixes (web only)
+
+- Real **Analysis / Banter** modes with a visible switcher on the composer. New chats always start in Analysis;
+  each chat remembers its own mode on that device.
+- Banter takes the profile's favourite club's side, and searches before joking.
+- Club-name lookup and chat titles now use Groq first, so each message spends one Gemini request instead of two or three.
+- AI requests time out instead of hanging; errors are plainer and stay on screen longer.
+- No new APK needed.
 
 ## One-time setup
 
@@ -67,7 +81,7 @@ If you change anything native (`package.json` plugins, `assets/` icons, `capacit
 
 ## Version numbers
 
-Only ever bump the **last** number (1.2.5 → 1.2.6), in `package.json` here and `APP_VERSION` in the website's `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
+Only ever bump the **last** number (1.2.7 → 1.2.8), in `package.json` here and `APP_VERSION` in the website's `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
 
 ## What's in here
 
