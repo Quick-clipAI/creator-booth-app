@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.2.7)
+# Creator Booth — Android app (v1.3.0)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -27,6 +27,27 @@ Fixed two ways: the web code now turns that off at startup (arrives as a normal 
 
 Search tags and website-only visitor counts were added to `index.html`. The visitor-count script never runs in the
 app (its address is https://localhost). No new APK needed.
+
+## v1.3.0 — live web research (web + Vercel)
+
+- If Gemini's own search is refused (common on free keys), the app asks Groq's search model to research the
+  question, then writes the answer with that research and its sources. Remembered for 3 hours. Short chit-chat
+  skips it. If research fails, the answer carries an honest "No live web search this time" note.
+- Football proxy fixed (it was losing the endpoint name and API-Football answered "NOT AUTORIZED"); only the
+  endpoints the app uses are allowed.
+- Gemini proxy accepts a list of models (`GEMINI_MODEL=a,b,c`) and moves to the next one if a model is gone or busy.
+- Web update only: no new APK needed.
+
+## v1.2.9 — honest backup AI (web only)
+
+When the backup AI answers (no web search), it is now told it cannot confirm recent events, so it no longer says
+things like "that final never happened". It says it cannot verify and suggests trying again.
+
+## v1.2.8 — Gemini model change (web + Vercel)
+
+`gemini-2.5-flash` is being shut down by Google on 16 Oct 2026. The website's `/api/gemini` now uses `gemini-3.5-flash`
+(set `GEMINI_MODEL` in Vercel to change it without code). The "Backup AI used" note now says why Gemini failed.
+Needs a Vercel deploy of the website; the app uses the same endpoint, so no new APK.
 
 ## v1.2.7 — modes and fixes (web only)
 
@@ -81,7 +102,11 @@ If you change anything native (`package.json` plugins, `assets/` icons, `capacit
 
 ## Version numbers
 
-Only ever bump the **last** number (1.2.7 → 1.2.8), in `package.json` here and `APP_VERSION` in the website's `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
+Count like an odometer. Each release raises the **last** number by one. When the last number would pass 9, it goes back to 0 and the **middle** number goes up by one. When the middle number would pass 9, it goes back to 0 and the **first** number goes up by one.
+
+1.3.0 → 1.3.1 → 1.3.2 → 1.3.1 … 1.9.9 → **2.0.0**
+
+Change it in `package.json` and in `APP_VERSION` in `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
 
 ## What's in here
 

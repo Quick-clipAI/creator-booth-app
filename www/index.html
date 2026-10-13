@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Creator Booth</title>
+<title>Creator Booth — Football AI for match analysis, scouting &amp; scripts</title>
+<meta name="description" content="Creator Booth is a free football AI assistant for match analysis, player scouting, up-to-date research and video scripts. Use it on the web or as an Android app."/>
+<link rel="canonical" href="https://creator-boot.vercel.app/"/>
+<meta name="robots" content="index,follow,max-image-preview:large"/>
 <meta name="theme-color" content="#000000"/>
 <script>
 /* Theme: "system" (follow the phone), "light" or "dark". Runs before first paint so there is no flash.
@@ -31,8 +34,25 @@
 <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"/>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
 <meta property="og:title" content="Creator Booth — Football AI"/>
+<meta property="og:description" content="Creator Booth is a free football AI assistant for match analysis, player scouting, up-to-date research and video scripts. Use it on the web or as an Android app."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://creator-boot.vercel.app/"/>
+<meta property="og:site_name" content="Creator Booth"/>
 <meta property="og:image" content="https://creator-boot.vercel.app/icon-512.png"/>
 <meta name="twitter:card" content="summary"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Creator Booth","url":"https://creator-boot.vercel.app/","description":"Creator Booth is a free football AI assistant for match analysis, player scouting, up-to-date research and video scripts. Use it on the web or as an Android app.","applicationCategory":"SportsApplication","operatingSystem":"Web, Android","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<script>
+/* Website-only visitor counts (Vercel Web Analytics: cookieless, anonymous). Never runs inside the Android app
+   (its address is https://localhost), and is skipped when the visitor's browser sends Do Not Track. */
+(function(){
+  try{
+    if(location.protocol!=='https:'||location.hostname==='localhost')return;
+    if(navigator.doNotTrack==='1'||window.doNotTrack==='1')return;
+    window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};
+    var s=document.createElement('script');s.defer=true;s.src='/_vercel/insights/script.js';document.head.appendChild(s);
+  }catch(e){}
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
 <style>
@@ -669,6 +689,21 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
 .promo-links{display:flex;justify-content:space-between;margin-top:10px}
 .promo-links button{background:none;border:0;color:var(--text-dim);font:inherit;font-size:13.5px;cursor:pointer;padding:6px 2px}
 @media (min-width:600px){#app-promo{align-items:center}.promo-card{border-radius:20px}}
+
+/* modes */
+.mode-pill{cursor:pointer;user-select:none}
+.mode-pill .mp-caret{opacity:.6}
+.mode-pill.banter{border-color:var(--accent);color:var(--accent);background:rgba(201,100,66,.10)}
+.mode-menu{position:fixed;z-index:40;min-width:240px;max-width:calc(100vw - 24px);background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:6px;
+  box-shadow:0 14px 34px -10px rgba(0,0,0,.6);display:none}
+.mode-menu.show{display:block}
+.mm-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;color:var(--text)}
+.mm-item:active,.mm-item.active{background:var(--surface3)}
+.mm-ic{color:var(--accent);display:inline-flex}
+.mm-t{font-size:14px;font-weight:600}
+.mm-d{font-size:12px;color:var(--text-dim);margin-top:1px}
+.mm-check{margin-left:auto;color:var(--accent);font-size:14px}
+.mm-foot{font-size:12px;color:var(--text-faint);padding:8px 10px 6px;border-top:1px solid var(--border-soft);margin-top:4px}
 </style>
 </head>
 <body>
@@ -1105,9 +1140,10 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
       </button>
       <div class="mode-pill-wrap">
-        <div class="mode-pill" id="mode-pill">
+        <div class="mode-pill" id="mode-pill" role="button" tabindex="0" aria-haspopup="true">
           <span class="mp-icon" id="mode-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M12 17v4M4.5 9l3 1M16.5 9l3 1M6 17l2.5-3M18 17l-2.5-3"/></svg></span>
-          <span id="mode-pill-label">Football</span>
+          <span id="mode-pill-label">Analysis</span>
+          <svg class="mp-caret" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
         </div>
       </div>
       <button class="len-pill" id="len-pill" type="button" title="Reply length">
@@ -1159,7 +1195,8 @@ const PLAIN_TEXT_NOTE = ' Formatting: a spoken video script must be plain prose 
 
 const MODES = [
   {
-    id: 'football', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M12 17v4M4.5 9l3 1M16.5 9l3 1M6 17l2.5-3M18 17l-2.5-3"/></svg>', label: 'Football',
+    id: 'football', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M12 17v4M4.5 9l3 1M16.5 9l3 1M6 17l2.5-3M18 17l-2.5-3"/></svg>', label: 'Analysis',
+    desc: 'Facts, analysis, research & scripts',
     placeholder: 'Real Madrid latest signing…',
     heroSub: "Search a match, a player, or a topic — I'll gather what I can and draft it.",
     system:
@@ -1174,6 +1211,23 @@ Match the format to what's asked: a video script should be a punchy, spoken-styl
 If a block labeled "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth and never contradict it, even if it conflicts with what you remember — both come from a live sports data feed checked moments ago, which is more current than your training data. Use web search for anything those blocks don't cover, and never invent a stat, score, quote, or current manager/coach you can't support — in either register.
 
 If someone asks about something with no football angle at all, you can still just help them — don't force a football connection onto an unrelated request, but keep in mind football is this tool's actual purpose.` + PLAIN_TEXT_NOTE
+  },
+  {
+    id: 'banter', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2c2 3 4 5 4 8a4 4 0 01-8 0c0-1 .3-1.8.8-2.6.2.7.2 1.4.9 1.9C9.5 7 10.5 4.5 12 2z"/><path d="M8 14.5A4 4 0 1016 14.5"/></svg>', label: 'Banter',
+    desc: 'Rival jokes & hot takes, on your side',
+    placeholder: 'Who are we teasing today?',
+    heroSub: 'Banter mode is on — name a rival and I\'ll wind them up.',
+    system:
+`You are Creator Booth in BANTER MODE: a quick-witted football rivalry commentator for a content creator. The person chose Banter on purpose, so be funny, punchy and exaggerated for comic effect, the way real football banter culture is.
+
+Rules:
+- Facts first, jokes second. Before joking about any club or player, use web search to check the latest results, form, standings, trophies and news, so the banter is current and real. Never invent a score, quote or incident and state it as fact.
+- Stay in the person's corner (see the CLUB LOYALTY note below). Never side with their rivals and never defend a rival against the person's jab. If the person teases a rival, join in and go further.
+- If the message is a genuine factual question (a rumour check, a stat, a result), answer it truthfully in one or two plain lines first and say clearly if it is unverified, then add a short banter line. Never joke a rumour away as if it were fact.
+- Affectionate rivalry only: no slurs, no attacks on race, religion or nationality, no wishing harm, and no jokes about real tragedies such as deaths or serious injuries.
+- Keep it short and punchy unless asked for more.
+
+If a block labeled "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth.` + PLAIN_TEXT_NOTE
   }
 ];
 let currentModeId = 'football';
@@ -1263,7 +1317,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.2.5';
+const APP_VERSION = '1.3.0';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -1332,14 +1386,69 @@ window.applyTheme(); // re-run now that the native bridge exists, so the status 
   if (window.ResizeObserver) new ResizeObserver(set).observe(c); else window.addEventListener('resize', set);
 })();
 
-// --- Mode pill: tap opens a picker; picking a mode updates the pipeline ---
-// Mode pill is now a static badge — its icon/label are already correct in the HTML, and with
-// only one mode left there's nothing left to wire up here.
+// --- Modes: Analysis (default) and Banter. The pill always shows the active one; tap to switch. ---
+// Each chat remembers its own mode on this device; a NEW chat always starts in Analysis, so a
+// forgotten Banter setting can never leak into tomorrow's serious question.
+const CHAT_MODES_KEY = 'cb_chat_modes';
+function loadChatModes(){ try { return JSON.parse(localStorage.getItem(CHAT_MODES_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function saveChatMode(){
+  if (!currentChatId) return;
+  try {
+    const m = loadChatModes();
+    m[currentChatId] = currentModeId;
+    const keys = Object.keys(m);
+    if (keys.length > 300) keys.slice(0, keys.length - 300).forEach(k => delete m[k]);
+    localStorage.setItem(CHAT_MODES_KEY, JSON.stringify(m));
+  } catch (e) {}
+}
+function modePlaceholder(mode){
+  if (mode.id === 'football'){
+    const club = (currentProfile && currentProfile.favorite_club || '').trim();
+    return (club || 'Real Madrid') + ' latest signing…';
+  }
+  return mode.placeholder;
+}
+const modePill = document.getElementById('mode-pill');
+const modeMenu = document.createElement('div');
+modeMenu.className = 'mode-menu'; modeMenu.id = 'mode-menu';
+document.body.appendChild(modeMenu);
+function renderModePill(){
+  const m = currentMode();
+  document.getElementById('mode-pill-icon').innerHTML = m.icon;
+  document.getElementById('mode-pill-label').textContent = m.label;
+  modePill.classList.toggle('banter', m.id === 'banter');
+  input.placeholder = modePlaceholder(m);
+  const sub = document.getElementById('hero-sub'); if (sub) sub.textContent = m.heroSub;
+}
+function setMode(id, opts = {}){
+  currentModeId = MODES.some(m => m.id === id) ? id : 'football';
+  renderModePill();
+  if (!opts.silent){ saveChatMode(); showToast(currentModeId === 'banter' ? 'Banter mode on' : 'Analysis mode on'); }
+}
+function closeModeMenu(){ modeMenu.classList.remove('show'); }
+function openModeMenu(){
+  const club = (currentProfile && currentProfile.favorite_club || '').trim();
+  modeMenu.innerHTML = MODES.map(m => `<div class="mm-item${m.id === currentModeId ? ' active' : ''}" data-mode="${m.id}">
+      <span class="mm-ic">${m.icon}</span><span><div class="mm-t">${m.label}</div><div class="mm-d">${m.desc}</div></span>
+      ${m.id === currentModeId ? '<span class="mm-check">✓</span>' : ''}</div>`).join('') +
+    `<div class="mm-foot" id="mm-foot"></div>`;
+  document.getElementById('mm-foot').textContent = club ? ('Your club: ' + club + ' (change in Settings → Profile)') : 'No favourite club set — add it in Settings → Profile so Banter knows your side.';
+  const r = modePill.getBoundingClientRect();
+  modeMenu.style.bottom = (window.innerHeight - r.top + 8) + 'px';
+  modeMenu.classList.add('show');
+  modeMenu.style.left = Math.max(12, Math.min(r.left, window.innerWidth - modeMenu.offsetWidth - 12)) + 'px';
+  modeMenu.querySelectorAll('.mm-item').forEach(el => el.addEventListener('click', () => { setMode(el.dataset.mode); closeModeMenu(); }));
+}
+modePill.addEventListener('click', (e) => { e.stopPropagation(); modeMenu.classList.contains('show') ? closeModeMenu() : openModeMenu(); });
+document.addEventListener('click', (e) => { if (!modeMenu.contains(e.target)) closeModeMenu(); });
+window.addEventListener('resize', closeModeMenu);
+// renderModePill() runs after the profile variable exists (see just below `let currentProfile`)
 
 // Home quick-start cards: pre-fill a starter phrase and hand off to the composer for the
 // person to finish typing — same chat pipeline, no separate screen.
 document.querySelectorAll('.quickstart-card').forEach(card => {
   card.addEventListener('click', () => {
+    setMode(card.classList.contains('qc-banter-card') ? 'banter' : 'football');
     input.value = card.dataset.prefix || '';
     input.dispatchEvent(new Event('input'));
     input.focus();
@@ -1631,7 +1740,8 @@ document.getElementById('dots-delete').addEventListener('click', async () => {
 // --- Data layer: Supabase for signed-in users, localStorage fallback for guests ---
 let currentUser = null;
 let signedIn = false;
-let currentProfile = null;   // personalization survey data: { surname, other_names, nickname, referral_source, referral_other, use_case, favorite_club, notes, onboarded }
+let currentProfile = null;
+renderModePill();   // personalization survey data: { surname, other_names, nickname, referral_source, referral_other, use_case, favorite_club, notes, onboarded }
 let chats = [];              // sidebar list: [{id, title}]
 let currentChatId = null;
 let currentChatTitle = 'New chat';
@@ -1910,6 +2020,7 @@ newChatBtn.addEventListener('click', async () => {
     incognitoBtn.classList.remove('active');
   }
   startDraftChat();
+  setMode('football', { silent: true });
   thread.querySelectorAll('.msg').forEach(el => el.remove());
   resetSpacer();
   incognitoHero.style.display = 'none';
@@ -1937,6 +2048,7 @@ function accountPhotoUrl(){
   return /^https:\/\//.test(u) ? u : '';
 }
 function renderAccountArea(){
+  try { renderModePill(); } catch (e) {} // the placeholder uses the profile's favourite club
   const emailEl = document.getElementById('settings-email');
   if (emailEl) emailEl.textContent = signedIn ? currentUser.email : 'Guest — not signed in';
   if (signedIn){
@@ -2183,6 +2295,7 @@ async function openChatImpl(chatId, opts = {}){
   incognitoBtn.classList.remove('active');
   incognitoHero.style.display = 'none';
   currentChatId = chatId;
+  setMode(loadChatModes()[chatId] || 'football', { silent: true });
   const myToken = ++openChatToken;
   thread.querySelectorAll('.msg').forEach(el => el.remove());
   resetSpacer();
@@ -2334,18 +2447,7 @@ async function saveMessage(role, content, media = [], opts = {}){
 // showing "Generating title…", which is an honest enough fallback if titling quietly fails).
 async function generateChatTitle(userText, assistantText){
   try {
-    const res = await fetch(API_ORIGIN + '/api/gemini', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: `User: ${userText}\n\nAssistant: ${(assistantText || '').slice(0, 400)}` }] }],
-        system_instruction: { parts: [{ text: 'Write a short chat title (2-5 words, plain text, no quotes, no trailing punctuation) summarizing what this exchange is about — e.g. "Barcelona vs Madrid recap", "Pedri player scouting", "Man City manager check". Respond with ONLY the title, nothing else.' }] }
-      })
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    const cand = data && data.candidates && data.candidates[0];
-    const parts = cand && cand.content && cand.content.parts;
-    let title = parts ? parts.map(p => p.text || '').join('').trim() : '';
+    let title = ((await lightAI('Write a short chat title (2-5 words, plain text, no quotes, no trailing punctuation) summarizing what this exchange is about — e.g. "Barcelona vs Madrid recap", "Pedri player scouting", "Man City manager check". Respond with ONLY the title, nothing else.', `User: ${userText}\n\nAssistant: ${(assistantText || '').slice(0, 400)}`)) || '').trim();
     title = title.replace(/^["'`]+|["'`]+$/g, '').replace(/[.!]+$/, '').slice(0, 60);
     return title || null;
   } catch (e) {
@@ -2710,7 +2812,7 @@ function enterUserEditMode(msgEl){
     <textarea class="edit-textarea" rows="1"></textarea>
     <div class="edit-btn-row">
       <button class="edit-btn" data-action="cancel">Cancel</button>
-      <button class="edit-btn primary" data-action="save">Save</button>
+      <button class="edit-btn primary" data-action="save">Send</button>
     </div>
   </div>`;
   const textarea = bubble.querySelector('.edit-textarea');
@@ -2890,36 +2992,146 @@ function openAIResponseToGeminiShape(data){
 // grounding), and falls back to Groq automatically on ANY Gemini failure. Groq drops
 // the grounding tool silently (it doesn't support it), so a Groq-sourced answer comes
 // from the model's training data rather than live search — flagged via `provider`.
-function callAI(requestBody){
-  return fetch(API_ORIGIN + '/api/gemini', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
-  }).then(res => {
-    if (res.ok) return res.json().then(data => ({ data, provider: 'gemini' }));
+function fetchWithTimeout(url, opts, ms){
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctl.signal }).finally(() => clearTimeout(t));
+}
+// Turns raw provider errors into something a person can act on.
+function friendlyAiError(msg){
+  const m = String(msg || '');
+  if (/quota|RESOURCE_EXHAUSTED|\b429\b|rate.?limit|too large|tokens per (minute|day)/i.test(m)) return 'The AI has hit its request limit for now. Please try again in a little while.';
+  if (/abort|timed out|took too long/i.test(m)) return 'The AI took too long to answer. Please try again.';
+  return m || 'Something went wrong.';
+}
+async function callAI(requestBody){
+  let res;
+  try {
+    res = await fetchWithTimeout(API_ORIGIN + '/api/gemini', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
+    }, 60000);
+  } catch (e) {
+    if (e && e.name === 'AbortError') return groqFallback(requestBody, 'took too long');
+    throw e; // a real network failure: let the caller treat it as offline
+  }
+  if (res.ok) return { data: await res.json(), provider: 'gemini' };
+  const err = await res.json().catch(() => ({}));
+  if (res.status === 429 && requestBody.tools){
+    // Is it Gemini as a whole, or only its search tool? Retry the same request without the search tool.
+    try {
+      const plainBody = { ...requestBody }; delete plainBody.tools;
+      const r2 = await fetchWithTimeout(API_ORIGIN + '/api/gemini', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(plainBody)
+      }, 60000);
+      if (r2.ok) return { data: await r2.json(), provider: 'gemini', searchBlocked: true };
+    } catch (e) { /* fall through to the backup AI */ }
+  }
+  return groqFallback(requestBody, (err && err.error && err.error.message) || ('status ' + res.status));
+}
+function whyGeminiFailed(msg){
+  const m = String(msg || '');
+  if (/no longer available|not found|\b404\b|is not supported/i.test(m)) return 'Gemini model unavailable';
+  if (/quota|RESOURCE_EXHAUSTED|\b429\b|rate.?limit/i.test(m)) return 'Gemini request limit reached';
+  if (/API key|\b401\b|\b403\b|permission|PERMISSION_DENIED|GEMINI_API_KEY/i.test(m)) return 'Gemini key problem';
+  if (/took too long|abort|timed out/i.test(m)) return 'Gemini too slow';
+  return 'Gemini error';
+}
+async function groqFallback(requestBody, geminiMsg){
+  const baseSystem = requestBody.system_instruction && requestBody.system_instruction.parts &&
+    requestBody.system_instruction.parts.map(p => p.text).join('\n');
+  // The backup AI cannot search the web and its memory is out of date. Without this note it confidently
+  // "corrects" people about recent events (it told someone a 2026 final never happened). Be honest instead.
+  const hasResearch = /WEB RESEARCH \(live/.test(baseSystem || '');
+  const systemText = (baseSystem || '') + (hasResearch ? '' : `
 
-    return res.json().catch(() => ({})).then(err => {
-      const geminiMsg = (err && err.error && err.error.message) || ('status ' + res.status);
-      const systemText = requestBody.system_instruction && requestBody.system_instruction.parts &&
-        requestBody.system_instruction.parts.map(p => p.text).join('\n');
-      const messages = geminiContentsToOpenAIMessages(systemText, requestBody.contents);
-      const openAITools = geminiToolsToOpenAI(requestBody.tools);
-      const hasImage = requestHasImage(requestBody.contents);
-      const fallbackModel = hasImage ? GROQ_VISION_MODEL : GROQ_MODEL;
+IMPORTANT — LIVE SEARCH IS OFF FOR THIS ANSWER: you cannot browse the web and your own knowledge is out of date. Treat anything that may have happened recently (this season, the 2026 World Cup, transfers, injuries, rumours, results) as something you CANNOT confirm or deny. Never tell the person that an event "did not happen" or that a rumour is false because you do not remember it. Say plainly that you cannot verify it right now, share only background you are sure about, and suggest they try again in a few minutes for a live-checked answer. Facts in a VERIFIED DATA block (if present) are still reliable.`);
+  const messages = geminiContentsToOpenAIMessages(systemText, requestBody.contents);
+  const openAITools = geminiToolsToOpenAI(requestBody.tools);
+  const hasImage = requestHasImage(requestBody.contents);
+  const fallbackModel = hasImage ? GROQ_VISION_MODEL : GROQ_MODEL;
+  const res2 = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: fallbackModel, messages, tools: openAITools })
+  }, 45000);
+  if (!res2.ok){
+    const err2 = await res2.json().catch(() => ({}));
+    const groqMsg = (err2 && err2.error && (err2.error.message || err2.error)) || res2.status;
+    const imgNote = hasImage ? ' (including the attached image)' : '';
+    throw new Error('Gemini: ' + geminiMsg + ' — backup (Groq) also failed' + imgNote + ': ' + groqMsg);
+  }
+  return { data: openAIResponseToGeminiShape(await res2.json()), provider: 'groq', why: whyGeminiFailed(geminiMsg) };
+}
 
-      return fetch(API_ORIGIN + '/api/groq', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: fallbackModel, messages, tools: openAITools })
-      }).then(res2 => {
-        if (!res2.ok){
-          return res2.json().catch(() => ({})).then(err2 => {
-            const groqMsg = (err2 && err2.error && (err2.error.message || err2.error)) || res2.status;
-            const imgNote = hasImage ? ' (including the attached image)' : '';
-            throw new Error('Gemini: ' + geminiMsg + ' — backup (Groq) also failed' + imgNote + ': ' + groqMsg);
-          });
-        }
-        return res2.json().then(data2 => ({ data: openAIResponseToGeminiShape(data2), provider: 'groq' }));
-      });
-    });
+// Small helper tasks (finding club names, naming a chat) run on Groq first so they don't spend
+// the Gemini daily quota that real answers need; Gemini is only the backup for these.
+async function lightAI(systemText, userText){
+  try {
+    const r = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: GROQ_MODEL, messages: [{ role: 'system', content: systemText }, { role: 'user', content: userText }] })
+    }, 15000);
+    if (r.ok){
+      const d = await r.json();
+      const t = d && d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
+      if (t && t.trim()) return t;
+    }
+  } catch (e) { /* fall through to Gemini */ }
+  try {
+    const r = await fetchWithTimeout(API_ORIGIN + '/api/gemini', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: userText }] }], system_instruction: { parts: [{ text: systemText }] } })
+    }, 20000);
+    if (!r.ok) return '';
+    const d = await r.json();
+    const parts = d && d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts;
+    return parts ? parts.map(p => p.text || '').join('') : '';
+  } catch (e) { return ''; }
+}
+
+// ---- Live web research -----------------------------------------------------------------------
+// Gemini's built-in search is not available on every free key. When it isn't, a Groq search model
+// (groq/compound-mini, which can browse) does the looking-up, and the answer is then written with
+// that research in front of it. Every step fails safely: no research => a plain answer plus an honest note.
+const GROQ_SEARCH_MODEL = 'groq/compound-mini';
+const GSEARCH_KEY = 'cb_gsearch_down';
+function geminiSearchDown(){ try { return Number(localStorage.getItem(GSEARCH_KEY) || 0) > Date.now(); } catch (e) { return false; } }
+function markGeminiSearchDown(hours){ try { localStorage.setItem(GSEARCH_KEY, String(Date.now() + hours * 3600e3)); } catch (e) {} }
+function wantsLiveSearch(text){
+  const t = String(text || '').trim().toLowerCase();
+  if (t.length < 12) return false;
+  if (/^(hi|hello|hey|thanks|thank you|ok|okay|cool|nice|lol|good (morning|afternoon|evening|night))\b[\s!.?]*$/.test(t)) return false;
+  return true;
+}
+const NO_SEARCH_NOTE = `LIVE SEARCH IS OFF FOR THIS ANSWER: you cannot browse the web and your own knowledge is out of date. Treat anything that may have happened recently (this season, the 2026 World Cup, transfers, injuries, rumours, results) as something you CANNOT confirm or deny. Never tell the person that an event "did not happen" or that a rumour is false because you do not remember it. Say plainly that you cannot verify it right now, share only background you are sure about, and suggest they try again in a few minutes. Facts in a VERIFIED DATA block (if present) are still reliable.`;
+function researchNote(text){
+  return `=== WEB RESEARCH (live, from search) ===\n${text}\n=== END WEB RESEARCH ===\nUse WEB RESEARCH for news, rumours, transfers and anything recent, and VERIFIED DATA blocks for structured facts (scores, tables, squads, coach). If the person's message conflicts with either, say plainly what the evidence shows instead of just agreeing or denying. If sources disagree, or only report rumours, say so. Never present a rumour as done.`;
+}
+function collectSources(msg){
+  const out = [], seen = {};
+  const add = (u, t) => { u = String(u || '').replace(/[.,;)\]]+$/, ''); if (/^https?:\/\//.test(u) && !seen[u]){ seen[u] = 1; out.push({ web: { uri: u, title: t || '' } }); } };
+  ((msg && msg.executed_tools) || []).forEach(t => {
+    const rs = t && t.search_results && t.search_results.results;
+    if (Array.isArray(rs)) rs.forEach(x => add(x && x.url, x && x.title));
   });
+  String((msg && msg.content) || '').replace(/https?:\/\/[^\s)\]]+/g, u => { add(u, ''); return u; });
+  return out.slice(0, 8);
+}
+async function liveResearch(userText){
+  const today = new Date().toISOString().slice(0, 10);
+  const sys = `You are a football news researcher with live web search. Today is ${today}. Search the web for the latest reliable information about the user's message, then write a compact brief in plain text (maximum 180 words): the key facts with dates, what is official versus rumour, and where sources disagree. If the message contains a claim, say whether reliable sources support it. If you cannot find reliable information, say exactly that. Do not write opinions or jokes.`;
+  try {
+    const r = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: GROQ_SEARCH_MODEL, messages: [{ role: 'system', content: sys }, { role: 'user', content: String(userText).slice(0, 600) }] })
+    }, 30000);
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) return { text: '', chunks: [], why: (d && d.error && (d.error.message || d.error)) || ('status ' + r.status) };
+    const msg = d && d.choices && d.choices[0] && d.choices[0].message;
+    const text = String((msg && msg.content) || '').trim();
+    return text ? { text, chunks: collectSources(msg) } : { text: '', chunks: [], why: 'empty reply' };
+  } catch (e) {
+    return { text: '', chunks: [], why: (e && e.name === 'AbortError') ? 'too slow' : 'could not connect' };
+  }
 }
 
 /* ------------------------------------------------------------------ */
@@ -3008,18 +3220,7 @@ async function gatherFootballContext(queryText){
 /* ------------------------------------------------------------------ */
 async function extractClubNames(queryText){
   try {
-    const res = await fetch(API_ORIGIN + '/api/gemini', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: queryText }] }],
-        system_instruction: { parts: [{ text: 'Extract every real football (soccer) club/team name mentioned or clearly implied in the text below. Respond with ONLY a JSON array of club name strings, nothing else — e.g. ["Manchester City","Barcelona"]. If none, respond with exactly [].' }] }
-      })
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    const cand = data && data.candidates && data.candidates[0];
-    const parts = cand && cand.content && cand.content.parts;
-    const raw = parts ? parts.map(p => p.text || '').join('') : '[]';
+    const raw = (await lightAI('Extract every real football (soccer) club/team name mentioned or clearly implied in the text below. Respond with ONLY a JSON array of club name strings, nothing else — e.g. ["Manchester City","Barcelona"]. If none, respond with exactly [].', queryText)) || '[]';
     const match = raw.match(/\[[\s\S]*\]/);
     const arr = JSON.parse(match ? match[0] : '[]');
     return Array.isArray(arr) ? arr.filter(x => typeof x === 'string' && x.trim()).slice(0, 3) : [];
@@ -3170,7 +3371,7 @@ function buildVerifiedHtml(labels){
 // apps keep sources out of the way until you actually want them, rather than always dumping
 // full cards into the reply. wireSourcesToggle (called right after this HTML is inserted)
 // wires the expand/collapse.
-function buildSourcesHtml(chunks, usedFallback){
+function buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch){
   if (chunks && chunks.length){
     const favicons = chunks.slice(0, 3).map(c => {
       const w = c.web || {};
@@ -3203,8 +3404,11 @@ function buildSourcesHtml(chunks, usedFallback){
       <div class="sources-panel" hidden><div class="sources-list">${cards}</div></div>
     </div>`;
   }
+  if (noSearch && !usedFallback){
+    return `<div class="sources"><span class="sources-fallback-note">⚠ No live web search this time — verify facts before using</span></div>`;
+  }
   if (usedFallback){
-    return `<div class="sources"><span class="sources-fallback-note">⚠ Backup AI used — no live web search this time, verify facts before using</span></div>`;
+    return `<div class="sources"><span class="sources-fallback-note">⚠ Backup AI used${fallbackWhy ? ' (' + escapeHtml(fallbackWhy) + ')' : ''} — no live web search this time, verify facts before using</span></div>`;
   }
   return '';
 }
@@ -3284,9 +3488,13 @@ function favoriteClubNote(){
 - If you're writing a video SCRIPT (not a neutral research/fact answer) about a match involving ${club}, you may narrate it with a light, natural lean toward a ${club} fan's perspective — e.g. giving their good moments more emphasis, or a charitable read on an ambiguous refereeing decision — the way a fan channel naturally would. This is about narrative framing and word choice ONLY: every score, stat, scorer, card, and factual claim must stay exactly accurate regardless of framing — never soften a loss, invent a better result, or omit a real fact to protect the narrative. If the request is a neutral factual question (e.g. "who won", "who is the manager"), answer neutrally with no lean at all.`;
 }
 
-// Encourages the same "what should I ask next" affordance the person liked elsewhere — parsed
-// out of the visible text client-side (extractSuggestions) and rendered as tappable chips, so
-// none of this delimiter syntax should ever reach the person's eyes.
+// Banter mode: the favourite club decides whose side the jokes are on.
+function banterClubNote(){
+  const club = (currentProfile && currentProfile.favorite_club || '').trim();
+  if (!club) return `CLUB LOYALTY: the person has not set a favourite club, so stay neutral and tease both sides evenly. Do not pick a club for them. You may add one short line telling them they can set it in Settings → Profile.`;
+  return `CLUB LOYALTY: the person is a ${club} fan (from their profile). You are on ${club}'s side, always. Tease ${club}'s rivals and never side with them, even if earlier messages in this chat leaned another way (this note overrides them). If the person jokes about a rival (for example "Madrid going trophyless"), pile on with them. Only poke fun at ${club} itself if the person does it first, and keep that gentle.`;
+}
+
 // Encourages the same "what should I ask next" affordance the person liked elsewhere — parsed
 // out of the visible text client-side (extractSuggestions) and rendered as tappable chips, so
 // none of this delimiter syntax should ever reach the person's eyes. Includes a short spoken
@@ -3320,7 +3528,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
 
   let footballContext = '';
   let verifiedLabels = [];
-  if (mode.id === 'football'){
+  {
     // Checked silently — for a casual message like "hi" there's nothing to find, and the
     // stage label shouldn't claim we're doing football research when we might not be.
     const matchData = await gatherFootballContext(userText);
@@ -3347,6 +3555,8 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   let resultText = '';
   let chunks = [];
   let usedFallback = false;
+  let fallbackWhy = '';
+  let noSearch = false;
   let errorMsg = '';
   let suggestions = [];
   let suggestionsLead = '';
@@ -3360,17 +3570,39 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       const history = buildHistoryContents(pipelineMsg);
       const extraNotes = [currentDateTimeNote(), suggestionsNote(), replyLengthNote()];
       if (history.length) extraNotes.push(conversationNote());
-      if (mode.id === 'football'){ extraNotes.push(footballScopeNote()); const clubNote = favoriteClubNote(); if (clubNote) extraNotes.push(clubNote); }
-      const { data, provider } = await callAI({
-        contents: [...history, { role: 'user', parts: userParts }],
-        system_instruction: { parts: [{ text: mode.system + '\n\n' + extraNotes.join('\n\n') }] },
-        tools: [{ google_search: {} }]
+      if (mode.id === 'banter'){ extraNotes.push(banterClubNote()); }
+      else { extraNotes.push(footballScopeNote()); const clubNote = favoriteClubNote(); if (clubNote) extraNotes.push(clubNote); extraNotes.push('You are in ANALYSIS mode: answer the question asked, straight and factually. If earlier messages in this chat were jokes or banter, do not continue that tone unless the latest message asks for it.'); }
+      const baseBody = { contents: [...history, { role: 'user', parts: userParts }] };
+      const systemBody = () => ({ parts: [{ text: mode.system + '\n\n' + extraNotes.join('\n\n') }] });
+      const wantSearch = wantsLiveSearch(userText);
+      const tryGeminiSearch = wantSearch && !geminiSearchDown();
+      if (wantSearch && !tryGeminiSearch){
+        setStage(stageEl, 'Searching the web…');
+        const rs = await liveResearch(userText);
+        if (rs.text){ extraNotes.push(researchNote(rs.text)); chunks = rs.chunks; }
+        else { extraNotes.push(NO_SEARCH_NOTE); noSearch = true; console.warn('live research failed:', rs.why); }
+      }
+      let { data, provider, why, searchBlocked } = await callAI({
+        ...baseBody, system_instruction: systemBody(),
+        ...(tryGeminiSearch ? { tools: [{ google_search: {} }] } : {})
       });
+      if (searchBlocked){
+        // Gemini's own search is not available on this key (plain answers still work). Remember that for
+        // a few hours, and redo this answer with live research so it is checked too.
+        markGeminiSearchDown(3);
+        setStage(stageEl, 'Searching the web…');
+        const rs = await liveResearch(userText);
+        if (rs.text){ extraNotes.push(researchNote(rs.text)); chunks = rs.chunks; }
+        else { extraNotes.push(NO_SEARCH_NOTE); noSearch = true; console.warn('live research failed:', rs.why); }
+        ({ data, provider, why } = await callAI({ ...baseBody, system_instruction: systemBody() }));
+      }
       usedFallback = provider === 'groq';
+      fallbackWhy = why || '';
       const cand = data && data.candidates && data.candidates[0];
       const parts = cand && cand.content && cand.content.parts;
       let rawText = parts ? parts.map(p => p.text || '').join('') : '';
-      chunks = (cand && cand.groundingMetadata && cand.groundingMetadata.groundingChunks) || [];
+      const gChunks = cand && cand.groundingMetadata && cand.groundingMetadata.groundingChunks;
+      if (gChunks && gChunks.length) chunks = gChunks;
       if (!rawText.trim()) throw new Error('No response came back — try rephrasing your request.');
       const extracted = extractSuggestions(rawText);
       resultText = extracted.text;
@@ -3381,7 +3613,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       // offline too, even if navigator.onLine hadn't flipped yet — that flag is unreliable on
       // some connections (e.g. connected to Wi-Fi with no real internet).
       if (e instanceof TypeError || isOffline()){ offline = true; errorMsg = 'offline'; }
-      else errorMsg = e.message || 'Something went wrong.';
+      else { console.warn('generation failed:', e); errorMsg = friendlyAiError(e && e.message); }
     }
   }
 
@@ -3422,7 +3654,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   if (!isRegenerate) demoteAssistantMessage(lastAssistantMsgEl); // only now that we know this new reply will actually land
 
   const verifiedHtml = buildVerifiedHtml(verifiedLabels);
-  const sourcesHtml = buildSourcesHtml(chunks, usedFallback);
+  const sourcesHtml = buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch);
   const suggestionsHtml = buildSuggestionsHtml(suggestions, suggestionsLead);
   const actionsHtml = buildMsgActionsHtml(true); // this message is always the new "last" once it lands
   pipelineMsg.innerHTML = verifiedHtml + '<div class="bubble-assistant"></div>';
@@ -3436,6 +3668,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   lastAssistantMsgEl = pipelineMsg;
   const doSaveReply = () => saveMessage('assistant', resultText, [], { replaceRef: isRegenerate ? msgRowRef.get(pipelineMsg) : null, createdAt: pipelineMsg.dataset.ts }).then(ref => trackSave(pipelineMsg, ref, doSaveReply));
   doSaveReply();
+  saveChatMode(); // remember which mode this chat is in
   maybeGenerateChatTitle(userText, resultText); // fire-and-forget; no-ops after the first exchange
 }
 
@@ -3444,7 +3677,8 @@ function showTransientNote(msgEl, text){
   note.className = 'err msg-transient-note';
   note.textContent = text;
   msgEl.insertBefore(note, msgEl.firstChild);
-  setTimeout(() => note.remove(), 4500);
+  try { note.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {}
+  setTimeout(() => note.remove(), 10000);
 }
 
 let isGenerating = false; // guards against overlapping generations from suggestion chips / quickstart / send firing close together
