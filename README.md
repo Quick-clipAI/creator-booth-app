@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.3.0)
+# Creator Booth — Android app (v1.3.2)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -27,6 +27,19 @@ Fixed two ways: the web code now turns that off at startup (arrives as a normal 
 
 Search tags and website-only visitor counts were added to `index.html`. The visitor-count script never runs in the
 app (its address is https://localhost). No new APK needed.
+
+## v1.3.2 — honest reason when Gemini fails (web only)
+
+When the search request is refused and the plain request ALSO fails, the orange note now shows the plain request's
+reason (for example "Gemini busy" or "Gemini request limit reached") instead of the search refusal.
+
+## v1.3.1 — loading screen and sturdier search (web + Vercel)
+
+- A black loading screen with the animated logo now covers the app until the last chat is ready, so the empty
+  "New chat" screen no longer flashes first. It disappears by itself after at most 5 seconds.
+- If Gemini cannot answer at all (limit reached), the app now does the live web research FIRST and then lets the
+  backup AI write the answer with it, instead of answering with no search.
+- The Gemini proxy also moves to the next model in `GEMINI_MODEL` when a model's own free quota is used up.
 
 ## v1.3.0 — live web research (web + Vercel)
 
@@ -104,7 +117,7 @@ If you change anything native (`package.json` plugins, `assets/` icons, `capacit
 
 Count like an odometer. Each release raises the **last** number by one. When the last number would pass 9, it goes back to 0 and the **middle** number goes up by one. When the middle number would pass 9, it goes back to 0 and the **first** number goes up by one.
 
-1.3.0 → 1.3.1 → 1.3.2 → 1.3.1 … 1.9.9 → **2.0.0**
+1.3.2 → 1.3.3 → 1.3.4 → 1.3.1 … 1.9.9 → **2.0.0**
 
 Change it in `package.json` and in `APP_VERSION` in `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
 
