@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.3.2)
+# Creator Booth — Android app (v1.3.3)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -27,6 +27,18 @@ Fixed two ways: the web code now turns that off at startup (arrives as a normal 
 
 Search tags and website-only visitor counts were added to `index.html`. The visitor-count script never runs in the
 app (its address is https://localhost). No new APK needed.
+
+## v1.3.3 — thinking leak fixed, richer research, Debate mode (web only)
+
+- The model's own working-out ("The user's request appears to be...") no longer shows in answers. Extra text
+  parts that look like planning are dropped, thought parts are ignored, and parts are never glued together.
+- Live research now covers facts AND what pundits, players, fans and media are saying (who said what, where),
+  the main camps, rumours/theories and what is unverified. It knows the earlier question for context and keeps
+  look-alike events apart (e.g. a farewell match versus a final).
+- Deep reply setting and Debate mode use the multi-search research model (groq/compound), falling back to
+  groq/compound-mini. Short uses the fast one.
+- New **Debate** mode (tap the mode pill): theories, hidden stories, who is saying what, and content angles.
+  Claims are labelled confirmed / reported / speculation.
 
 ## v1.3.2 — honest reason when Gemini fails (web only)
 
@@ -117,7 +129,7 @@ If you change anything native (`package.json` plugins, `assets/` icons, `capacit
 
 Count like an odometer. Each release raises the **last** number by one. When the last number would pass 9, it goes back to 0 and the **middle** number goes up by one. When the middle number would pass 9, it goes back to 0 and the **first** number goes up by one.
 
-1.3.2 → 1.3.3 → 1.3.4 → 1.3.1 … 1.9.9 → **2.0.0**
+1.3.3 → 1.3.4 → 1.3.5 → 1.3.1 … 1.9.9 → **2.0.0**
 
 Change it in `package.json` and in `APP_VERSION` in `index.html`. The Android version name is read from `package.json`; the build number (version code) is added automatically on every build.
 

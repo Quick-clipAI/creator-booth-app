@@ -1,0 +1,9 @@
+node_modules/
+android/
+*.keystore
+*.jks
+*.apk
+*.aab
+www/vendor/
+www/version.json
+bundle.zip
