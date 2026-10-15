@@ -1,13 +1,27 @@
-# Creator Booth — Android app (v1.3.3)
+# Creator Booth — Android app (v1.3.4)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
 live backend (Supabase + the Vercel API), exactly like the website.
 
-**Updates:** after the first install, ordinary changes (features, UI, prompts, fixes) reach
-installed apps automatically: the app finds the newer web build on GitHub, downloads it quietly
-and shows "A new version is ready — Restart". Only native changes (a new plugin, permission or
-icon) need people to install a new APK.
+**Updates:** every push to `main` builds the app and publishes `creator-booth.apk`, `bundle.zip` (the web files) and
+`version.json` to the release "latest". Installed apps read `version.json`. When it names a newer version, the app opens an
+**Update available** sheet: **Update now** downloads the web files and restarts; if that fails (or the release needs a new
+app file) the sheet shows **Download update**, which opens the APK. Settings -> App updates shows the last check and any error.
+Only native changes (a new plugin, permission or icon) need the APK: raise `minApkVersion` in `package.json` for such a release.
+
+**Important, once:** the update notice itself arrives inside the app, so a phone whose old updater was not working cannot receive it
+by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
+website). It installs over the existing app and keeps your login and chats. From then on the notice works.
+
+## v1.3.4 — update notice, honest research (web + this repo)
+
+- New update sheet and **Settings -> App updates** (see "Updates" above). The check compares the app's own version number
+  (`APP_VERSION`) with `version.json`, so it no longer depends on GitHub's run counter. `version.json` now carries `web` and `minApk`.
+- The build warns (yellow annotation) if the app-file version was not stamped into `build.gradle`.
+- Web side: debated topics always get the multi-search research model; a no-search answer that "corrects" the person is not shown.
+  Details are in the website README.
+- No native change in this release: `minApkVersion` stays `1.3.0`.
 
 ## What changed in v1.3
 

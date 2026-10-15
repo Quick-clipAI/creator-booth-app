@@ -11,8 +11,14 @@ import fs from 'node:fs';
 const www = process.env.WWW_DIR || 'www';
 const buildNo = Number(process.env.BUILD_NUMBER || 0);
 const repo = process.env.GITHUB_REPOSITORY || '';
-const [major, minor] = JSON.parse(fs.readFileSync('package.json', 'utf8')).version.split('.');
-const version = `${major}.${minor}.${buildNo}`;
+const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const [major, minor] = pkg.version.split('.');
+const version = `${major}.${minor}.${buildNo}`;   // name of the downloadable web bundle (unique per build)
+// "web" is the app's own version number (APP_VERSION in index.html). The in-app update notice compares THIS,
+// so it keeps working even if GitHub's build counter ever restarts. "minApk" is the oldest installed app FILE
+// (APK) that can still take web updates; raise minApkVersion in package.json only when a release needs native
+// changes (new plugin, permission, icon). Older app files are then told to download the new APK.
+const minApk = String(pkg.minApkVersion || '');
 
 fs.mkdirSync(`${www}/vendor`, { recursive: true });
 const common = { bundle: true, minify: true, platform: 'browser', target: 'es2020', logLevel: 'warning' };
@@ -30,5 +36,8 @@ if (!html.includes('vendor/native.js')) {
 }
 if (repo) html = html.replace("'__GITHUB_REPO__'", JSON.stringify(repo));
 fs.writeFileSync(`${www}/index.html`, html);
-fs.writeFileSync(`${www}/version.json`, JSON.stringify({ build: buildNo, version }) + '\n');
-console.log(`prepared ${www}: build ${buildNo}, version ${version}, repo ${repo || '(not set)'}`);
+const web = (html.match(/const APP_VERSION = '(\d+\.\d+\.\d+)'/) || [])[1];
+if (!web) throw new Error('Could not read APP_VERSION from www/index.html');
+if (web !== pkg.version) console.warn(`::warning::APP_VERSION in index.html (${web}) and package.json (${pkg.version}) differ. Bump both together.`);
+fs.writeFileSync(`${www}/version.json`, JSON.stringify({ build: buildNo, version, web, minApk }) + '\n');
+console.log(`prepared ${www}: build ${buildNo}, bundle ${version}, app version ${web}, minApk ${minApk || '(none)'}, repo ${repo || '(not set)'}`);
