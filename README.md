@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.3.4)
+# Creator Booth — Android app (v1.3.6)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -13,6 +13,14 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 **Important, once:** the update notice itself arrives inside the app, so a phone whose old updater was not working cannot receive it
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
+
+## v1.3.6 — web only
+
+Gemini 2.5 is the main AI; Groq live research is gone (retired by Groq); the chat now reads our data bank. The admin page (`admin.html`) is website-only and is not copied into the app (`prepare-www` bundles `index.html` only). No native change: `minApkVersion` stays `1.3.0`. Details are in the website README.
+
+## v1.3.5 — web only
+
+The "no live web search" note shows why research failed. No native change, so the v1.3.4 app file is fine; the update notice delivers this.
 
 ## v1.3.4 — update notice, honest research (web + this repo)
 

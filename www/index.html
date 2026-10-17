@@ -1231,9 +1231,9 @@ BANTER register (jokes, hot takes, rivalry banter, roasts, playful trash talk): 
 
 Match the format to what's asked: a video script should be a punchy, spoken-style script (roughly 60-90 seconds read aloud) — no headers, no markdown, no stage directions unless asked. A direct question, a planning question (content ideas, channel/page setup, a presenter persona), or a banter request should just get a direct, natural answer in whatever format actually fits — don't force script prose onto something that isn't one, and don't bolt on an unrelated script or "bio" nobody asked for.
 
-If a block labeled "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth and never contradict it, even if it conflicts with what you remember — both come from a live sports data feed checked moments ago, which is more current than your training data. Use web search for anything those blocks don't cover, and never invent a stat, score, quote, or current manager/coach you can't support — in either register.
+If a block labeled "=== VERIFIED DATA BANK ===", "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth and never contradict it, even if it conflicts with what you remember — they come from our own checked database and a live sports feed, which are more current than your training data. In the data bank, a league-season marked COMPLETE has every match; otherwise it lists exactly which results are missing, so never guess a missing result or a table position that depends on one — say it is not stored yet. Use web search for anything those blocks don't cover, and never invent a stat, score, quote, or current manager/coach you can't support — in either register.
 
-WHAT PEOPLE ARE SAYING: for anything that is debated (awards like the Ballon d'Or, title races, transfers, controversies, tactics, theories, rumours), do not stop at "nothing official yet". Explain the debate: the main sides, who argues each one (pundits, players, managers, journalists, fans), why, and what is still unresolved. Name a person or outlet only when WEB RESEARCH actually gives it, and say "some fans argue" when it does not. Label what is confirmed, reported or speculation. Never present a rumour or allegation about real people as fact, and never invent a quote.\n\nIf someone asks about something with no football angle at all, you can still just help them — don't force a football connection onto an unrelated request, but keep in mind football is this tool's actual purpose.` + PLAIN_TEXT_NOTE
+WHAT PEOPLE ARE SAYING: for anything that is debated (awards like the Ballon d'Or, title races, transfers, controversies, tactics, theories, rumours), do not stop at "nothing official yet". Explain the debate: the main sides, who argues each one (pundits, players, managers, journalists, fans), why, and what is still unresolved. Name a person or outlet only when web search results actually give it, and say "some fans argue" when it does not. Label what is confirmed, reported or speculation. Never present a rumour or allegation about real people as fact, and never invent a quote.\n\nIf someone asks about something with no football angle at all, you can still just help them — don't force a football connection onto an unrelated request, but keep in mind football is this tool's actual purpose.` + PLAIN_TEXT_NOTE
   },
   {
     id: 'banter', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2c2 3 4 5 4 8a4 4 0 01-8 0c0-1 .3-1.8.8-2.6.2.7.2 1.4.9 1.9C9.5 7 10.5 4.5 12 2z"/><path d="M8 14.5A4 4 0 1016 14.5"/></svg>', label: 'Banter',
@@ -1250,7 +1250,7 @@ Rules:
 - Affectionate rivalry only: no slurs, no attacks on race, religion or nationality, no wishing harm, and no jokes about real tragedies such as deaths or serious injuries.
 - Keep it short and punchy unless asked for more.
 
-If a block labeled "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth.` + PLAIN_TEXT_NOTE
+If a block labeled "=== VERIFIED DATA BANK ===", "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth.` + PLAIN_TEXT_NOTE
   },
   {
     id: 'debate', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5h11a2 2 0 012 2v6a2 2 0 01-2 2H9l-4 3v-3H4a2 2 0 01-2-2V7a2 2 0 012-2z"/><path d="M19 9h1a2 2 0 012 2v5a2 2 0 01-2 2h-1v2l-3-2h-4"/></svg>', label: 'Debate',
@@ -1262,13 +1262,13 @@ If a block labeled "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DAT
 
 How to answer:
 - First pin down exactly what the topic is: which match or event, which date and season. Keep easily confused things apart (for example a farewell match versus a final) and say which is which.
-- Then lay out the conversation: what is documented; what pundits, players, managers, journalists and fans are saying, naming WHO said it and WHERE (outlet, interview, show) whenever WEB RESEARCH gives it; the main camps and their strongest arguments; where each theory comes from and which odd details feed it (timing, wording, silences); the evidence for and against; and what is still unverified.
+- Then lay out the conversation: what is documented; what pundits, players, managers, journalists and fans are saying, naming WHO said it and WHERE (outlet, interview, show) whenever web search results give it; the main camps and their strongest arguments; where each theory comes from and which odd details feed it (timing, wording, silences); the evidence for and against; and what is still unverified.
 - Label every point as confirmed, reported or speculation. Never present a theory, rumour or allegation about real people as fact, and never invent a quote, source or statistic. If research does not say who claimed something, write "some fans argue" instead of naming someone.
 - You do not need a verdict. Say honestly when there is no concrete answer, and what would change the picture.
 - End with two or three content angles the creator could take, and one or two things to verify before posting.
 - Tone: curious, sharp and conversational. Length: follow the reply-length setting, but make the debate the centre of the answer.
 
-If a block labeled "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth.` + PLAIN_TEXT_NOTE
+If a block labeled "=== VERIFIED DATA BANK ===", "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth.` + PLAIN_TEXT_NOTE
   }
 ];
 let currentModeId = 'football';
@@ -1358,7 +1358,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.3.4';
+const APP_VERSION = '1.3.6';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -2989,9 +2989,9 @@ function revealWords(el, text, onDone){
 /* has no grounding — that's surfaced to the user, not hidden.         */
 /* ------------------------------------------------------------------ */
 const GROQ_MODEL = 'openai/gpt-oss-120b';
+const GROQ_LIGHT_MODEL = 'openai/gpt-oss-20b';   // small helper tasks (club names, chat titles) use the lighter model
 // Only 2 Groq models currently support vision (image input): Llama 4 Scout / Maverick.
 // Used only as the fallback when Gemini fails AND the request includes an image.
-const GROQ_VISION_MODEL = 'meta-llama/llama-4-scout-17b-16e-instruct';
 
 function requestHasImage(contents){
   return (contents || []).some(turn => (turn.parts || []).some(p => p.inline_data));
@@ -3107,27 +3107,23 @@ function whyGeminiFailed(msg){
   return 'Gemini error';
 }
 async function groqFallback(requestBody, geminiMsg){
+  // The backup AI cannot search the web, cannot see images, and its memory is out of date. Without this note it
+  // confidently "corrects" people about recent events (it told someone a 2026 final never happened). Be honest instead.
+  if (requestHasImage(requestBody.contents)){
+    throw new Error('Gemini is not available right now (' + whyGeminiFailed(geminiMsg) + ') and the backup AI cannot look at images. Please try again in a little while.');
+  }
   const baseSystem = requestBody.system_instruction && requestBody.system_instruction.parts &&
     requestBody.system_instruction.parts.map(p => p.text).join('\n');
-  // The backup AI cannot search the web and its memory is out of date. Without this note it confidently
-  // "corrects" people about recent events (it told someone a 2026 final never happened). Be honest instead.
-  const hasResearch = /WEB RESEARCH \(live/.test(baseSystem || '');
-  const systemText = (baseSystem || '') + (hasResearch ? '' : `
-
-IMPORTANT — LIVE SEARCH IS OFF FOR THIS ANSWER: you cannot browse the web and your own knowledge is out of date. Treat anything that may have happened recently (this season, the 2026 World Cup, transfers, injuries, rumours, results) as something you CANNOT confirm or deny. Never tell the person that an event "did not happen" or that a rumour is false because you do not remember it. Say plainly that you cannot verify it right now, share only background you are sure about, and suggest they try again in a few minutes for a live-checked answer. Never tell the person they are confused or mistaken, and never offer a different "correct" version of events from memory. Facts in a VERIFIED DATA block (if present) are still reliable.`);
+  const systemText = (baseSystem || '') + '\n\nIMPORTANT — ' + NO_SEARCH_NOTE;
   const messages = geminiContentsToOpenAIMessages(systemText, requestBody.contents);
-  const openAITools = geminiToolsToOpenAI(requestBody.tools);
-  const hasImage = requestHasImage(requestBody.contents);
-  const fallbackModel = hasImage ? GROQ_VISION_MODEL : GROQ_MODEL;
   const res2 = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: fallbackModel, messages, tools: openAITools })
+    body: JSON.stringify({ model: GROQ_MODEL, messages })
   }, 45000);
   if (!res2.ok){
     const err2 = await res2.json().catch(() => ({}));
     const groqMsg = (err2 && err2.error && (err2.error.message || err2.error)) || res2.status;
-    const imgNote = hasImage ? ' (including the attached image)' : '';
-    throw new Error('Gemini: ' + geminiMsg + ' — backup (Groq) also failed' + imgNote + ': ' + groqMsg);
+    throw new Error('Gemini: ' + geminiMsg + ' — backup (Groq) also failed: ' + groqMsg);
   }
   return { data: openAIResponseToGeminiShape(await res2.json()), provider: 'groq', why: whyGeminiFailed(geminiMsg) };
 }
@@ -3138,7 +3134,7 @@ async function lightAI(systemText, userText){
   try {
     const r = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: GROQ_MODEL, messages: [{ role: 'system', content: systemText }, { role: 'user', content: userText }] })
+      body: JSON.stringify({ model: GROQ_LIGHT_MODEL, messages: [{ role: 'system', content: systemText }, { role: 'user', content: userText }] })
     }, 15000);
     if (r.ok){
       const d = await r.json();
@@ -3158,12 +3154,9 @@ async function lightAI(systemText, userText){
   } catch (e) { return ''; }
 }
 
-// ---- Live web research -----------------------------------------------------------------------
-// Gemini's built-in search is not available on every free key. When it isn't, a Groq search model
-// (groq/compound-mini, which can browse) does the looking-up, and the answer is then written with
-// that research in front of it. Every step fails safely: no research => a plain answer plus an honest note.
-const GROQ_SEARCH_MODEL = 'groq/compound-mini';       // one search, fast
-const GROQ_SEARCH_MODEL_DEEP = 'groq/compound';        // several searches, slower (used for Deep and Debate)
+// ---- Live web search -------------------------------------------------------------------------
+// Gemini 2.5's built-in Google Search does the looking-up. If it is refused (free daily limit), the answer is
+// written without it and says so honestly. There is no second search provider.
 const GSEARCH_KEY = 'cb_gsearch_down';
 function geminiSearchDown(){ try { return Number(localStorage.getItem(GSEARCH_KEY) || 0) > Date.now(); } catch (e) { return false; } }
 function markGeminiSearchDown(hours){ try { localStorage.setItem(GSEARCH_KEY, String(Date.now() + hours * 3600e3)); } catch (e) {} }
@@ -3173,11 +3166,6 @@ function wantsLiveSearch(text){
   if (/^(hi|hello|hey|thanks|thank you|ok|okay|cool|nice|lol|good (morning|afternoon|evening|night))\b[\s!.?]*$/.test(t)) return false;
   return true;
 }
-// Debates, awards, rumours and "why did it happen" questions need several searches (who said what, both sides), even in
-// Short mode. Short only controls how long the ANSWER is; it must not decide how well the question is researched.
-function isDebatedTopic(text){
-  return /\b(ballon d.?or|who (will|is going to|is gonna|should) win|who('s| is) (winning|the best|better|the goat)|goat debate|rumou?rs?|theor(y|ies)|conspirac\w*|behind (it|this|that)|something (strange|fishy|wrong)|controvers\w*|debate|what (do|are|did) (people|fans|pundits|they|players|managers) (think|say|saying|said)|(people|fans|pundits|media) (say|said|are saying|think)|overrated|underrated|robbed|deserv\w*|why (did|was|were|is|are)\b[^?.!]{0,60}\b(lose|lost|win|won|sacked|leave|left|dropped|benched|failed|struggl\w*))\b/i.test(String(text || ''));
-}
 // A model with no search sometimes still "corrects" the person about recent events ("there might be some confusion...").
 // Used only when no live search happened: such an answer is not shown, the person gets an honest retry instead.
 function looksLikeDenial(text){
@@ -3185,63 +3173,6 @@ function looksLikeDenial(text){
   return /\b(slight |some |a bit of )?(confusion|mix-?up|misunderstanding)\b|\b(you may|you might|you could) (be|have)\b[^.]{0,30}\b(mistaken|confus\w*|mixing)|\b(is|was|has been) no (record|evidence|report) of\b|\bno such (event|match|game|final|thing)\b|\b(did(n['’]t| not)|has(n['’]t| not)|never) (actually )?(happen|take place|occur|been played|reach(ed)?|made it)\b|\bcommon misconception\b|\bassuming you['’]?re referring\b|\bfamously won\b/i.test(t);
 }
 const NO_SEARCH_NOTE = `LIVE SEARCH IS OFF FOR THIS ANSWER: you cannot browse the web and your own knowledge is out of date. Treat anything that may have happened recently (this season, the 2026 World Cup, transfers, injuries, rumours, results) as something you CANNOT confirm or deny. Never tell the person that an event "did not happen" or that a rumour is false because you do not remember it. Say plainly that you cannot verify it right now, share only background you are sure about, and suggest they try again in a few minutes. Never tell the person they are confused or mistaken, and never offer a different "correct" version of events from memory. Facts in a VERIFIED DATA block (if present) are still reliable.`;
-function researchNote(text){
-  return `=== WEB RESEARCH (live, from search) ===\n${text}\n=== END WEB RESEARCH ===\nUse WEB RESEARCH for news, rumours, transfers and anything recent, and VERIFIED DATA blocks for structured facts (scores, tables, squads, coach). If the person's message conflicts with either, say plainly what the evidence shows instead of just agreeing or denying. If sources disagree, or only report rumours, say so. Never present a rumour as done.`;
-}
-function collectSources(msg){
-  const out = [], seen = {};
-  const add = (u, t) => { u = String(u || '').replace(/[.,;)\]]+$/, ''); if (/^https?:\/\//.test(u) && !seen[u]){ seen[u] = 1; out.push({ web: { uri: u, title: t || '' } }); } };
-  ((msg && msg.executed_tools) || []).forEach(t => {
-    const rs = t && t.search_results && t.search_results.results;
-    if (Array.isArray(rs)) rs.forEach(x => add(x && x.url, x && x.title));
-  });
-  String((msg && msg.content) || '').replace(/https?:\/\/[^\s)\]]+/g, u => { add(u, ''); return u; });
-  return out.slice(0, 8);
-}
-function lastUserTextBefore(history){
-  for (let i = (history || []).length - 1; i >= 0; i--){
-    const h = history[i];
-    if (h && h.role === 'user'){ const t = (h.parts || []).map(x => x.text || '').join(' ').trim(); if (t) return t.slice(0, 300); }
-  }
-  return '';
-}
-function researchSystem(deep, extra){
-  const today = new Date().toISOString().slice(0, 10);
-  return `You are a football research assistant with live web search. Today is ${today}.
-Work like this:
-1. Work out exactly what the message is about: the people, clubs, competition, the season or year, and the specific event. If two different events could be confused (for example a farewell match versus a final), keep them apart and say which is which.
-2. Run several searches, not one: (a) the facts and timeline; (b) what pundits, players, managers, journalists and fans are SAYING about it (opinions, debates, reactions, criticism, theories); (c) any rumours or conspiracy claims and the evidence for and against them. Use the current year in your queries.
-3. Write a research brief in plain text, at most ${deep ? 450 : 260} words: the confirmed facts with dates; then who said what, naming the person or outlet and where (interview, show, article) ONLY when you actually found it; then the main camps in the debate and their strongest arguments; then what is still unverified. Label each point as confirmed, reported or speculation.
-4. Never invent a quote, source, name or statistic. If you cannot find something, say exactly that. No jokes and no opinions of your own.${extra || ''}`;
-}
-async function liveResearch(userText, opts){
-  opts = opts || {};
-  const deep = !!opts.deep;
-  const user = (opts.prev ? 'Earlier question, for context only: ' + opts.prev + '\n\nCurrent question: ' : '') + String(userText).slice(0, 700);
-  const sys = researchSystem(deep, opts.extra);
-  const models = deep ? [GROQ_SEARCH_MODEL_DEEP, GROQ_SEARCH_MODEL] : [GROQ_SEARCH_MODEL, GROQ_SEARCH_MODEL_DEEP];
-  let lastWhy = 'no model answered';
-  const t0 = Date.now();
-  for (const model of models){
-    if (Date.now() - t0 > 40000) break; // never keep the person waiting for a third try
-    try {
-      const r = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, messages: [{ role: 'system', content: sys }, { role: 'user', content: user }] })
-      }, deep ? 50000 : 30000);
-      const d = await r.json().catch(() => ({}));
-      if (!r.ok){ lastWhy = (d && d.error && (d.error.message || d.error)) || ('status ' + r.status); continue; }
-      const msg = d && d.choices && d.choices[0] && d.choices[0].message;
-      const text = String((msg && msg.content) || '').trim();
-      if (text) return { text, chunks: collectSources(msg) };
-      lastWhy = 'empty reply';
-    } catch (e) {
-      lastWhy = (e && e.name === 'AbortError') ? 'too slow' : 'could not connect';
-    }
-  }
-  return { text: '', chunks: [], why: String(lastWhy).slice(0, 160) };
-}
-
 /* ------------------------------------------------------------------ */
 /* Football mode context: reuses the API-Football proxy to pull real,  */
 /* hard match data for today's fixtures when the user's request        */
@@ -3287,6 +3218,24 @@ async function fetchApiFootballFixtureFacts(fixture, dateStr){
   if (statsFound) labels.push('Match statistics');
 
   return { text: lines.join('\n'), labels };
+}
+
+/* ------------------------------------------------------------------ */
+/* Data bank: our own checked fixtures, results, tables and facts      */
+/* (Supabase, filled by the daily update and the admin page). The      */
+/* server decides what is relevant to the question and returns a       */
+/* ready-made block; any failure just means no block.                  */
+/* ------------------------------------------------------------------ */
+async function gatherBankContext(queryText){
+  try {
+    const q = String(queryText || '').trim().slice(0, 500);
+    if (q.length < 3) return null;
+    const r = await fetchWithTimeout(API_ORIGIN + '/api/bank?q=' + encodeURIComponent(q) + '&today=' + todayDateStr(), {}, 6000);
+    if (!r.ok) return null;
+    const d = await r.json();
+    if (!d || !d.text) return null;
+    return { text: d.text, labels: (d.labels && d.labels.length ? d.labels : ['Data bank']), clubs: d.clubs || [] };
+  } catch (e) { return null; }
 }
 
 async function gatherFootballContext(queryText){
@@ -3470,7 +3419,7 @@ function buildVerifiedHtml(labels){
   const unique = [...new Set(labels)];
   const items = unique.map(l => `<span>✓ ${escapeHtml(l)}</span>`).join('');
   return `<div class="verified-badge">
-    <div class="verified-badge-head">Verified football data <span class="verified-badge-sub">· API-Football, checked moments ago</span></div>
+    <div class="verified-badge-head">Verified football data <span class="verified-badge-sub">· from our checked data, not from memory</span></div>
     <div class="verified-badge-items">${items}</div>
   </div>`;
 }
@@ -3479,7 +3428,8 @@ function buildVerifiedHtml(labels){
 // apps keep sources out of the way until you actually want them, rather than always dumping
 // full cards into the reply. wireSourcesToggle (called right after this HTML is inserted)
 // wires the expand/collapse.
-function buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch){
+function buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch, noSearchWhy){
+  const rw = noSearchWhy ? ' (' + escapeHtml(noSearchWhy) + ')' : '';
   if (chunks && chunks.length){
     const favicons = chunks.slice(0, 3).map(c => {
       const w = c.web || {};
@@ -3513,10 +3463,10 @@ function buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch){
     </div>`;
   }
   if (noSearch && !usedFallback){
-    return `<div class="sources"><span class="sources-fallback-note">⚠ No live web search this time — verify facts before using</span></div>`;
+    return `<div class="sources"><span class="sources-fallback-note">⚠ No live web search this time${rw} — verify facts before using</span></div>`;
   }
   if (usedFallback){
-    return `<div class="sources"><span class="sources-fallback-note">⚠ Backup AI used${fallbackWhy ? ' (' + escapeHtml(fallbackWhy) + ')' : ''} — no live web search this time, verify facts before using</span></div>`;
+    return `<div class="sources"><span class="sources-fallback-note">⚠ Backup AI used${fallbackWhy ? ' (' + escapeHtml(fallbackWhy) + ')' : ''} — no live web search this time${rw}, verify facts before using</span></div>`;
   }
   return '';
 }
@@ -3572,7 +3522,7 @@ function wireSuggestions(msgEl){
 function currentDateTimeNote(){
   const now = new Date();
   const formatted = now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  return `Current date/time: ${formatted}. Your training data has a cutoff before this date, so anything that changes over time — club managers, coaching staff, player-club affiliations, injuries, prices, current holders of a role — may be different now even if you feel confident about it from memory. For any such claim, check it against web search or the WEB RESEARCH block when you have one. If you have neither, say you cannot confirm it instead of answering from memory. Do not silently rely on a memorized fact for anything that could plausibly have changed since your training cutoff.`;
+  return `Current date/time: ${formatted}. Your training data has a cutoff before this date, so anything that changes over time — club managers, coaching staff, player-club affiliations, injuries, prices, current holders of a role — may be different now even if you feel confident about it from memory. For any such claim, check it against web search or a VERIFIED data block when you have one. If you have neither, say you cannot confirm it instead of answering from memory. Do not silently rely on a memorized fact for anything that could plausibly have changed since your training cutoff.`;
 }
 
 // Fixes a real failure mode: asked something like "yesterday's football", the model would
@@ -3639,13 +3589,19 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   {
     // Checked silently — for a casual message like "hi" there's nothing to find, and the
     // stage label shouldn't claim we're doing football research when we might not be.
-    const matchData = await gatherFootballContext(userText);
+    const [matchData, bankData] = await Promise.all([gatherFootballContext(userText), gatherBankContext(userText)]);
+    if (bankData){
+      setStage(stageEl, 'Checking our data bank…');
+      footballContext = bankData.text;
+      verifiedLabels = verifiedLabels.concat(bankData.labels);
+    }
     if (matchData){
       setStage(stageEl, "Found today's match data — verifying…");
-      footballContext = matchData.text;
+      footballContext = footballContext ? footballContext + '\n\n' + matchData.text : matchData.text;
       verifiedLabels = verifiedLabels.concat(matchData.labels);
     }
-    const verifiedFacts = await gatherVerifiedFootballFacts(userText);
+    // The coach lookup uses a small AI call to find club names; skip it when the bank already recognised the clubs.
+    const verifiedFacts = (bankData && bankData.clubs.length) ? null : await gatherVerifiedFootballFacts(userText);
     if (verifiedFacts){
       setStage(stageEl, 'Checking current club/coach info…');
       footballContext = footballContext ? footballContext + '\n\n' + verifiedFacts.text : verifiedFacts.text;
@@ -3665,6 +3621,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   let usedFallback = false;
   let fallbackWhy = '';
   let noSearch = false;
+  let noSearchWhy = '';
   let errorMsg = '';
   let suggestions = [];
   let suggestionsLead = '';
@@ -3685,37 +3642,22 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       const systemBody = () => ({ parts: [{ text: mode.system + '\n\n' + extraNotes.join('\n\n') }] });
       const wantSearch = wantsLiveSearch(userText);
       const tryGeminiSearch = wantSearch && !geminiSearchDown();
-      let researched = false;
-      const researchOpts = {
-        deep: replyLength === 'deep' || mode.id === 'debate' || isDebatedTopic(userText),
-        prev: lastUserTextBefore(history),
-        extra: mode.id === 'banter'
-          ? ' Also note how fans and comedy creators joke about this topic (running gags and angles), described in your own words, not copied.'
-          : (/\b(script|video|youtube|tiktok|reel|short|hook|caption)\b/i.test(userText)
-              ? ' Also note the angles and hooks football content creators use on this topic, described in your own words, not copied.' : '')
-      };
-      const doResearch = async () => {
-        setStage(stageEl, 'Searching the web…');
-        const rs = await liveResearch(userText, researchOpts);
-        if (rs.text){ extraNotes.push(researchNote(rs.text)); chunks = rs.chunks; researched = true; }
-        else { extraNotes.push(NO_SEARCH_NOTE); noSearch = true; console.warn('live research failed:', rs.why); }
-      };
-      if (wantSearch && !tryGeminiSearch) await doResearch();
+      if (wantSearch && !tryGeminiSearch){ extraNotes.push(NO_SEARCH_NOTE); noSearch = true; noSearchWhy = 'Gemini search limit reached for now'; }
       const askAI = (withTools) => callAI({
         ...baseBody, system_instruction: systemBody(),
         ...(withTools ? { tools: [{ google_search: {} }] } : {})
       }, { skipBackup: true });
       let r = await askAI(tryGeminiSearch);
       if (r.searchBlocked){
-        // Gemini's own search is not available on this key (plain answers still work). Remember that for
-        // a few hours, and redo this answer with live research so it is checked too.
+        // Gemini's search is refused (free daily search limit) but plain answers still work. Remember that for
+        // a few hours and answer without it, honestly.
         markGeminiSearchDown(3);
-        await doResearch();
+        extraNotes.push(NO_SEARCH_NOTE); noSearch = true; noSearchWhy = 'Gemini search limit reached for now';
         r = await askAI(false);
       }
       if (r.provider === 'none'){
-        // Gemini could not answer at all (quota, outage). Research first, then let the backup AI write the answer.
-        if (wantSearch && !researched && !noSearch) await doResearch();
+        // Gemini could not answer at all (quota, outage). The backup AI writes a plain answer.
+        if (wantSearch && !noSearch){ extraNotes.push(NO_SEARCH_NOTE); noSearch = true; }
         r = await groqFallback({ ...baseBody, system_instruction: systemBody() }, r.msg);
       }
       const { data, provider, why } = r;
@@ -3729,7 +3671,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       if (!rawText.trim()) throw new Error('No response came back — try rephrasing your request.');
       // No live search happened (neither Gemini's nor the research step) and the model is "correcting" the person from memory:
       // that is exactly how it once denied a real final. Do not show it.
-      if (wantSearch && !researched && !(gChunks && gChunks.length) && looksLikeDenial(rawText)) throw new Error('Live search was not available just now, so I could not check this. Please try again in a minute.');
+      if (wantSearch && !(gChunks && gChunks.length) && !(verifiedLabels && verifiedLabels.length) && looksLikeDenial(rawText)) throw new Error('Live search was not available just now, so I could not check this. Please try again in a minute.');
       const extracted = extractSuggestions(rawText);
       resultText = extracted.text;
       suggestions = extracted.suggestions;
@@ -3780,7 +3722,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   if (!isRegenerate) demoteAssistantMessage(lastAssistantMsgEl); // only now that we know this new reply will actually land
 
   const verifiedHtml = buildVerifiedHtml(verifiedLabels);
-  const sourcesHtml = buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch);
+  const sourcesHtml = buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch, noSearchWhy);
   const suggestionsHtml = buildSuggestionsHtml(suggestions, suggestionsLead);
   const actionsHtml = buildMsgActionsHtml(true); // this message is always the new "last" once it lands
   pipelineMsg.innerHTML = verifiedHtml + '<div class="bubble-assistant"></div>';
