@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.3.6)
+# Creator Booth — Android app (v1.3.8)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -13,6 +13,18 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 **Important, once:** the update notice itself arrives inside the app, so a phone whose old updater was not working cannot receive it
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
+
+## v1.3.8 — updates from Supabase Storage (needs a one-time setup)
+
+Why: on some phones the update download from GitHub fails or crawls (version check worked, file download did not). Now the build also uploads the update files to a public Supabase bucket, which the app already reaches. The app uses whichever host has the newest version and falls back to the other.
+
+One-time setup (about 5 minutes):
+1. Supabase -> Storage -> New bucket -> name exactly `app-updates` -> turn **Public bucket** ON -> Create.
+2. GitHub -> this app repo -> Settings -> Secrets and variables -> Actions -> New repository secret. Add `SUPABASE_URL` = `https://krmjvfemsufduqdofuqy.supabase.co` and `SUPABASE_SERVICE_KEY` = the secret/service key (the same one used in Vercel).
+3. Upload this folder's files to the app repo and wait for the green build. In the build log, the step "Upload update files to Supabase Storage" should print `upload ... -> HTTP 200` three times. If it prints a warning, the secrets or bucket are missing; the build still succeeds and updates fall back to GitHub.
+4. Install the new APK once (older app versions only know the GitHub path). After that, updates download from Supabase.
+
+No native change: `minApkVersion` stays `1.3.0`.
 
 ## v1.3.6 — web only
 

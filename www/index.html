@@ -1358,7 +1358,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.3.6';
+const APP_VERSION = '1.3.8';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4199,7 +4199,7 @@ async function handleAuthDeepLink(url){
 const UPDATE_KEY = 'cb_update_info';
 const UPDATE_SNOOZE_KEY = 'cb_update_snooze';
 const UPDATE_APK_URL = API_ORIGIN + '/download';
-let upd = { status: 'idle', remote: null, apkNeeded: false, applyFailed: false, error: '', checkedAt: 0, apkVersion: '', localBuild: '' };
+let upd = { status: 'idle', diag: '', remote: null, apkNeeded: false, applyFailed: false, error: '', checkedAt: 0, apkVersion: '', localBuild: '' };
 let updBusy = false;
 try { const saved = JSON.parse(localStorage.getItem(UPDATE_KEY) || 'null'); if (saved && saved.checkedAt){ upd.checkedAt = saved.checkedAt; upd.error = saved.error || ''; } } catch (e) {}
 
@@ -4221,16 +4221,48 @@ function updTimeout(promise, ms, what){
   return Promise.race([promise, timer]).finally(() => clearTimeout(t));
 }
 function updReleaseBase(){ return 'https://github.com/' + UPDATE_REPO + '/releases/download/latest/'; }
-
+// Two places hold the same update files: Supabase Storage (the same host the app already uses for chats and sign-in, so it is
+// reachable on the phone) and the GitHub release. The newest copy wins; the other is the backup.
+function updBases(){
+  return [
+    { name: 'Supabase', url: SUPABASE_URL + '/storage/v1/object/public/app-updates/' },
+    { name: 'GitHub', url: updReleaseBase() }
+  ];
+}
+async function updFetchOne(Http, base){
+  const res = await updTimeout(Http.get({ url: base.url + 'version.json?t=' + Date.now(), responseType: 'text', connectTimeout: 12000, readTimeout: 12000 }), 20000, 'the version check');
+  if (!res || res.status !== 200) throw new Error(base.name + ' answered ' + (res && res.status) + ' for version.json');
+  let d = res.data;
+  if (typeof d === 'string') d = JSON.parse(d);
+  if (!d || typeof d !== 'object' || d.build == null) throw new Error('version.json on ' + base.name + ' looks wrong');
+  return { ...d, _base: base };
+}
 async function updFetchRemote(){
   const Http = nativePlugin('CapacitorHttp');
   if (!Http) throw new Error('this app file has no network plugin; install the newest app file once');
-  const res = await updTimeout(Http.get({ url: updReleaseBase() + 'version.json?t=' + Date.now(), responseType: 'text', connectTimeout: 15000, readTimeout: 15000 }), 25000, 'the version check');
-  if (!res || res.status !== 200) throw new Error('GitHub answered ' + (res && res.status) + ' for version.json (is the repo public and the build green?)');
-  let d = res.data;
-  if (typeof d === 'string') d = JSON.parse(d);
-  if (!d || typeof d !== 'object' || d.build == null) throw new Error('version.json on GitHub looks wrong');
-  return d;
+  const bases = updBases().filter(b => !(b.name === 'GitHub' && UPDATE_REPO.indexOf('__') === 0));
+  const settled = await Promise.allSettled(bases.map(b => updFetchOne(Http, b)));
+  const ok = settled.filter(r => r.status === 'fulfilled').map(r => r.value);
+  if (!ok.length) throw new Error(settled.map(r => updErr(r.reason)).join('; '));
+  // newest published version wins; on a tie the order above decides (Supabase first)
+  ok.sort((a, b) => (verCompare(b.web, a.web)) || (Number(b.build) - Number(a.build)));
+  const best = ok[0];
+  best._backups = ok.slice(1).filter(o => o.web === best.web).map(o => o._base);
+  return best;
+}
+// When a download fails, find out WHY: ask each host for the first bytes of the file and report status + time.
+async function updProbe(){
+  const Http = nativePlugin('CapacitorHttp'); if (!Http) return '';
+  const out = [];
+  for (const base of updBases()){
+    if (base.name === 'GitHub' && UPDATE_REPO.indexOf('__') === 0) continue;
+    const t0 = Date.now();
+    try {
+      const r = await updTimeout(Http.get({ url: base.url + 'version.json?t=' + Date.now(), responseType: 'text', connectTimeout: 8000, readTimeout: 8000 }), 10000, 'probe');
+      out.push(base.name + ' ' + (r && r.status) + ' in ' + ((Date.now() - t0) / 1000).toFixed(1) + 's');
+    } catch (e) { out.push(base.name + ' failed: ' + updErr(e).slice(0, 50)); }
+  }
+  return out.join(' · ');
 }
 async function updReadLocal(){
   try { const r = await fetch('./version.json', { cache: 'no-store' }); return await r.json(); } catch (e) { return {}; }
@@ -4270,6 +4302,7 @@ function updRender(){
   if (upd.remote) lines.push('Newest published: v' + (upd.remote.web || '?') + ' (build ' + upd.remote.build + ')');
   lines.push('Last checked: ' + updFmtTime(upd.checkedAt));
   if (upd.error) lines.push('Problem: ' + upd.error);
+  if (upd.diag) lines.push('Connection test: ' + upd.diag);
   det.textContent = lines.join('\n'); det.style.display = '';
 }
 
@@ -4298,7 +4331,7 @@ function openUpdateSheet(){
     + '</div>';
   box.querySelector('.promo-title').textContent = title;
   box.querySelector('.upd-text').textContent = body;
-  const er = box.querySelector('.upd-err'); if (er) er.textContent = 'Reason: ' + upd.error;
+  const er = box.querySelector('.upd-err'); if (er) er.textContent = 'Reason: ' + upd.error + (upd.diag ? ' (' + upd.diag + ')' : '');
   const go = box.querySelector('[data-a="go"]'); go.textContent = needApk ? 'Download update' : 'Update now';
   go.addEventListener('click', () => { if (needApk){ openApkLink(); } else { applyUpdate(go); } });
   box.querySelector('[data-a="later"]').addEventListener('click', () => { updSnooze(); closeUpdateSheet(); });
@@ -4311,7 +4344,7 @@ function openUpdateSheet(){
 async function applyUpdate(btn){
   const Updater = nativePlugin('CapacitorUpdater'), remote = upd.remote;
   if (btn){ btn.disabled = true; btn.textContent = 'Downloading…'; }
-  upd.status = 'applying'; upd.applyFailed = false; upd.error = ''; updRender();
+  upd.status = 'applying'; upd.applyFailed = false; upd.error = ''; upd.diag = ''; updRender();
   try {
     if (!Updater || !remote) throw new Error('this app file has no updater; install the newest app file once');
     const version = String(remote.version || remote.web || remote.build);
@@ -4323,7 +4356,16 @@ async function applyUpdate(btn){
       bundle = same.find(b => b.status === 'success') || null;
       for (const b of same){ if (b !== bundle){ try { await Updater.delete({ id: b.id }); } catch (e) {} } }
     } catch (e) { /* listing is optional */ }
-    if (!bundle) bundle = await updTimeout(Updater.download({ url: updReleaseBase() + 'bundle.zip', version }), 90000, 'the download');
+    if (!bundle){
+      const tries = [remote._base].concat(remote._backups || []).filter(Boolean);
+      if (!tries.length) tries.push(...updBases());
+      let lastErr = null;
+      for (const base of tries){
+        try { bundle = await updTimeout(Updater.download({ url: base.url + 'bundle.zip', version }), 90000, 'the download from ' + base.name); if (bundle && bundle.id) break; }
+        catch (e) { lastErr = e; try { const l2 = await Updater.list(); for (const b of ((l2 && l2.bundles) || [])) if (b && b.version === version && b.status !== 'success'){ try { await Updater.delete({ id: b.id }); } catch (e2) {} } } catch (e3) {} }
+      }
+      if (!bundle || !bundle.id){ const err = lastErr || new Error('the download did not finish'); upd.diag = await updProbe(); throw err; }
+    }
     if (!bundle || !bundle.id) throw new Error('the download did not finish');
     if (btn) btn.textContent = 'Restarting…';
     await Updater.set({ id: bundle.id }); // reloads the app on the new files; nothing after this line runs
@@ -4339,9 +4381,8 @@ async function checkForAppUpdate(manual){
   if (!NATIVE || updBusy || upd.status === 'applying') return;
   if (!manual && Date.now() - (checkForAppUpdate._t || 0) < 5 * 60 * 1000) return;
   checkForAppUpdate._t = Date.now();
-  updBusy = true; upd.status = 'checking'; upd.error = ''; updRender();
+  updBusy = true; upd.status = 'checking'; upd.error = ''; upd.diag = ''; updRender();
   try {
-    if (UPDATE_REPO.indexOf('__') === 0) throw new Error('this build was not stamped with its update address');
     const [remote, local, apkVersion] = await Promise.all([updFetchRemote(), updReadLocal(), updApkVersion()]);
     upd.remote = remote; upd.apkVersion = apkVersion; upd.localBuild = local && local.build != null ? String(local.build) : '';
     const newer = remote.web ? verCompare(remote.web, APP_VERSION) > 0 : Number(remote.build) > Number(local.build || 0);
