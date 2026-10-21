@@ -1,4 +1,4 @@
-# Creator Booth — Android app (v1.3.8)
+# Creator Booth — Android app (v1.4.2)
 
 A native shell around the same web app as creator-boot.vercel.app. The web files are bundled
 inside the app, so it opens instantly and starts offline. Chats, AI and sign-in still go to the
@@ -13,6 +13,23 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 **Important, once:** the update notice itself arrives inside the app, so a phone whose old updater was not working cannot receive it
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
+
+## v1.4.4 - push notifications (NEW APK REQUIRED)
+
+- Adds `@capacitor/push-notifications`, the notification permission, and a build step that writes `android/app/google-services.json` from the GitHub secret **`GOOGLE_SERVICES_JSON`**. The build stops with a clear error if the secret is missing or is for a different package than `com.creatorbooth.app`.
+- Install the APK from Releases (Creator Booth (latest) -> creator-booth.apk, or `/download`) ONCE; it installs over the old app and keeps login and chats. Allow notifications when asked.
+- `minApkVersion` stays 1.3.0 so older app files keep receiving web updates (they just have no push).
+
+## v1.4.3 - Script Studio plan/Start and background script jobs
+
+Web update delivered over the air; no new APK needed. Real push notifications (app closed) arrive in a later release and will need a new APK.
+
+## v1.4.2 - chats ordered by last use, orange loading logo
+
+- The chat list is sorted by when a chat was last used (message sent, edited or regenerated), so the app opens the chat you used last.
+- The loading logo on launch is orange instead of white.
+- Mode chips (Script, Match analysis, …) replace editable starter text; the chat now receives coach, squad and form facts from the data bank.
+- Web-only changes: this release is delivered to installed apps as a small over-the-air update (no new APK needed). Run `4-chats-last-used.sql` in Supabase once.
 
 ## v1.3.8 — updates from Supabase Storage (needs a one-time setup)
 

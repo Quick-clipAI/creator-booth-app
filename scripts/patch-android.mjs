@@ -20,3 +20,14 @@ if (!xml.includes('android:scheme="com.creatorbooth.app"')) {
 }
 if (!fs.readFileSync(file, 'utf8').includes('android:scheme="com.creatorbooth.app"')) throw new Error('Manifest patch did not apply');
 console.log('AndroidManifest.xml: sign-in return link registered');
+
+// Android 13+ needs this permission declared before the app may ask to show notifications.
+{
+  let x = fs.readFileSync(file, 'utf8');
+  if (!x.includes('android.permission.POST_NOTIFICATIONS')) {
+    x = x.replace('<application', '<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <application');
+    fs.writeFileSync(file, x);
+  }
+  if (!fs.readFileSync(file, 'utf8').includes('android.permission.POST_NOTIFICATIONS')) throw new Error('Notification permission patch did not apply');
+  console.log('AndroidManifest.xml: notification permission declared');
+}

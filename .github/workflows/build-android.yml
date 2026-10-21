@@ -40,12 +40,24 @@ jobs:
       - name: Register the sign-in return link in the Android manifest
         run: node scripts/patch-android.mjs
 
+      - name: Add the Firebase file (push notifications)
+        env:
+          GSJ: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -z "$GSJ" ]; then
+            echo "::error::GitHub secret GOOGLE_SERVICES_JSON is not set, so this app file cannot receive push notifications."; exit 1
+          fi
+          printf '%s' "$GSJ" > android/app/google-services.json
+          node -e "const j=JSON.parse(require('fs').readFileSync('android/app/google-services.json','utf8')); const ok=(j.client||[]).some(c=>c.client_info&&c.client_info.android_client_info&&c.client_info.android_client_info.package_name==='com.creatorbooth.app'); if(!ok){console.error('::error::google-services.json is not for package com.creatorbooth.app');process.exit(1)} console.log('google-services.json OK for com.creatorbooth.app')"
+
       - name: Set app version (increments every build)
         run: |
           VER=$(node -p "require('./package.json').version")
           sed -i "s/versionCode 1/versionCode ${{ github.run_number }}/" android/app/build.gradle
           sed -i "s/versionName \"1.0\"/versionName \"${VER}\"/" android/app/build.gradle
           grep -n -E "versionCode|versionName" android/app/build.gradle
+          grep -q "versionName \"${VER}\"" android/app/build.gradle || echo "::warning::versionName was not stamped into build.gradle, so the app cannot report which app-file version is installed"
+          echo "Published files will report: $(cat www/version.json)"
 
       - name: Sync web files into Android project
         run: npx cap sync android
@@ -75,6 +87,26 @@ jobs:
         run: |
           (cd www && zip -r ../bundle.zip . -x '.*')
           unzip -l bundle.zip | grep -E " index.html$" || (echo "index.html must be at the top of bundle.zip" && exit 1)
+
+      - name: Upload update files to Supabase Storage (fast download for the app)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_KEY" ]; then
+            echo "::warning::SUPABASE_URL / SUPABASE_SERVICE_KEY secrets are not set, so the app will download updates from GitHub (slower). See the README."
+            exit 0
+          fi
+          AUTH=(-H "apikey: $SUPABASE_SERVICE_KEY")
+          case "$SUPABASE_SERVICE_KEY" in eyJ*) AUTH+=(-H "Authorization: Bearer $SUPABASE_SERVICE_KEY");; esac
+          up() {  # file, name in bucket, content type
+            code=$(curl -sS -o /tmp/up.out -w "%{http_code}" -X POST "${SUPABASE_URL%/}/storage/v1/object/app-updates/$2" "${AUTH[@]}" \
+              -H "x-upsert: true" -H "cache-control: max-age=60" -H "Content-Type: $3" --data-binary @"$1") || code=000
+            echo "upload $2 -> HTTP $code"
+            if [ "$code" != "200" ]; then echo "::warning::Could not upload $2 to Supabase Storage (HTTP $code): $(head -c 300 /tmp/up.out). Does the public bucket 'app-updates' exist?"; return 1; fi
+          }
+          # version.json goes LAST so an app never sees a version whose files are not there yet
+          up bundle.zip bundle.zip application/zip && up creator-booth.apk creator-booth.apk application/vnd.android.package-archive && up www/version.json version.json application/json || true
 
       - name: Publish to the "latest" release
         uses: softprops/action-gh-release@v2

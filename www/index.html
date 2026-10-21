@@ -424,6 +424,16 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
   font-family:var(--sans);font-size:15px;max-height:130px;line-height:1.45;padding:14px 16px 6px;
 }
 .composer textarea::placeholder{color:var(--text-faint)}
+.task-chip{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0 14px;padding:5px 5px 5px 12px;border-radius:999px;background:rgba(201,100,66,.16);color:var(--accent);font-size:13px;font-weight:600;font-family:var(--sans)}
+.task-chip[hidden]{display:none}
+.plan-actions{display:flex;align-items:center;gap:12px;margin:12px 0 4px;flex-wrap:wrap}
+.plan-start{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer}
+.plan-start:disabled{opacity:.5}
+.plan-start:active{transform:scale(.98)}
+.plan-hint{font-size:12.5px;color:var(--text-dim)}
+.task-chip .tc-x{width:22px;height:22px;border-radius:50%;border:none;background:rgba(201,100,66,.22);color:inherit;font-size:11px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0}
+.task-chip .tc-x:active{background:rgba(201,100,66,.4)}
+.composer .task-chip + textarea{padding-top:8px}
 .composer-controls{display:flex;align-items:center;gap:8px;padding:6px 8px 9px}
 .composer-controls .spacer{flex:1}
 .mode-pill-wrap{position:relative}
@@ -721,6 +731,7 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
 /* boot splash: covers the screen until the last chat is ready, so the empty New chat screen never flashes */
 #boot-splash{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .28s ease}
 #boot-splash.hide{opacity:0;pointer-events:none}
+#boot-splash svg{color:var(--brand)}
 </style>
 </head>
 <body>
@@ -891,23 +902,23 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
     <div class="hero-title" id="hero-title">What are we making today?</div>
     <div class="hero-sub" id="hero-sub">Search a match, a player, or a topic — I'll gather what I can and draft it.</div>
     <div class="quickstart-grid" id="quickstart-grid">
-      <button type="button" class="quickstart-card" data-icon-cls="qc-match" data-prefix="Analyze this match: ">
+      <button type="button" class="quickstart-card" data-icon-cls="qc-match" data-prefix="Analyze this match: " data-task-label="Match analysis" data-placeholder="e.g. Arsenal v Chelsea">
         <span class="qc-icon qc-match"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M12 17v4M4.5 9l3 1M16.5 9l3 1M6 17l2.5-3M18 17l-2.5-3"/></svg></span>
         <span class="qc-text"><span class="qc-title">Match Analysis</span><span class="qc-sub">Analyze a match</span></span>
       </button>
-      <button type="button" class="quickstart-card" data-icon-cls="qc-player" data-prefix="Give me a player analysis of ">
+      <button type="button" class="quickstart-card" data-icon-cls="qc-player" data-prefix="Give me a player analysis of " data-task-label="Player analysis" data-placeholder="e.g. Bukayo Saka">
         <span class="qc-icon qc-player"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span>
         <span class="qc-text"><span class="qc-title">Player Analysis</span><span class="qc-sub">Scout a player</span></span>
       </button>
-      <button type="button" class="quickstart-card" data-icon-cls="qc-research" data-prefix="Find the latest news about ">
+      <button type="button" class="quickstart-card" data-icon-cls="qc-research" data-prefix="Find the latest news about " data-task-label="Latest news" data-placeholder="e.g. Real Madrid transfers">
         <span class="qc-icon qc-research"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="14" height="15" rx="1.5"/><path d="M17 8h3a1 1 0 011 1v9a2 2 0 01-2 2H6"/><path d="M6.5 8.5h6M6.5 12h8M6.5 15h8" stroke-width="1.3"/></svg></span>
         <span class="qc-text"><span class="qc-title">Football Research</span><span class="qc-sub">Find the latest</span></span>
       </button>
-      <button type="button" class="quickstart-card" data-icon-cls="qc-script" data-prefix="Write a script about ">
+      <button type="button" class="quickstart-card" data-icon-cls="qc-script" data-prefix="Write a script about " data-task-label="Write a script" data-placeholder="What is it about? e.g. PSG v Barcelona today">
         <span class="qc-icon qc-script"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span>
         <span class="qc-text"><span class="qc-title">Script Studio</span><span class="qc-sub">Turn research into a script</span></span>
       </button>
-      <button type="button" class="quickstart-card qc-banter-card" data-icon-cls="qc-banter" data-prefix="Give me some banter about ">
+      <button type="button" class="quickstart-card qc-banter-card" data-icon-cls="qc-banter" data-prefix="Give me some banter about " data-task-label="Banter" data-placeholder="e.g. Spurs fans">
         <span class="qc-icon qc-banter"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2c2 3 4 5 4 8a4 4 0 01-8 0c0-1 .3-1.8.8-2.6.2.7.2 1.4.7 1.6.3-2 1-3.5 2.5-5z"/><path d="M8.5 16c.5 2 1.8 3.5 3.5 4 1.7-.5 3-2 3.5-4"/></svg></span>
         <span class="qc-text"><span class="qc-title">Banter</span><span class="qc-sub">Rival jokes &amp; hot takes — just for fun</span></span>
       </button>
@@ -1155,6 +1166,7 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
       <span>Not signed in — chats save on this device.</span>
       <span class="x" id="banner-close">✕</span>
     </div>
+    <div class="task-chip" id="task-chip" hidden><span class="tc-label" id="task-chip-label"></span><button type="button" class="tc-x" id="task-chip-x" aria-label="Remove this mode" title="Remove">✕</button></div>
     <textarea id="input" rows="1" placeholder="Real Madrid latest signing…"></textarea>
     <div class="attach-preview" id="attach-preview" style="display:none"></div>
     <input type="file" id="attach-file-input" accept="image/*" multiple style="display:none">
@@ -1337,6 +1349,25 @@ const hero = document.getElementById('hero');
 const scrollSpacer = document.getElementById('scroll-spacer');
 const input = document.getElementById('input');
 const sendBtn = document.getElementById('send');
+// ---- locked "task" chip (Script, Match analysis, …) ----
+const taskChip = document.getElementById('task-chip');
+const DEFAULT_PLACEHOLDER = input.getAttribute('placeholder') || '';
+let activeTask = null;   // { prefix, label, placeholder }
+function setTask(t){
+  activeTask = t;
+  document.getElementById('task-chip-label').textContent = t.label;
+  taskChip.hidden = false;
+  if (t.placeholder) input.placeholder = t.placeholder;
+}
+function clearTask(){
+  activeTask = null;
+  taskChip.hidden = true;
+  input.placeholder = DEFAULT_PLACEHOLDER;
+}
+document.getElementById('task-chip-x').addEventListener('click', () => { clearTask(); input.focus(); });
+input.addEventListener('keydown', (e) => {   // Backspace on an empty box removes the chip too
+  if (e.key === 'Backspace' && activeTask && !input.value) { e.preventDefault(); clearTask(); }
+});
 const banner = document.getElementById('session-banner');
 const bannerClose = document.getElementById('banner-close');
 
@@ -1358,7 +1389,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.3.8';
+const APP_VERSION = '1.4.4';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -1491,14 +1522,16 @@ window.addEventListener('resize', closeModeMenu);
 document.querySelectorAll('.quickstart-card').forEach(card => {
   card.addEventListener('click', () => {
     setMode(card.classList.contains('qc-banter-card') ? 'banter' : 'football');
-    input.value = card.dataset.prefix || '';
+    // The starter phrase is a locked chip in the composer (not editable text): one tap on ✕ removes it all.
+    setTask({ prefix: card.dataset.prefix || '', label: card.dataset.taskLabel || 'Task', placeholder: card.dataset.placeholder || '' });
+    input.value = '';
     input.dispatchEvent(new Event('input'));
     input.focus();
-    input.setSelectionRange(input.value.length, input.value.length);
   });
 });
 
 document.getElementById('row-logout').addEventListener('click', async () => {
+  await teardownPush();
   await supabase.auth.signOut();
   showView('chat');
 });
@@ -2042,6 +2075,7 @@ async function createChat(){
 // A "new chat" is only a blank screen until the first message is sent. The saved chat is created
 // at that moment (saveMessage already does it), so empty "New chat" entries no longer pile up.
 function startDraftChat(){
+  clearTask();
   currentChatId = null; currentChatTitle = 'New chat';
   lastAssistantMsgEl = null; lastUserMsgEl = null;
   renderChatList();
@@ -2265,11 +2299,28 @@ function renderChatList(){
     drawerChats.appendChild(el);
   });
 }
+// Chats are listed by when they were last used (a message sent, edited or regenerated), newest first.
+const lastTouched = c => c.updated_at || c.created_at || '';
+const byLastModified = (a, b) => lastTouched(b).localeCompare(lastTouched(a));
+let chatsHaveUpdatedAt = true; // flips to false if the database does not have chats.updated_at yet (SQL not run)
+async function touchChat(chatId){
+  const now = new Date().toISOString();
+  const c = chats.find(x => x.id === chatId); if (c) c.updated_at = now;
+  if (!currentUser) return;
+  try {
+    if (chatsHaveUpdatedAt){
+      const { error } = await supabase.from('chats').update({ updated_at: now }).eq('id', chatId);
+      if (error && /updated_at|column|42703|PGRST204/i.test(JSON.stringify(error))) chatsHaveUpdatedAt = false;
+    }
+    const cached = await cacheGetOne('chats', chatId);
+    if (cached) cachePutAll('chats', [{ ...cached, updated_at: now }]);
+  } catch (e) { /* best-effort: the list still re-sorts from the local copy */ }
+}
 async function readCachedChatList(){
   const cached = await cacheGetAll('chats');
   return cached.filter(c => c.user_id === currentUser.id)
-    .sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''))
-    .map(c => ({ id: c.id, title: c.title, created_at: c.created_at }));
+    .map(c => ({ id: c.id, title: c.title, created_at: c.created_at, updated_at: c.updated_at || null }))
+    .sort(byLastModified);
 }
 // Saves the latest chats' messages on the phone so they open offline (not just chats you opened before).
 async function prefetchRecentChats(list){
@@ -2289,10 +2340,17 @@ async function refreshChatList(){
     }
     // 2) then ask the server (skipped offline; times out quickly with bad signal)
     try {
-      const { data, error } = await netOrThrow(() => supabase.from('chats').select('id,title,created_at')
-        .eq('user_id', currentUser.id).order('created_at', { ascending: false }), 3000);
+      const q = () => netOrThrow(() => supabase.from('chats').select(chatsHaveUpdatedAt ? 'id,title,created_at,updated_at' : 'id,title,created_at')
+        .eq('user_id', currentUser.id).order(chatsHaveUpdatedAt ? 'updated_at' : 'created_at', { ascending: false }), 3000);
+      let { data, error } = await q();
+      if (error && chatsHaveUpdatedAt && /updated_at|column|42703/i.test(JSON.stringify(error))){ chatsHaveUpdatedAt = false; ({ data, error } = await q()); }
       if (error) throw error;
       chats = data || [];
+      if (!chatsHaveUpdatedAt){   // no column on the server: keep the "last used" times this phone knows about
+        const local = new Map((await cacheGetAll('chats')).map(c => [c.id, c.updated_at]));
+        chats.forEach(c => { c.updated_at = local.get(c.id) || null; });
+      }
+      chats.sort(byLastModified);
       cachePutAll('chats', chats.map(c => ({ ...c, user_id: currentUser.id }))); // write-through, best-effort
       prefetchRecentChats(chats);
     } catch (e) {
@@ -2332,6 +2390,7 @@ async function openChat(chatId, opts = {}){
   return openChatImpl(chatId, opts);
 }
 async function openChatImpl(chatId, opts = {}){
+  clearTask();
   temporaryMode = false;
   tempBanner.style.display = 'none';
   incognitoBtn.classList.remove('active');
@@ -2395,7 +2454,8 @@ async function openChatImpl(chatId, opts = {}){
       const el = renderAssistantBubble(m.content, m.media || [], m.created_at);
       el.insertAdjacentHTML('beforeend', buildMsgActionsHtml(isLast));
       // Each reply is wired to the user message that came right before IT — not the chat's last one.
-      wireMsgActions(el, m.content, precedingUserText, precedingUserImgs, isLast);
+      wireMsgActions(el, stripPlan(m.content), precedingUserText, precedingUserImgs, isLast);
+      if (isLast && el.dataset.plan === '1') addPlanActions(el);
       msgRowRef.set(el, rowRefFor(i));
       if (m.feedback === 'up') el.querySelector('[data-action="up"]').classList.add('active');
       if (m.feedback === 'down') el.querySelector('[data-action="down"]').classList.add('active');
@@ -2476,9 +2536,12 @@ async function saveMessage(role, content, media = [], opts = {}){
         ref = { chatId, type: 'guest', index: chat.messages.length - 1 };
       }
       if (role === 'user' && chat.title === 'New chat'){ chat.title = 'Generating title…'; currentChatTitle = chat.title; }
+      chat.updated_at = new Date().toISOString();
+      const at = list.indexOf(chat); if (at > 0){ list.splice(at, 1); list.unshift(chat); }   // last used goes to the top
       saveGuestChats(list);
     } catch (e) { console.warn('Guest save failed', e); return false; }
   }
+  if (currentUser) await touchChat(chatId);
   await refreshChatList();
   return ref;
 }
@@ -2576,6 +2639,8 @@ async function startSessionInner(newUserId, run, stale){
   await Promise.all([loadProfile(), refreshChatList()]);
   if (stale()) return;
   renderAccountArea(); refreshGreeting();
+  resumeScriptJobs();
+  setupPush();
   if (!openedFromCache){
     if (!chats.length){ startDraftChat(); showDraftScreen(); }
     else { currentChatId = chats[0].id; await openChat(currentChatId); }
@@ -2698,11 +2763,11 @@ function bubbleRawText(bubbleEl){
 // ---- Conversation memory: rebuilds the earlier turns from the thread itself, relative to the
 // reply slot being generated, so it's correct for a fresh send, a regenerate, an edit, AND a
 // chat reloaded from history. Text only (images from earlier turns aren't re-sent). ----
-function buildHistoryContents(replyEl){
+function buildHistoryContents(replyEl, inclusive){
   let cur = replyEl.previousElementSibling;
   while (cur && !(cur.classList && cur.classList.contains('user'))) cur = cur.previousElementSibling;
   const turns = [];
-  for (let el = cur ? cur.previousElementSibling : null; el; el = el.previousElementSibling){
+  for (let el = inclusive ? replyEl : (cur ? cur.previousElementSibling : null); el; el = el.previousElementSibling){
     if (!el.classList || !el.classList.contains('msg')) continue;
     if (el.classList.contains('user')){
       const t = el.querySelector('.bubble-user-text');
@@ -2918,6 +2983,8 @@ function renderAssistantBubble(text, media, ts){
   const div = document.createElement('div');
   div.className = 'msg assistant';
   div.dataset.ts = ts || nextTimestamp();
+  const isPlan = /\[\[script-plan\]\]\s*$/.test(text || '');
+  if (isPlan){ text = stripPlan(text); div.dataset.plan = '1'; }
   const mediaHtml = (media || []).map(m => `<div class="sources"><span>${escapeHtml(m.label || '')}</span></div>`).join('');
   div.innerHTML = `<div class="bubble-assistant">${renderMarkdown(text)}</div>${mediaHtml}`;
   div.querySelector('.bubble-assistant').dataset.full = text;
@@ -3234,7 +3301,7 @@ async function gatherBankContext(queryText){
     if (!r.ok) return null;
     const d = await r.json();
     if (!d || !d.text) return null;
-    return { text: d.text, labels: (d.labels && d.labels.length ? d.labels : ['Data bank']), clubs: d.clubs || [] };
+    return { text: d.text, labels: (d.labels && d.labels.length ? d.labels : ['Data bank']), clubs: d.clubs || [], coachMissing: d.coachMissing || [] };
   } catch (e) { return null; }
 }
 
@@ -3296,7 +3363,10 @@ async function lookupCurrentCoach(clubName){
     const coachRes = await fetch(API_ORIGIN + '/api/football/coachs?team=' + team.id);
     if (!coachRes.ok) return null;
     const coachData = await coachRes.json();
-    const coach = coachData && coachData.response && coachData.response[0];
+    // API-Football lists a club's old coaches too, and the first one is often a former manager. Only trust the
+    // coach whose spell at THIS club is still open (no end date); otherwise say nothing rather than guess.
+    const list = (coachData && coachData.response) || [];
+    const coach = list.find(c => (c.career || []).some(x => x && x.team && x.team.id === team.id && !x.end));
     if (!coach || !coach.name) return null;
     return `${team.name}: current manager/head coach is ${coach.name}.`;
   } catch (e) {
@@ -3405,6 +3475,8 @@ function demoteAssistantMessage(msgEl){
   if (retryBtn) retryBtn.remove();
   const suggestionsRow = msgEl.querySelector('.suggestions-row');
   if (suggestionsRow) suggestionsRow.remove();
+  const planBar = msgEl.querySelector('.plan-actions');
+  if (planBar) planBar.remove();
 }
 
 let lastAssistantMsgEl = null; // the DOM element of the current last assistant message, or null
@@ -3581,15 +3653,203 @@ function extractSuggestions(text){
   return { text: main, lead, suggestions: suggestions.filter(Boolean).slice(0, 4) };
 }
 
+
+/* ------------------------------------------------------------------ */
+/* Script Studio: quick plan first, script only after "Start".        */
+/* The plan is an ordinary assistant message tagged with a hidden      */
+/* marker; the Start button is added to the LAST plan message only.    */
+/* Signed-in people get the script written on the server in the        */
+/* background (it lands in the chat and they are told); guests get it   */
+/* written here, in the open chat.                                     */
+/* ------------------------------------------------------------------ */
+const PLAN_TAG = '\n\n[[script-plan]]';
+const stripPlan = t => String(t || '').replace(/\n*\[\[script-plan\]\]\s*$/, '');
+const SCRIPT_ASK_RX = /^\s*(please\s+)?(write|make|create|draft|give me|prepare)\b[^.\n]{0,30}\bscript\b/i;
+let nextRunWrites = false;   // set when Start is pressed so the next generation writes the script instead of planning
+function lastAssistantIsPlan(){ return !!(lastAssistantMsgEl && lastAssistantMsgEl.dataset && lastAssistantMsgEl.dataset.plan === '1'); }
+function isScriptPlanTurn(userText, pipelineMsg, isRegenerate){
+  if (nextRunWrites){ nextRunWrites = false; return false; }
+  if (isRegenerate) return !!(pipelineMsg && pipelineMsg.dataset && pipelineMsg.dataset.plan === '1');
+  return SCRIPT_ASK_RX.test(userText || '') || lastAssistantIsPlan();
+}
+const PLAN_SYSTEM = `You are Creator Booth's script planner for football video creators. Do NOT write the script yet. Reply FAST with a short plan the creator can approve or change.
+Format exactly:
+**Angle:** one line.
+**Structure:** hook, 3 short beats, closing line, with rough timing.
+**What I'll check:** 4 to 6 bullets of the facts I will look up or use (for example current form and run, head coach, key players, standings, head-to-head, injuries/rest).
+**Style:** tone and length in one line.
+Then one last line: "Tell me what to change, or press Start."
+Rules: under 140 words in total. Use facts from a VERIFIED DATA BANK block when one is given; never invent coaches, results or players. If the person is giving feedback on an earlier plan, start with one short sentence acknowledging it, then give the full revised plan.`;
+function recentUserTexts(el, userText){
+  const out = [userText || '']; let n = 0;
+  for (let c = el && el.previousElementSibling; c && n < 3; c = c.previousElementSibling){
+    if (c.classList && c.classList.contains('user')){ const t = c.querySelector('.bubble-user-text'); if (t) { out.push(t.textContent.trim()); n++; } }
+  }
+  return out.join(' . ').slice(0, 500);
+}
+function addPlanActions(el){
+  if (!el || el.querySelector('.plan-actions')) return;
+  const d = document.createElement('div');
+  d.className = 'plan-actions';
+  d.innerHTML = '<button type="button" class="plan-start">▶ Start writing</button><span class="plan-hint">or type a change below</span>';
+  const anchor = el.querySelector('.msg-actions');
+  el.insertBefore(d, anchor || null);
+  d.querySelector('.plan-start').addEventListener('click', () => startScript(el));
+}
+// everything the real script prompt needs, same sources the normal reply uses
+async function gatherScriptContext(text){
+  const [matchData, bankData] = await Promise.all([gatherFootballContext(text), gatherBankContext(text)]);
+  let ctx = bankData ? bankData.text : '';
+  if (matchData) ctx = ctx ? ctx + '\n\n' + matchData.text : matchData.text;
+  if (!(bankData && bankData.clubs.length && !bankData.coachMissing.length)){
+    const vf = await gatherVerifiedFootballFacts(text);
+    if (vf) ctx = ctx ? ctx + '\n\n' + vf.text : vf.text;
+  }
+  return ctx;
+}
+const WRITE_NOW_TEXT = 'Start writing the script now. Follow the latest plan above, including every change I asked for. Write the finished script only.';
+async function startScript(planEl){
+  const btn = planEl.querySelector('.plan-start');
+  if (btn) btn.disabled = true;
+  if (isGenerating) return;
+  const writeHere = async (why) => {
+    if (why) showToast(why);
+    const bar = planEl.querySelector('.plan-actions'); if (bar) bar.remove();
+    nextRunWrites = true;
+    addUserMsg('▶ Start writing the script', []);
+    const userEl = lastUserMsgEl;
+    const doSaveUser = () => saveMessage('user', '▶ Start writing the script', [], { createdAt: userEl.dataset.ts }).then(ref => trackSave(userEl, ref, doSaveUser));
+    doSaveUser();
+    runPipeline(WRITE_NOW_TEXT, []);
+  };
+  if (!currentUser || temporaryMode || isOffline()) return writeHere(isOffline() ? "You're offline." : '');
+  try {
+    const { data } = await supabase.auth.getSession();
+    const token = data && data.session && data.session.access_token;
+    if (!token) return writeHere('');
+    const mode = currentMode();
+    const history = buildHistoryContents(planEl, true);
+    const recent = recentUserTexts(planEl, '');
+    const ctx = await gatherScriptContext(recent);
+    const lastTurn = (ctx ? ctx + '\n\nUser request: ' : '') + WRITE_NOW_TEXT;
+    const contents = [...history, { role: 'user', parts: [{ text: lastTurn }] }];
+    const notes = [currentDateTimeNote(), replyLengthNote(), footballScopeNote(), conversationNote()];
+    const fav = mode.id === 'banter' ? null : favoriteClubNote(); if (fav) notes.push(fav);
+    const system = mode.system + '\n\n' + notes.join('\n\n');
+    const jobId = crypto.randomUUID();
+    let chatId = currentChatId;
+    if (!chatId){ const c = await createChat(); chatId = c && c.id; }
+    if (!chatId) return writeHere('Could not start a background job.');
+    const res = await fetchWithTimeout(API_ORIGIN + '/api/script-job', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, chatId, jobId, system, contents }) }, 20000);
+    if (!res.ok){
+      let msg = ''; try { const j = await res.json(); msg = j && j.error && j.error.message || ''; } catch (e) {}
+      if (res.status === 429){ showToast(msg || 'A script is already being written.'); if (btn) btn.disabled = false; return; }
+      return writeHere("Couldn't start it in the background" + (msg ? ' (' + msg.slice(0, 80) + ')' : '') + ' — writing it here instead.');
+    }
+    const bar = planEl.querySelector('.plan-actions'); if (bar) bar.remove();
+    addUserMsg('▶ Start writing the script', []);
+    const userEl = lastUserMsgEl;
+    const doSaveUser = () => saveMessage('user', '▶ Start writing the script', [], { createdAt: userEl.dataset.ts }).then(ref => trackSave(userEl, ref, doSaveUser));
+    await doSaveUser();
+    const ackText = "Okay, I'm on it. I'll write the script now and it will land in this chat when it's done, so you can leave this chat in the meantime. You'll get a notice when it's ready.";
+    const ackEl = renderAssistantBubble(ackText, [], nextTimestamp());
+    saveMessage('assistant', ackText, [], { createdAt: ackEl.dataset.ts }).then(ref => trackSave(ackEl, ref, () => {}));
+    scrollDown();
+    watchScriptJob(jobId, chatId);
+  } catch (e) {
+    console.warn('startScript failed', e);
+    if (e instanceof TypeError || isOffline()) return writeHere("Couldn't reach the server — writing it here instead.");
+    return writeHere('');
+  }
+}
+// ---- watching background jobs (only while the app is open; the server keeps working regardless) ----
+const watchedJobs = new Map();   // jobId -> { chatId, since }
+let jobTimer = null;
+function watchScriptJob(jobId, chatId){
+  watchedJobs.set(jobId, { chatId, since: Date.now() });
+  if (!jobTimer) jobTimer = setInterval(checkScriptJobs, 5000);
+}
+const seenJobs = () => { try { return new Set(JSON.parse(localStorage.getItem('cb_seen_jobs') || '[]')); } catch (e) { return new Set(); } };
+const markJobSeen = id => { try { const s = seenJobs(); s.add(id); localStorage.setItem('cb_seen_jobs', JSON.stringify([...s].slice(-40))); } catch (e) {} };
+function toastLong(text, ms){
+  toastEl.textContent = text; toastEl.classList.add('show');
+  clearTimeout(showToast._t); showToast._t = setTimeout(() => toastEl.classList.remove('show'), ms || 6000);
+}
+async function scriptJobFinished(job){
+  markJobSeen(job.id);
+  const ok = job.status === 'done';
+  if (currentChatId === job.chat_id && !isGenerating){ await openChatImpl(job.chat_id); }
+  else { await refreshChatList(); }
+  toastLong(ok ? (currentChatId === job.chat_id ? 'Your script is ready.' : 'Your script is ready — open it from your chats.') : "The script couldn't be finished. Open the chat and tap Regenerate.", 7000);
+  try { if (document.hidden && 'Notification' in window && Notification.permission === 'granted') new Notification('Creator Booth', { body: ok ? 'Your script is ready.' : "Your script couldn't be finished." }); } catch (e) {}
+}
+async function checkScriptJobs(){
+  if (!watchedJobs.size){ clearInterval(jobTimer); jobTimer = null; return; }
+  for (const [id, w] of [...watchedJobs]){
+    try {
+      const { data, error } = await supabase.from('script_jobs').select('id,status,chat_id,error').eq('id', id).maybeSingle();
+      if (error) throw error;
+      if (data && (data.status === 'done' || data.status === 'error')){ watchedJobs.delete(id); await scriptJobFinished(data); continue; }
+    } catch (e) { /* transient: try again next tick */ }
+    if (Date.now() - w.since > 9 * 60000){ watchedJobs.delete(id); toastLong('Still writing. It will appear in the chat when it is done.', 6000); }
+  }
+}
+
+// ---- Phone push (Android app only; the website and older app files simply skip this) ----
+let pushToken = null, pushListening = false;
+async function postDeviceToken(action){
+  try {
+    const { data } = await supabase.auth.getSession();
+    const token = data && data.session && data.session.access_token;
+    if (!token || !pushToken) return;
+    await fetchWithTimeout(API_ORIGIN + '/api/device-token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, deviceToken: pushToken, action }) }, 15000);
+  } catch (e) { /* retried next time the app opens */ }
+}
+async function setupPush(){
+  const PN = NATIVE && nativePlugin('PushNotifications');
+  if (!PN || !currentUser) return;
+  try {
+    if (!pushListening){
+      pushListening = true;
+      PN.addListener('registration', t => { pushToken = t && t.value; postDeviceToken('save'); });
+      PN.addListener('registrationError', e => console.warn('push registration failed', e));
+      PN.addListener('pushNotificationActionPerformed', a => {
+        const id = a && a.notification && a.notification.data && a.notification.data.chatId;
+        if (id) openChat(String(id));
+      });
+    }
+    let perm = await PN.checkPermissions();
+    if (perm.receive === 'prompt' || perm.receive === 'prompt-with-rationale') perm = await PN.requestPermissions();
+    if (perm.receive === 'granted') await PN.register();
+  } catch (e) { console.warn('push setup skipped', e); }
+}
+async function teardownPush(){ await postDeviceToken('remove'); pushToken = null; }
+// After opening the app: pick up jobs still running, and announce ones that finished while the app was closed.
+async function resumeScriptJobs(){
+  if (!currentUser) return;
+  try {
+    const since = new Date(Date.now() - 90 * 60000).toISOString();
+    const { data, error } = await supabase.from('script_jobs').select('id,status,chat_id,error').eq('user_id', currentUser.id).gte('created_at', since);
+    if (error || !data) return;
+    const seen = seenJobs();
+    for (const j of data){
+      if (j.status === 'queued' || j.status === 'running') watchScriptJob(j.id, j.chat_id);
+      else if (!seen.has(j.id)){ markJobSeen(j.id); toastLong(j.status === 'done' ? 'Your script finished while you were away. Find it in its chat.' : "A script couldn't be finished. Open its chat and tap Regenerate.", 7000); }
+    }
+  } catch (e) { /* the table may not exist yet */ }
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && watchedJobs.size) checkScriptJobs(); });
+
 async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerate, restoreCtx){
   const mode = currentMode();
+  const planMode = isScriptPlanTurn(userText, pipelineMsg, isRegenerate);
 
   let footballContext = '';
   let verifiedLabels = [];
   {
     // Checked silently — for a casual message like "hi" there's nothing to find, and the
     // stage label shouldn't claim we're doing football research when we might not be.
-    const [matchData, bankData] = await Promise.all([gatherFootballContext(userText), gatherBankContext(userText)]);
+    const [matchData, bankData] = await Promise.all([planMode ? null : gatherFootballContext(userText), gatherBankContext(planMode ? recentUserTexts(pipelineMsg, userText) : userText)]);
     if (bankData){
       setStage(stageEl, 'Checking our data bank…');
       footballContext = bankData.text;
@@ -3601,7 +3861,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       verifiedLabels = verifiedLabels.concat(matchData.labels);
     }
     // The coach lookup uses a small AI call to find club names; skip it when the bank already recognised the clubs.
-    const verifiedFacts = (bankData && bankData.clubs.length) ? null : await gatherVerifiedFootballFacts(userText);
+    const verifiedFacts = (planMode || (bankData && bankData.clubs.length && !bankData.coachMissing.length)) ? null : await gatherVerifiedFootballFacts(userText);
     if (verifiedFacts){
       setStage(stageEl, 'Checking current club/coach info…');
       footballContext = footballContext ? footballContext + '\n\n' + verifiedFacts.text : verifiedFacts.text;
@@ -3633,14 +3893,14 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
     try {
       setStage(stageEl, 'Putting it together…');
       const history = buildHistoryContents(pipelineMsg);
-      const extraNotes = [currentDateTimeNote(), suggestionsNote(), replyLengthNote()];
+      const extraNotes = [currentDateTimeNote(), ...(planMode ? [] : [suggestionsNote(), replyLengthNote()])];
       if (history.length) extraNotes.push(conversationNote());
       if (mode.id === 'banter'){ extraNotes.push(banterClubNote()); }
       else if (mode.id === 'debate'){ extraNotes.push(footballScopeNote()); }
       else { extraNotes.push(footballScopeNote()); const clubNote = favoriteClubNote(); if (clubNote) extraNotes.push(clubNote); extraNotes.push('You are in ANALYSIS mode: answer the question asked directly and factually, and where the topic is debated, include what people are saying. If earlier messages in this chat were jokes or banter, do not continue that tone unless the latest message asks for it.'); }
       const baseBody = { contents: [...history, { role: 'user', parts: userParts }] };
-      const systemBody = () => ({ parts: [{ text: mode.system + '\n\n' + extraNotes.join('\n\n') }] });
-      const wantSearch = wantsLiveSearch(userText);
+      const systemBody = () => ({ parts: [{ text: (planMode ? PLAN_SYSTEM : mode.system) + '\n\n' + extraNotes.join('\n\n') }] });
+      const wantSearch = planMode ? false : wantsLiveSearch(userText);
       const tryGeminiSearch = wantSearch && !geminiSearchDown();
       if (wantSearch && !tryGeminiSearch){ extraNotes.push(NO_SEARCH_NOTE); noSearch = true; noSearchWhy = 'Gemini search limit reached for now'; }
       const askAI = (withTools) => callAI({
@@ -3672,10 +3932,13 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       // No live search happened (neither Gemini's nor the research step) and the model is "correcting" the person from memory:
       // that is exactly how it once denied a real final. Do not show it.
       if (wantSearch && !(gChunks && gChunks.length) && !(verifiedLabels && verifiedLabels.length) && looksLikeDenial(rawText)) throw new Error('Live search was not available just now, so I could not check this. Please try again in a minute.');
+      if (planMode){ resultText = rawText.trim(); suggestions = []; suggestionsLead = ''; }
+      else {
       const extracted = extractSuggestions(rawText);
       resultText = extracted.text;
       suggestions = extracted.suggestions;
       suggestionsLead = extracted.lead;
+      }
     } catch (e) {
       // A network-level failure (as opposed to the API responding with an error) reads as
       // offline too, even if navigator.onLine hadn't flipped yet — that flag is unreliable on
@@ -3725,16 +3988,19 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   const sourcesHtml = buildSourcesHtml(chunks, usedFallback, fallbackWhy, noSearch, noSearchWhy);
   const suggestionsHtml = buildSuggestionsHtml(suggestions, suggestionsLead);
   const actionsHtml = buildMsgActionsHtml(true); // this message is always the new "last" once it lands
+  if (planMode) pipelineMsg.dataset.plan = '1'; else delete pipelineMsg.dataset.plan;
+  const savedText = planMode ? resultText + PLAN_TAG : resultText;
   pipelineMsg.innerHTML = verifiedHtml + '<div class="bubble-assistant"></div>';
   const bubbleEl = pipelineMsg.querySelector('.bubble-assistant');
   revealWords(bubbleEl, resultText, () => {
     pipelineMsg.insertAdjacentHTML('beforeend', suggestionsHtml + sourcesHtml + actionsHtml);
+    if (planMode) addPlanActions(pipelineMsg);
     wireMsgActions(pipelineMsg, resultText, userText, images, true);
     wireSourcesToggle(pipelineMsg);
     wireSuggestions(pipelineMsg);
   });
   lastAssistantMsgEl = pipelineMsg;
-  const doSaveReply = () => saveMessage('assistant', resultText, [], { replaceRef: isRegenerate ? msgRowRef.get(pipelineMsg) : null, createdAt: pipelineMsg.dataset.ts }).then(ref => trackSave(pipelineMsg, ref, doSaveReply));
+  const doSaveReply = () => saveMessage('assistant', savedText, [], { replaceRef: isRegenerate ? msgRowRef.get(pipelineMsg) : null, createdAt: pipelineMsg.dataset.ts }).then(ref => trackSave(pipelineMsg, ref, doSaveReply));
   doSaveReply();
   saveChatMode(); // remember which mode this chat is in
   maybeGenerateChatTitle(userText, resultText); // fire-and-forget; no-ops after the first exchange
@@ -3779,8 +4045,9 @@ async function regenerateInPlace(msgEl, userText, imageAttachments){
 
 function submit(){
   if (isGenerating) return;
-  const text = input.value.trim();
-  if (!text && !pendingImages.length) return;
+  const typed = input.value.trim();
+  if (!typed && !pendingImages.length) return;
+  const text = activeTask && typed ? (activeTask.prefix + typed) : typed;
   const imgsForBubble = pendingImages.map(img => img.dataUrl);
   const imgsForApi = pendingImages.slice();
   addUserMsg(text || '(image)', imgsForBubble);
@@ -3791,6 +4058,7 @@ function submit(){
   doSaveUser();
   input.value = '';
   input.style.height = 'auto';
+  clearTask();
   clearAttachments();
   sendBtn.disabled = true;
   runPipeline(text, imgsForApi);
