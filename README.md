@@ -14,6 +14,8 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.4.6 - web update (player import fix), no new APK
+
 ## v1.4.5 - fixture card (web update, no new APK)
 
 Delivered over the air. Nothing to install.
