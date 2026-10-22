@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.4.5 - fixture card (web update, no new APK)
+
+Delivered over the air. Nothing to install.
+
 ## v1.4.4 - push notifications (NEW APK REQUIRED)
 
 - Adds `@capacitor/push-notifications`, the notification permission, and a build step that writes `android/app/google-services.json` from the GitHub secret **`GOOGLE_SERVICES_JSON`**. The build stops with a clear error if the secret is missing or is for a different package than `com.creatorbooth.app`.

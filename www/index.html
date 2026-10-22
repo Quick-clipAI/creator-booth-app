@@ -426,6 +426,17 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .composer textarea::placeholder{color:var(--text-faint)}
 .task-chip{display:inline-flex;align-items:center;gap:6px;margin:12px 0 0 14px;padding:5px 5px 5px 12px;border-radius:999px;background:rgba(201,100,66,.16);color:var(--accent);font-size:13px;font-weight:600;font-family:var(--sans)}
 .task-chip[hidden]{display:none}
+.fx-card{margin-top:12px;padding:12px 14px;border:1px solid var(--border,rgba(128,128,128,.25));border-radius:14px;background:var(--surface2,rgba(128,128,128,.08));animation:rise .3s ease;max-width:420px}
+.fx-meta{font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px}
+.fx-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.fx-team{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;text-align:center}
+.fx-name{font-size:13px;line-height:1.2;overflow-wrap:anywhere}
+.fx-badge{width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;letter-spacing:.02em;color:hsl(var(--h) 70% 85%);background:hsl(var(--h) 45% 28%);border:1.5px solid hsl(var(--h) 50% 42%)}
+:root[data-theme="light"] .fx-badge{color:hsl(var(--h) 60% 22%);background:hsl(var(--h) 70% 88%);border-color:hsl(var(--h) 45% 62%)}
+.fx-score{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fx-vs{font-size:14px;color:var(--text-dim)}
+.fx-foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:12px;color:var(--text-dim)}
+.fx-state.up{color:var(--brand)}
 .plan-actions{display:flex;align-items:center;gap:12px;margin:12px 0 4px;flex-wrap:wrap}
 .plan-start{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer}
 .plan-start:disabled{opacity:.5}
@@ -1389,7 +1400,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.4.4';
+const APP_VERSION = '1.4.5';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -2985,7 +2996,8 @@ function renderAssistantBubble(text, media, ts){
   div.dataset.ts = ts || nextTimestamp();
   const isPlan = /\[\[script-plan\]\]\s*$/.test(text || '');
   if (isPlan){ text = stripPlan(text); div.dataset.plan = '1'; }
-  const mediaHtml = (media || []).map(m => `<div class="sources"><span>${escapeHtml(m.label || '')}</span></div>`).join('');
+  const fx = (media || []).filter(m => m && m.type === 'fixture');
+  const mediaHtml = fixtureCardsHtml(fx) + (media || []).filter(m => m && m.type !== 'fixture' && m.label).map(m => `<div class="sources"><span>${escapeHtml(m.label || '')}</span></div>`).join('');
   div.innerHTML = `<div class="bubble-assistant">${renderMarkdown(text)}</div>${mediaHtml}`;
   div.querySelector('.bubble-assistant').dataset.full = text;
   appendToThread(div);
@@ -3300,8 +3312,8 @@ async function gatherBankContext(queryText){
     const r = await fetchWithTimeout(API_ORIGIN + '/api/bank?q=' + encodeURIComponent(q) + '&today=' + todayDateStr(), {}, 6000);
     if (!r.ok) return null;
     const d = await r.json();
-    if (!d || !d.text) return null;
-    return { text: d.text, labels: (d.labels && d.labels.length ? d.labels : ['Data bank']), clubs: d.clubs || [], coachMissing: d.coachMissing || [] };
+    if (!d || (!d.text && !(d.cards && d.cards.length))) return null;
+    return { text: d.text || '', labels: (d.labels && d.labels.length ? d.labels : ['Data bank']), clubs: d.clubs || [], coachMissing: d.coachMissing || [], cards: d.cards || [] };
   } catch (e) { return null; }
 }
 
@@ -3662,6 +3674,39 @@ function extractSuggestions(text){
 /* background (it lands in the chat and they are told); guests get it   */
 /* written here, in the open chat.                                     */
 /* ------------------------------------------------------------------ */
+
+/* ------------------------------------------------------------------ */
+/* Fixture card under an answer. Text badges only (no club crests).     */
+/* ------------------------------------------------------------------ */
+const BADGE_CODES = { 'manchester city':'MCI','man city':'MCI','manchester united':'MUN','man united':'MUN','real madrid':'RMA','atletico':'ATM','athletic club':'ATH','bayern':'FCB','borussia dortmund':'BVB','leverkusen':'B04','leipzig':'RBL','paris saint germain':'PSG','lyonnais':'OL','marseille':'OM','inter miami':'MIA','internazionale':'INT','milan':'MIL','tottenham':'TOT','newcastle':'NEW','nottingham forest':'NFO','crystal palace':'CRY','aston villa':'AVL','west ham':'WHU','wolverhampton':'WOL','brighton':'BHA','sporting cp':'SCP','real sociedad':'RSO','real betis':'BET','rayo vallecano':'RAY','celta':'CEL' };
+function clubBadgeCode(name){
+  const n = String(name || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  for (const k of Object.keys(BADGE_CODES)) if (n.includes(k)) return BADGE_CODES[k];
+  const w = n.split(' ').filter(x => x && !['fc','cf','ac','as','sc','sv','cd','ud','de','la','1','of','the','club','calcio'].includes(x));
+  if (!w.length) return '?';
+  return (w.length === 1 ? w[0].slice(0, 3) : w.slice(0, 3).map(x => x[0]).join('')).toUpperCase();
+}
+function clubBadgeHtml(name){
+  let h = 0; const n = String(name || ''); for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 360;
+  return `<span class="fx-badge" style="--h:${h}" aria-hidden="true">${escapeHtml(clubBadgeCode(name))}</span>`;
+}
+function fixtureDateText(d, t){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); if (!m) return '';
+  const dt = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+  return dt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) + (t ? ' · ' + t : '');
+}
+function fixtureCardsHtml(cards){
+  return (cards || []).filter(c => c && c.home && c.away).map(c => {
+    const done = c.status === 'finished' && c.hg != null && c.ag != null;
+    const mid = done ? `<span class="fx-score">${Number(c.hg)} – ${Number(c.ag)}</span>` : `<span class="fx-vs">v</span>`;
+    const sub = done ? 'Full time' : 'Upcoming';
+    const meta = [c.competition, c.round].filter(Boolean).join(' · ');
+    return `<div class="fx-card" role="group" aria-label="${escapeHtml(c.home + ' versus ' + c.away)}" data-fx="${escapeHtml(c.id || '')}">`
+      + `<div class="fx-meta">${escapeHtml(meta)}</div>`
+      + `<div class="fx-row"><div class="fx-team">${clubBadgeHtml(c.home)}<span class="fx-name">${escapeHtml(c.home)}</span></div>${mid}<div class="fx-team">${clubBadgeHtml(c.away)}<span class="fx-name">${escapeHtml(c.away)}</span></div></div>`
+      + `<div class="fx-foot"><span>${escapeHtml(fixtureDateText(c.date, c.time))}</span><span class="fx-state${done ? '' : ' up'}">${sub}</span></div></div>`;
+  }).join('');
+}
 const PLAN_TAG = '\n\n[[script-plan]]';
 const stripPlan = t => String(t || '').replace(/\n*\[\[script-plan\]\]\s*$/, '');
 const SCRIPT_ASK_RX = /^\s*(please\s+)?(write|make|create|draft|give me|prepare)\b[^.\n]{0,30}\bscript\b/i;
@@ -3846,6 +3891,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
 
   let footballContext = '';
   let verifiedLabels = [];
+  let fixtureCards = [];
   {
     // Checked silently — for a casual message like "hi" there's nothing to find, and the
     // stage label shouldn't claim we're doing football research when we might not be.
@@ -3854,6 +3900,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       setStage(stageEl, 'Checking our data bank…');
       footballContext = bankData.text;
       verifiedLabels = verifiedLabels.concat(bankData.labels);
+      if (!planMode) fixtureCards = (bankData.cards || []).slice(0, 1);
     }
     if (matchData){
       setStage(stageEl, "Found today's match data — verifying…");
@@ -3993,14 +4040,14 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   pipelineMsg.innerHTML = verifiedHtml + '<div class="bubble-assistant"></div>';
   const bubbleEl = pipelineMsg.querySelector('.bubble-assistant');
   revealWords(bubbleEl, resultText, () => {
-    pipelineMsg.insertAdjacentHTML('beforeend', suggestionsHtml + sourcesHtml + actionsHtml);
+    pipelineMsg.insertAdjacentHTML('beforeend', fixtureCardsHtml(fixtureCards) + suggestionsHtml + sourcesHtml + actionsHtml);
     if (planMode) addPlanActions(pipelineMsg);
     wireMsgActions(pipelineMsg, resultText, userText, images, true);
     wireSourcesToggle(pipelineMsg);
     wireSuggestions(pipelineMsg);
   });
   lastAssistantMsgEl = pipelineMsg;
-  const doSaveReply = () => saveMessage('assistant', savedText, [], { replaceRef: isRegenerate ? msgRowRef.get(pipelineMsg) : null, createdAt: pipelineMsg.dataset.ts }).then(ref => trackSave(pipelineMsg, ref, doSaveReply));
+  const doSaveReply = () => saveMessage('assistant', savedText, fixtureCards.map(c => ({ type: 'fixture', ...c })), { replaceRef: isRegenerate ? msgRowRef.get(pipelineMsg) : null, createdAt: pipelineMsg.dataset.ts }).then(ref => trackSave(pipelineMsg, ref, doSaveReply));
   doSaveReply();
   saveChatMode(); // remember which mode this chat is in
   maybeGenerateChatTitle(userText, resultText); // fire-and-forget; no-ops after the first exchange
