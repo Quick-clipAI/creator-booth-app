@@ -1491,7 +1491,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.5.0';
+const APP_VERSION = '1.5.1';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4740,7 +4740,10 @@ document.getElementById('fb-again').addEventListener('click', () => { fbRating =
 
 // "Get the app" popup — website only, Android browsers only (an APK can't be installed elsewhere)
 const PROMO_KEY = 'cb_app_promo_until';
-const IS_ANDROID_BROWSER = /Android/i.test(navigator.userAgent || '');
+// Chrome's "Desktop site" mode hides the word Android from the browser id, so also accept a touch screen on Linux (a phone in desktop mode)
+const IS_ANDROID_BROWSER = /Android/i.test(navigator.userAgent || '')
+  || !!(navigator.userAgentData && /android/i.test(navigator.userAgentData.platform || ''))
+  || (/Linux/i.test(navigator.userAgent || '') && !/CrOS/i.test(navigator.userAgent || '') && (navigator.maxTouchPoints || 0) > 1);
 function buildPromo(forced){
   let box = document.getElementById('app-promo');
   if (box) box.remove();
@@ -4756,7 +4759,7 @@ function buildPromo(forced){
     + '</ul>'
     + (IS_ANDROID_BROWSER
         ? '<a class="promo-dl" href="/download" rel="noopener">Download for Android</a><p class="promo-small">Not on the Play Store yet, so Android may ask you to allow the install. That is normal for apps installed outside the store.</p>'
-        : '<p class="promo-small" style="font-size:13.5px;color:var(--text-dim)">The app is for Android phones. Open this website on your Android phone to download it.</p>')
+        : '<p class="promo-small" style="font-size:13.5px;color:var(--text-dim)">The app is for Android phones. Open this website on your Android phone to download it. On an Android phone already? <a href="/download" rel="noopener" style="color:var(--accent)">Download anyway</a>.</p>')
     + '<div class="promo-links"><button type="button" data-a="compare">See how it compares</button><button type="button" data-a="later">' + (forced ? 'Close' : 'Not now') + '</button></div>'
     + '</div>';
   document.body.appendChild(box);
