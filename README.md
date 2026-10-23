@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.5.2 - web update (daily data sync now 02:00 Nigerian time)
+
+Server-side timing change only; nothing visible in the app.
+
 ## v1.5.1 - download fixes (web update)
 
 The update files bucket in Supabase was private, so the quick update and the download link always used GitHub. It is public now. The website's "Get the app" box also works when Chrome is in "Desktop site" mode.
