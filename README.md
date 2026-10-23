@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.5.0 - match screen (web update, no new APK)
+
+Tap the fixture card under a chat answer to open the match screen: Facts, Lineup, Table, Stats and Play-offs. The table highlights both clubs and colours qualification and relegation places. Tabs with nothing to show say "No data available". Line-ups and statistics are collected once after full time (1 API credit per match) and saved. Arrives over the air like every web update; the installed APK keeps working and does not need replacing. The Android back button closes the screen.
+
 ## v1.4.7 - web update (results checked after each match), no new APK
 
 ## v1.4.6 - web update (player import fix), no new APK

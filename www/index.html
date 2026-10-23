@@ -437,6 +437,89 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .fx-vs{font-size:14px;color:var(--text-dim)}
 .fx-foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:12px;color:var(--text-dim)}
 .fx-state.up{color:var(--brand)}
+/* ---- Match screen (opens from a fixture card) ---- */
+:root{--z-ucl:#3fa66b;--z-q:#3fa66b;--z-po:#4a8fe0;--z-uel:#e0953a;--z-uecl:#2fa8a0;--z-rel:#d0584a;--z-out:#d0584a;--mv-away:#6e8fd8}
+.fx-card[data-fx],.fx-card[data-d]{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,transform .15s}
+.fx-card[data-fx]:active,.fx-card[data-d]:active{transform:scale(.99)}
+.fx-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.fx-go{display:inline-flex;align-items:center;gap:3px;color:var(--brand);font-weight:600}
+.mv-view{position:fixed;inset:0;z-index:45;background:var(--bg);display:none;flex-direction:column;color:var(--text)}
+.mv-view.open{display:flex}
+.mv-top{flex-shrink:0;padding:calc(10px + env(safe-area-inset-top)) 16px 0;background:linear-gradient(180deg,var(--surface2),var(--bg))}
+.mv-bar{display:flex;align-items:center;justify-content:space-between;min-height:44px}
+.mv-back{width:44px;height:44px;margin-left:-12px;display:flex;align-items:center;justify-content:center;background:none;border:0;color:var(--text);cursor:pointer;border-radius:50%}
+.mv-comp{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);text-align:center;flex:1;padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mv-spacer{width:32px}
+.mv-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:start;gap:10px;padding:8px 0 4px}
+.mv-team{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;text-align:center;background:none;border:0;color:inherit;font:inherit;padding:0}
+.mv-team .fx-badge{width:52px;height:52px;font-size:15px}
+.mv-tname{font-size:14px;font-weight:600;line-height:1.2;overflow-wrap:anywhere}
+.mv-mid{text-align:center;padding-top:6px}
+.mv-big{font-family:var(--serif);font-size:38px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
+.mv-state{margin-top:6px;font-size:13px;color:var(--text-dim)}
+.mv-state.up{color:var(--brand);font-weight:600}
+.mv-scorers{display:grid;grid-template-columns:1fr 18px 1fr;gap:8px;font-size:12.5px;color:var(--text-dim);padding:6px 0 10px;line-height:1.45}
+.mv-scorers div:first-child{text-align:right}.mv-scorers div:last-child{text-align:left}
+.mv-tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 10px;border-bottom:1px solid var(--border-soft)}
+.mv-tabs::-webkit-scrollbar{display:none}
+.mv-tab{flex:0 0 auto;min-height:44px;padding:0 14px;background:none;border:0;border-bottom:3px solid transparent;color:var(--text-dim);font:600 14px var(--sans);cursor:pointer}
+.mv-tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--brand)}
+.mv-body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:14px 16px calc(28px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+.mv-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+.mv-h{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;font-weight:600}
+.mv-empty{text-align:center;padding:48px 20px;color:var(--text-dim);line-height:1.5}
+.mv-empty b{display:block;color:var(--text);font-size:15px;margin-bottom:6px}
+.mv-meta{display:grid;gap:8px;font-size:13.5px}.mv-meta div{display:flex;justify-content:space-between;gap:12px}.mv-meta span:first-child{color:var(--text-dim)}.mv-meta span:last-child{text-align:right}
+.mv-ev{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;gap:6px;padding:7px 0;border-top:1px solid var(--border-soft);font-size:13.5px}
+.mv-ev:first-of-type{border-top:0}
+.mv-ev .l{text-align:right}.mv-ev .r{text-align:left}.mv-ev .min{text-align:center;color:var(--text-dim);font-variant-numeric:tabular-nums;font-size:12px}
+.mv-ev small{display:block;color:var(--text-dim);font-size:11.5px}
+.mv-ic{display:inline-block;width:10px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:5px}
+.mv-ic.y{background:#e8c437}.mv-ic.r{background:#d84a3a}.mv-ic.ball{width:auto;height:auto;background:none;font-style:normal;vertical-align:baseline}
+.mv-ht{text-align:center;font-size:12px;color:var(--text-dim);padding:8px 0}
+.mv-details summary{cursor:pointer;color:var(--text-dim);font-size:13px;min-height:36px;display:flex;align-items:center}
+.mv-potm{display:flex;align-items:center;gap:12px}.mv-potm .nm{font-weight:600}.mv-potm .cl{font-size:12.5px;color:var(--text-dim)}
+.mv-rt{display:inline-block;min-width:34px;text-align:center;padding:2px 6px;border-radius:7px;font:700 12px var(--sans);font-variant-numeric:tabular-nums;color:#0b0b0a}
+.mv-rt.top{background:#5aa7ff}.mv-rt.good{background:#4fc17f}.mv-rt.ok{background:#f0a24a}.mv-rt.low{background:#e5695a}
+.mv-formation{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-weight:600}.mv-formation span{color:var(--text-dim);font-weight:500;font-size:13px}
+.mv-pitch{position:relative;display:flex;flex-direction:column;justify-content:space-around;gap:6px;padding:14px 4px;min-height:430px;border-radius:12px;background:repeating-linear-gradient(180deg,#1f4a33 0 12.5%,#235239 12.5% 25%);border:1px solid #2c6446;overflow:hidden}
+:root[data-theme="light"] .mv-pitch{background:repeating-linear-gradient(180deg,#5f9a72 0 12.5%,#66a379 12.5% 25%);border-color:#4d8561}
+.mv-pitch::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.25)}
+.mv-pitch::after{content:"";position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border:1px solid rgba(255,255,255,.25);border-radius:50%}
+.mv-row{position:relative;z-index:1;display:flex;justify-content:space-around;align-items:flex-start}
+.mv-pl{display:flex;flex-direction:column;align-items:center;width:20%;min-width:56px;text-align:center;color:#fff}
+.mv-dot{position:relative;width:38px;height:38px;border-radius:50%;background:rgba(10,10,9,.78);border:2px solid rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font:700 14px var(--sans)}
+.mv-dot .mv-rt{position:absolute;top:-9px;right:-16px;font-size:10.5px;min-width:28px;padding:1px 4px}
+.mv-pn{margin-top:4px;font-size:11.5px;line-height:1.15;text-shadow:0 1px 2px rgba(0,0,0,.7);overflow-wrap:anywhere}
+.mv-tags{font-size:10.5px;text-shadow:0 1px 2px rgba(0,0,0,.7);min-height:13px}
+.mv-subs{display:grid;gap:0}.mv-sub{display:grid;grid-template-columns:28px 1fr auto 40px;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--border-soft);font-size:13.5px}
+.mv-sub:first-child{border-top:0}.mv-sub .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.mv-sub .ps{color:var(--text-dim);font-size:12px}
+.mv-coach{margin-top:8px;font-size:13px;color:var(--text-dim)}
+.mv-tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.mv-tbl th{font-size:11px;color:var(--text-dim);font-weight:600;text-align:right;padding:6px 4px;white-space:nowrap}
+.mv-tbl td{padding:9px 4px;text-align:right;border-top:1px solid var(--border-soft)}
+.mv-tbl th:nth-child(2),.mv-tbl td:nth-child(2){text-align:left;width:100%}
+.mv-tbl td.pos{text-align:left;position:relative;padding-left:12px;color:var(--text-dim);width:1%}
+.mv-tbl td.pos::before{content:"";position:absolute;left:0;top:5px;bottom:5px;width:4px;border-radius:2px;background:var(--zc,transparent)}
+.mv-tbl td.tm{font-weight:500;overflow-wrap:anywhere}
+.mv-tbl tr.me td{background:color-mix(in srgb,var(--brand) 16%,transparent);font-weight:700}
+.mv-tbl td.pts{font-weight:700}
+.mv-legend{display:grid;gap:7px;margin-top:12px;font-size:12.5px;color:var(--text-dim)}
+.mv-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:-1px}
+.mv-note{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.45}
+.mv-st{padding:10px 0;border-top:1px solid var(--border-soft)}.mv-st:first-of-type{border-top:0}
+.mv-st .v{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums;font-size:14px;margin-bottom:6px}
+.mv-st .v b{font-weight:700}.mv-st .v span.t{color:var(--text-dim);font-size:13px}
+.mv-bar2{display:flex;gap:3px;height:6px}.mv-bar2 i{display:block;border-radius:3px;min-width:3px}
+.mv-bar2 .h{background:var(--brand)}.mv-bar2 .a{background:var(--mv-away)}
+.mv-stages{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;scrollbar-width:none}.mv-stages::-webkit-scrollbar{display:none}
+.mv-chip{flex:0 0 auto;min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font:600 13px var(--sans);cursor:pointer}
+.mv-chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.mv-tie{padding:12px 14px}.mv-tl{display:flex;justify-content:space-between;gap:10px;padding:4px 0}.mv-tl.w{font-weight:700}.mv-tl.cur{color:var(--brand)}
+.mv-legs{margin-top:8px;padding-top:8px;border-top:1px solid var(--border-soft);font-size:12px;color:var(--text-dim);display:grid;gap:3px}
+.mv-skel{height:84px;border-radius:14px;background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:mvsk 1.2s linear infinite;margin-bottom:12px}
+@keyframes mvsk{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.mv-skel{animation:none}.fx-card{transition:none}}
 .plan-actions{display:flex;align-items:center;gap:12px;margin:12px 0 4px;flex-wrap:wrap}
 .plan-start{background:var(--accent);color:#fff;border:none;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:600;font-family:var(--sans);cursor:pointer}
 .plan-start:disabled{opacity:.5}
@@ -749,6 +832,14 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
 <div id="boot-splash" role="status" aria-label="Loading Creator Booth"><svg width="92" height="80" viewBox="236 262 782 681" aria-hidden="true"><g class="eq-star"><use href="#cb-star-g"/></g><g class="eq-ball"><use href="#cb-ball-g"/></g></svg></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="cb-logo" viewBox="236 262 782 681"><g fill="currentColor" fill-rule="evenodd"><path d="M 559,267 L 562,524 L 559,525 L 527,493 L 527,490 L 521,484 L 517,483 L 515,478 L 512,477 L 509,472 L 507,472 L 474,439 L 474,436 L 468,433 L 410,374 L 410,372 L 402,366 L 386,349 L 380,346 L 299,427 L 299,430 L 301,430 L 304,435 L 307,435 L 314,442 L 314,444 L 317,444 L 417,529 L 466,573 L 485,588 L 483,596 L 475,598 L 243,598 L 243,672 L 241,673 L 241,681 L 243,682 L 243,713 L 493,679 L 494,682 L 454,721 L 450,722 L 436,738 L 332,832 L 324,837 L 320,844 L 406,927 L 408,927 L 482,842 L 507,811 L 511,811 L 511,806 L 517,800 L 521,793 L 525,791 L 525,788 L 530,784 L 553,753 L 558,750 L 558,747 L 570,733 L 574,732 L 583,744 L 583,749 L 588,750 L 590,756 L 593,757 L 602,769 L 602,772 L 604,772 L 613,784 L 613,787 L 618,790 L 618,794 L 624,798 L 626,804 L 628,804 L 634,812 L 634,817 L 637,817 L 638,820 L 642,822 L 644,827 L 648,830 L 712,916 L 730,938 L 732,938 L 882,841 L 882,839 L 847,837 L 836,838 L 835,836 L 829,837 L 806,832 L 771,819 L 742,803 L 720,786 L 710,776 L 710,774 L 708,774 L 694,760 L 658,712 L 657,707 L 654,706 L 648,697 L 648,694 L 642,688 L 641,683 L 713,682 L 787,722 L 791,722 L 857,688 L 857,652 L 860,650 L 857,588 L 792,557 L 713,603 L 640,603 L 639,600 L 645,593 L 645,590 L 651,580 L 655,578 L 656,573 L 663,563 L 667,560 L 679,543 L 690,533 L 690,531 L 719,504 L 757,477 L 794,457 L 827,444 L 859,436 L 883,433 L 911,433 L 911,431 L 897,424 L 893,420 L 889,420 L 855,408 L 826,403 L 788,403 L 763,407 L 742,413 L 710,426 L 692,438 L 689,438 L 684,434 L 684,422 L 682,421 L 684,418 L 684,415 L 682,414 L 682,331 L 683,324 L 685,323 L 685,316 L 683,315 L 683,267 Z"/><path d="M 940,725 L 862,699 L 796,734 L 773,790 L 771,800 L 797,811 L 817,816 L 831,817 L 832,819 L 852,819 L 853,817 L 867,816 L 893,808 L 911,799 L 938,778 Z"/><path d="M 780,480 L 800,547 L 862,578 L 872,575 L 942,543 L 942,527 L 938,495 L 916,477 L 889,464 L 863,458 L 833,459 L 805,467 Z"/><path d="M 1011,648 L 996,644 L 953,719 L 953,732 L 951,734 L 947,734 L 947,739 L 953,743 L 953,754 L 950,755 L 950,759 L 952,760 L 952,775 L 964,767 L 965,763 L 978,749 L 997,714 L 1009,675 Z"/><path d="M 953,502 L 956,550 L 981,595 L 992,623 L 999,631 L 1011,635 L 1013,630 L 1011,629 L 1011,614 L 1008,596 L 997,561 L 974,521 L 963,510 L 961,505 Z"/></g></symbol><defs><g id="cb-star-g" fill="currentColor" fill-rule="evenodd"><path d="M 559,267 L 562,524 L 559,525 L 527,493 L 527,490 L 521,484 L 517,483 L 515,478 L 512,477 L 509,472 L 507,472 L 474,439 L 474,436 L 468,433 L 410,374 L 410,372 L 402,366 L 386,349 L 380,346 L 299,427 L 299,430 L 301,430 L 304,435 L 307,435 L 314,442 L 314,444 L 317,444 L 417,529 L 466,573 L 485,588 L 483,596 L 475,598 L 243,598 L 243,672 L 241,673 L 241,681 L 243,682 L 243,713 L 493,679 L 494,682 L 454,721 L 450,722 L 436,738 L 332,832 L 324,837 L 320,844 L 406,927 L 408,927 L 482,842 L 507,811 L 511,811 L 511,806 L 517,800 L 521,793 L 525,791 L 525,788 L 530,784 L 553,753 L 558,750 L 558,747 L 570,733 L 574,732 L 583,744 L 583,749 L 588,750 L 590,756 L 593,757 L 602,769 L 602,772 L 604,772 L 613,784 L 613,787 L 618,790 L 618,794 L 624,798 L 626,804 L 628,804 L 634,812 L 634,817 L 637,817 L 638,820 L 642,822 L 644,827 L 648,830 L 712,916 L 730,938 L 732,938 L 882,841 L 882,839 L 847,837 L 836,838 L 835,836 L 829,837 L 806,832 L 771,819 L 742,803 L 720,786 L 710,776 L 710,774 L 708,774 L 694,760 L 658,712 L 657,707 L 654,706 L 648,697 L 648,694 L 642,688 L 641,683 L 713,682 L 787,722 L 791,722 L 857,688 L 857,652 L 860,650 L 857,588 L 792,557 L 713,603 L 640,603 L 639,600 L 645,593 L 645,590 L 651,580 L 655,578 L 656,573 L 663,563 L 667,560 L 679,543 L 690,533 L 690,531 L 719,504 L 757,477 L 794,457 L 827,444 L 859,436 L 883,433 L 911,433 L 911,431 L 897,424 L 893,420 L 889,420 L 855,408 L 826,403 L 788,403 L 763,407 L 742,413 L 710,426 L 692,438 L 689,438 L 684,434 L 684,422 L 682,421 L 684,418 L 684,415 L 682,414 L 682,331 L 683,324 L 685,323 L 685,316 L 683,315 L 683,267 Z"/></g><g id="cb-ball-g" fill="currentColor" fill-rule="evenodd"><path d="M 940,725 L 862,699 L 796,734 L 773,790 L 771,800 L 797,811 L 817,816 L 831,817 L 832,819 L 852,819 L 853,817 L 867,816 L 893,808 L 911,799 L 938,778 Z"/><path d="M 780,480 L 800,547 L 862,578 L 872,575 L 942,543 L 942,527 L 938,495 L 916,477 L 889,464 L 863,458 L 833,459 L 805,467 Z"/><path d="M 1011,648 L 996,644 L 953,719 L 953,732 L 951,734 L 947,734 L 947,739 L 953,743 L 953,754 L 950,755 L 950,759 L 952,760 L 952,775 L 964,767 L 965,763 L 978,749 L 997,714 L 1009,675 Z"/><path d="M 953,502 L 956,550 L 981,595 L 992,623 L 999,631 L 1011,635 L 1013,630 L 1011,629 L 1011,614 L 1008,596 L 997,561 L 974,521 L 963,510 L 961,505 Z"/></g></defs></svg>
 
+<div class="mv-view" id="mv-view" role="dialog" aria-modal="true" aria-label="Match details" hidden>
+  <div class="mv-top">
+    <div class="mv-bar"><button class="mv-back" id="mv-back" aria-label="Close match details"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><div class="mv-comp" id="mv-comp"></div><div class="mv-spacer"></div></div>
+    <div id="mv-head"></div>
+    <div class="mv-tabs" id="mv-tabs" role="tablist" aria-label="Match sections"></div>
+  </div>
+  <div class="mv-body" id="mv-body" role="tabpanel" aria-live="polite"></div>
+</div>
 <div class="overlay" id="overlay"></div>
 <div class="drawer" id="drawer">
   <div class="drawer-brand"><svg class="drawer-logo" width="26" height="23" aria-hidden="true"><use href="#cb-logo"/></svg><span>Creator Booth</span></div>
@@ -1400,7 +1491,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.4.7';
+const APP_VERSION = '1.5.0';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3701,12 +3792,223 @@ function fixtureCardsHtml(cards){
     const mid = done ? `<span class="fx-score">${Number(c.hg)} – ${Number(c.ag)}</span>` : `<span class="fx-vs">v</span>`;
     const sub = done ? 'Full time' : 'Upcoming';
     const meta = [c.competition, c.round].filter(Boolean).join(' · ');
-    return `<div class="fx-card" role="group" aria-label="${escapeHtml(c.home + ' versus ' + c.away)}" data-fx="${escapeHtml(c.id || '')}">`
+    return `<div class="fx-card" role="button" tabindex="0" aria-label="${escapeHtml(c.home + ' versus ' + c.away + ', open match details')}" data-fx="${escapeHtml(c.id || '')}" data-d="${escapeHtml(c.date || '')}" data-h="${escapeHtml(c.home)}" data-a="${escapeHtml(c.away)}" data-c="${escapeHtml(c.competition || '')}" data-s="${escapeHtml(c.status || '')}" data-hg="${c.hg == null ? '' : Number(c.hg)}" data-ag="${c.ag == null ? '' : Number(c.ag)}">`
       + `<div class="fx-meta">${escapeHtml(meta)}</div>`
       + `<div class="fx-row"><div class="fx-team">${clubBadgeHtml(c.home)}<span class="fx-name">${escapeHtml(c.home)}</span></div>${mid}<div class="fx-team">${clubBadgeHtml(c.away)}<span class="fx-name">${escapeHtml(c.away)}</span></div></div>`
-      + `<div class="fx-foot"><span>${escapeHtml(fixtureDateText(c.date, c.time))}</span><span class="fx-state${done ? '' : ' up'}">${sub}</span></div></div>`;
+      + `<div class="fx-foot"><span>${escapeHtml(fixtureDateText(c.date, c.time))}</span><span class="fx-state${done ? '' : ' up'}">${sub}</span><span class="fx-go">Details ›</span></div></div>`;
   }).join('');
 }
+/* ------------------------------------------------------------------ */
+/* Match screen: opens when a fixture card is tapped. All data comes    */
+/* from /api/match (our own data bank); this code never calls the       */
+/* football API.                                                        */
+/* ------------------------------------------------------------------ */
+const MV = { cache: new Map(), view: null, tab: 'facts', stage: null, open: false, token: 0, opener: null };
+const mvq = id => document.getElementById(id);
+const mvMin = e => (e.m == null ? '' : e.m + (e.x ? '+' + e.x : '') + "'");
+function mvTime(m){
+  if (m.kickoff){ const d = new Date(m.kickoff); if (!Number.isNaN(d.getTime())) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  return m.time || '';
+}
+function mvEmpty(title, why){ return `<div class="mv-empty"><b>${escapeHtml(title)}</b>${escapeHtml(why || '')}</div>`; }
+function mvNoDetail(v){
+  const s = v.detailState;
+  if (s === 'upcoming') return mvEmpty('No data available', 'This match has not been played yet.');
+  if (s === 'pending') return mvEmpty('No data available yet', 'The full details are collected after full time. They usually appear within about 20 minutes.');
+  if (s === 'unavailable') return mvEmpty('No data available', 'The football data provider has no line-ups or statistics for this match.');
+  return mvEmpty('No data available', 'Line-ups and statistics were not saved for this match.');
+}
+function mvStateText(m){
+  if (m.status === 'finished'){
+    const n = /penalt/i.test(m.note || '') ? ' · ' + m.note : (/extra time/i.test(m.note || '') ? ' · after extra time' : '');
+    return { t: 'Full time' + n, up: false };
+  }
+  if (m.status === 'postponed') return { t: 'Postponed', up: false };
+  if (m.status === 'cancelled') return { t: 'Cancelled', up: false };
+  return { t: fixtureDateText(m.date, ''), up: true };
+}
+function mvScorersHtml(v){
+  const ev = v.detail && v.detail.events ? v.detail.events : [];
+  const by = side => {
+    const map = new Map();
+    ev.filter(e => e.side === side && e.type === 'goal' && /^(normal goal|penalty)$/i.test(e.detail || '')).forEach(e => { const k = e.player || '?'; if (!map.has(k)) map.set(k, []); map.get(k).push(mvMin(e) + (/penalty/i.test(e.detail) ? ' (pen)' : '')); });
+    return [...map].map(([n, ms]) => `${escapeHtml(n)} ${ms.join(', ')}`).join('<br>');
+  };
+  const h = by('home'), a = by('away');
+  return h || a ? `<div class="mv-scorers"><div>${h}</div><div aria-hidden="true">⚽</div><div>${a}</div></div>` : '';
+}
+function mvHeadHtml(v){
+  const m = v.match, done = m.status === 'finished', st = mvStateText(m);
+  const mid = done ? `<div class="mv-big" aria-label="${m.hg} to ${m.ag}">${m.hg} – ${m.ag}</div>` : `<div class="mv-big">${escapeHtml(mvTime(m) || 'v')}</div>`;
+  const team = (n, side) => `<button class="mv-team" data-team="${escapeHtml(n)}" aria-label="${escapeHtml(n + (side === 'home' ? ', home' : ', away'))}">${clubBadgeHtml(n)}<span class="mv-tname">${escapeHtml(n)}</span></button>`;
+  return `<div class="mv-score">${team(m.home, 'home')}<div class="mv-mid">${mid}<div class="mv-state${st.up ? ' up' : ''}">${escapeHtml(st.t)}</div></div>${team(m.away, 'away')}</div>${mvScorersHtml(v)}`;
+}
+function mvTabsFor(v){
+  const t = [['facts', 'Facts'], ['lineup', 'Lineup'], ['table', 'Table'], ['stats', 'Stats']];
+  if (v.bracket) t.push(['playoffs', 'Play-offs']);
+  return t;
+}
+function mvRenderTabs(v){
+  mvq('mv-tabs').innerHTML = mvTabsFor(v).map(([k, l]) => `<button class="mv-tab" role="tab" id="mvt-${k}" data-tab="${k}" aria-selected="${MV.tab === k}" tabindex="${MV.tab === k ? 0 : -1}">${l}</button>`).join('');
+}
+
+/* ---- Facts */
+function mvFactsHtml(v){
+  const m = v.match, d = v.detail;
+  const rows = [['Competition', m.competition], ['Round', m.round], ['Date', fixtureDateText(m.date, '')], [m.status === 'finished' ? 'Kick-off' : 'Kick-off', mvTime(m)], ['Venue', d && d.venue ? [d.venue.name, d.venue.city].filter(Boolean).join(', ') : ''], ['Referee', d && d.referee ? d.referee : ''],
+    ['Half-time', m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : '']].filter(r => r[1]);
+  let out = `<div class="mv-card"><div class="mv-h">Match</div><div class="mv-meta">${rows.map(r => `<div><span>${r[0]}</span><span>${escapeHtml(r[1])}</span></div>`).join('')}</div></div>`;
+  if (!d) return out + `<div class="mv-card">${mvNoDetail(v)}</div>`;
+  if (d.best) out += `<div class="mv-card"><div class="mv-h">Highest rated player</div><div class="mv-potm">${mvRt(d.best.rating)}<div><div class="nm">${escapeHtml(d.best.name)}</div><div class="cl">${escapeHtml(d.best.side === 'home' ? m.home : m.away)}</div></div></div></div>`;
+  const key = (d.events || []).filter(e => e.type === 'goal' || e.type === 'card' || e.type === 'var');
+  const line = e => {
+    const icon = e.type === 'goal' ? '<i class="mv-ic ball">⚽</i>' : e.type === 'card' ? `<i class="mv-ic ${/red/i.test(e.detail) ? 'r' : 'y'}"></i>` : '';
+    const sub = e.type === 'goal' ? (/^normal goal$/i.test(e.detail) ? (e.other ? 'assist ' + escapeHtml(e.other) : '') : escapeHtml(String(e.detail).toLowerCase())) : (e.type === 'var' ? escapeHtml(e.detail) : escapeHtml(e.detail.replace(/ card$/i, '').toLowerCase()));
+    const cell = `${icon}${escapeHtml(e.player || '')}${sub ? `<small>${sub}</small>` : ''}`;
+    return `<div class="mv-ev"><div class="l">${e.side === 'home' ? cell : ''}</div><div class="min">${mvMin(e)}</div><div class="r">${e.side === 'away' ? cell : ''}</div></div>`;
+  };
+  out += `<div class="mv-card"><div class="mv-h">Goals and cards</div>${key.length ? key.map(line).join('') : '<div class="mv-ht">No goals or cards.</div>'}</div>`;
+  const subs = (d.events || []).filter(e => e.type === 'subst');
+  if (subs.length) out += `<div class="mv-card"><details class="mv-details"><summary>Substitutions (${subs.length})</summary>${subs.map(e => `<div class="mv-ev"><div class="l">${e.side === 'home' ? `${escapeHtml(e.other)}<small>on for ${escapeHtml(e.player)}</small>` : ''}</div><div class="min">${mvMin(e)}</div><div class="r">${e.side === 'away' ? `${escapeHtml(e.other)}<small>on for ${escapeHtml(e.player)}</small>` : ''}</div></div>`).join('')}</details></div>`;
+  return out;
+}
+function mvRt(r){ if (r == null) return ''; const c = r >= 8 ? 'top' : r >= 7 ? 'good' : r >= 6 ? 'ok' : 'low'; return `<b class="mv-rt ${c}">${Number(r).toFixed(1)}</b>`; }
+
+/* ---- Lineup */
+function mvPlayerHtml(p){
+  const tags = [];
+  if (p.g) tags.push('⚽' + (p.g > 1 ? p.g : ''));
+  if (p.yc && !p.rc) tags.push('<i class="mv-ic y" style="width:8px;height:11px;margin:0"></i>');
+  if (p.rc) tags.push('<i class="mv-ic r" style="width:8px;height:11px;margin:0"></i>');
+  if (p.min != null && p.min > 0 && p.min < 90 && !p.rc) tags.push('↓' + p.min + "'");
+  return `<div class="mv-pl"><div class="mv-dot">${p.n != null ? p.n : ''}${p.rating != null ? mvRt(p.rating) : ''}</div><div class="mv-pn">${escapeHtml(p.name)}</div><div class="mv-tags">${tags.join(' ')}</div></div>`;
+}
+function mvPitchRows(xi){
+  const grid = xi.every(p => /^\d+:\d+$/.test(p.grid || ''));
+  let rows;
+  if (grid){
+    const g = new Map();
+    xi.forEach(p => { const [r, c] = p.grid.split(':').map(Number); if (!g.has(r)) g.set(r, []); g.get(r).push({ p, c }); });
+    rows = [...g.keys()].sort((a, b) => a - b).map(k => g.get(k).sort((a, b) => a.c - b.c).map(x => x.p));
+  } else {
+    rows = ['G', 'D', 'M', 'F'].map(pos => xi.filter(p => p.pos === pos)).filter(r => r.length);
+  }
+  return rows.reverse();      // goalkeeper at the bottom, attackers at the top
+}
+function mvLineupHtml(v){
+  const d = v.detail; if (!d || !d.lineups || !Object.keys(d.lineups).length) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
+  return ['home', 'away'].map(side => {
+    const l = d.lineups[side]; if (!l) return '';
+    const name = side === 'home' ? v.match.home : v.match.away;
+    const subs = l.subs.map(p => `<div class="mv-sub"><span class="no">${p.n != null ? p.n : ''}</span><span>${escapeHtml(p.name)}</span><span class="ps">${escapeHtml(p.pos)}${p.min ? ' · ' + p.min + "'" : ''}</span>${p.rating != null ? mvRt(p.rating) : '<span></span>'}</div>`).join('');
+    return `<div class="mv-card"><div class="mv-formation">${escapeHtml(name)}<span>${escapeHtml(l.formation || '')}</span></div>`
+      + `<div class="mv-pitch" role="img" aria-label="${escapeHtml(name + ' starting line-up' + (l.formation ? ', ' + l.formation : ''))}">${mvPitchRows(l.xi).map(r => `<div class="mv-row">${r.map(mvPlayerHtml).join('')}</div>`).join('')}</div>`
+      + (l.coach ? `<div class="mv-coach">Coach: ${escapeHtml(l.coach)}</div>` : '')
+      + (subs ? `<div class="mv-h" style="margin-top:16px">Substitutes</div><div class="mv-subs">${subs}</div>` : '') + `</div>`;
+  }).join('');
+}
+
+/* ---- Table */
+function mvTableHtml(v){
+  const t = v.table; if (!t) return `<div class="mv-card">${mvEmpty('No table for this competition', 'It is not a league or league-phase competition.')}</div>`;
+  const me = new Set([v.match.home, v.match.away]);
+  const body = t.rows.map(r => `<tr class="${me.has(r.team) ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${escapeHtml(r.team)}</td><td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.GD > 0 ? '+' + r.GD : r.GD}</td><td class="pts">${r.Pts}</td></tr>`).join('');
+  const legend = t.legend.length ? `<div class="mv-legend">${t.legend.map(l => `<div><i style="background:var(--z-${l.key})"></i>${escapeHtml(l.label)}</div>`).join('')}</div>` : '';
+  const notes = [t.note, t.usual ? 'Places shown are the usual ones. Extra European places depend on UEFA rankings and cup winners.' : '', t.tieUndecided ? 'Some clubs are level on every tie-break we apply.' : ''].filter(Boolean);
+  return `<div class="mv-card"><div class="mv-h">${escapeHtml(t.competition)} ${escapeHtml(String(t.season))}/${String((t.season + 1) % 100).padStart(2, '0')}</div><table class="mv-tbl"><caption class="sr-only" style="position:absolute;left:-9999px">League table</caption><thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">GD</th><th scope="col">Pts</th></tr></thead><tbody>${body}</tbody></table>${legend}${notes.map(n => `<div class="mv-note">${escapeHtml(n)}</div>`).join('')}</div>`;
+}
+
+/* ---- Stats */
+const MV_STAT_ORDER = ['Ball Possession', 'expected_goals', 'Total Shots', 'Shots on Goal', 'Shots off Goal', 'Blocked Shots', 'Corner Kicks', 'Offsides', 'Fouls', 'Yellow Cards', 'Red Cards', 'Goalkeeper Saves', 'Total passes', 'Passes accurate', 'Passes %'];
+function mvStatsHtml(v){
+  const d = v.detail; if (!d || !d.stats || !d.stats.length) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
+  const idx = l => { const i = MV_STAT_ORDER.indexOf(l); return i < 0 ? 99 : i; };
+  const list = d.stats.map((s, i) => ({ ...s, i })).sort((a, b) => idx(a.label) - idx(b.label) || a.i - b.i);
+  const pn = x => { const n = parseFloat(String(x).replace('%', '')); return Number.isFinite(n) ? n : 0; };
+  const rows = list.map(s => {
+    const a = pn(s.home), b = pn(s.away), tot = a + b, ha = tot ? Math.max(a / tot * 100, 0) : 50;
+    return `<div class="mv-st"><div class="v"><b>${escapeHtml(String(s.home))}</b><span class="t">${escapeHtml(String(s.label).replace(/_/g, ' '))}</span><b>${escapeHtml(String(s.away))}</b></div><div class="mv-bar2" aria-hidden="true"><i class="h" style="flex:${tot ? a : 1}"></i><i class="a" style="flex:${tot ? b : 1}"></i></div></div>`;
+  }).join('');
+  return `<div class="mv-card"><div class="mv-formation">${escapeHtml(v.match.home)}<span>${escapeHtml(v.match.away)}</span></div>${rows}</div>`;
+}
+
+/* ---- Play-offs / knockout */
+function mvPlayoffsHtml(v){
+  const b = v.bracket; if (!b || !b.stages.length) return `<div class="mv-card">${mvEmpty('No data available', 'No knockout matches are stored yet. They appear once the draw is made.')}</div>`;
+  const names = b.stages.map(s => s.name);
+  if (!MV.stage || !names.includes(MV.stage)) MV.stage = names.includes(b.current) ? b.current : names[names.length - 1];
+  const chips = `<div class="mv-stages" role="group" aria-label="Knockout round">${names.map(n => `<button class="mv-chip" data-stage="${escapeHtml(n)}" aria-pressed="${n === MV.stage}">${escapeHtml(n)}</button>`).join('')}</div>`;
+  const st = b.stages.find(s => s.name === MV.stage);
+  const me = new Set([v.match.home, v.match.away]);
+  const ties = st.ties.map(t => {
+    const wa = t.decided && t.agg && t.agg.a > t.agg.b, wb = t.decided && t.agg && t.agg.b > t.agg.a;
+    const legs = t.legs.map(l => `<div>${escapeHtml(fixtureDateText(l.date, ''))} · ${escapeHtml(l.home)} ${l.status === 'finished' && l.hg != null ? l.hg + ' – ' + l.ag : 'v'} ${escapeHtml(l.away)}${l.note ? ' (' + escapeHtml(l.note) + ')' : ''}</div>`).join('');
+    return `<div class="mv-card mv-tie"><div class="mv-tl${wa ? ' w' : ''}${me.has(t.a) ? ' cur' : ''}"><span>${escapeHtml(t.a)}</span><span>${t.agg ? t.agg.a : ''}</span></div><div class="mv-tl${wb ? ' w' : ''}${me.has(t.b) ? ' cur' : ''}"><span>${escapeHtml(t.b)}</span><span>${t.agg ? t.agg.b : ''}</span></div><div class="mv-legs">${legs}</div></div>`;
+  }).join('');
+  return chips + ties;
+}
+
+function mvRenderBody(){
+  const v = MV.view, el = mvq('mv-body'); if (!v) return;
+  el.innerHTML = ({ facts: mvFactsHtml, lineup: mvLineupHtml, table: mvTableHtml, stats: mvStatsHtml, playoffs: mvPlayoffsHtml }[MV.tab] || mvFactsHtml)(v);
+}
+function mvSetTab(k, focus){
+  MV.tab = k; document.querySelectorAll('#mv-tabs .mv-tab').forEach(b => { const on = b.dataset.tab === k; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; if (on && focus) b.focus(); });
+  mvq('mv-body').setAttribute('aria-labelledby', 'mvt-' + k); mvRenderBody(); mvq('mv-body').scrollTop = 0;
+}
+function mvShow(v){
+  MV.view = v; mvq('mv-comp').textContent = [v.match.competition, v.match.round].filter(Boolean).join(' · ');
+  mvq('mv-head').innerHTML = mvHeadHtml(v); mvRenderTabs(v); mvSetTab(MV.tab);
+}
+async function openMatch(ref, opener){
+  const el = mvq('mv-view'); if (!el) return;
+  const key = ref.id || [ref.date, ref.home, ref.away].join('|'); const token = ++MV.token;
+  if (!MV.open){ MV.open = true; MV.opener = opener || null; try { history.pushState({ mv: 1 }, ''); } catch (e) { /* history unavailable */ } }
+  el.hidden = false; el.classList.add('open'); MV.tab = 'facts'; MV.stage = null; MV.view = null;
+  mvq('mv-comp').textContent = [ref.competition, ref.round].filter(Boolean).join(' · ');
+  mvq('mv-head').innerHTML = mvHeadHtml({ match: { home: ref.home, away: ref.away, status: ref.status, hg: ref.hg, ag: ref.ag, date: ref.date, time: ref.time, kickoff: null }, detail: null });
+  mvq('mv-tabs').innerHTML = ''; mvq('mv-body').innerHTML = '<div class="mv-skel"></div><div class="mv-skel"></div><div class="mv-skel"></div>';
+  mvq('mv-back').focus();
+  let v = MV.cache.get(key);
+  if (!v || Date.now() - v.at > 60000){
+    try {
+      const qs = ref.id ? 'id=' + encodeURIComponent(ref.id) : 'date=' + encodeURIComponent(ref.date) + '&home=' + encodeURIComponent(ref.home) + '&away=' + encodeURIComponent(ref.away);
+      const r = await fetch(API_ORIGIN + '/api/match?' + qs); const j = await r.json();
+      if (!r.ok || j.error) throw new Error(j.error || ('HTTP ' + r.status));
+      v = { ...j, at: Date.now() }; MV.cache.set(key, v);
+    } catch (e) {
+      if (token !== MV.token) return;
+      mvq('mv-body').innerHTML = `<div class="mv-empty"><b>Could not load this match</b>${escapeHtml(String(e.message || e))}<br><br><button class="mv-chip" id="mv-retry">Try again</button></div>`;
+      mvq('mv-retry').onclick = () => openMatch(ref, MV.opener); return;
+    }
+  }
+  if (token !== MV.token) return;
+  mvShow(v);
+}
+function closeMatch(fromPop){
+  if (!MV.open) return; MV.open = false; MV.token++;
+  const el = mvq('mv-view'); el.classList.remove('open'); el.hidden = true;
+  if (!fromPop) { try { if (history.state && history.state.mv) history.back(); } catch (e) { /* ignore */ } }
+  if (MV.opener && document.contains(MV.opener)) MV.opener.focus(); MV.opener = null;
+}
+window.addEventListener('popstate', () => { if (MV.open) closeMatch(true); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && MV.open) closeMatch(false); });
+document.addEventListener('click', e => {
+  const card = e.target.closest && e.target.closest('.fx-card[data-fx], .fx-card[data-d]');
+  if (card && !MV.open){ openMatch({ id: card.dataset.fx || '', date: card.dataset.d || '', home: card.dataset.h || '', away: card.dataset.a || '', competition: card.dataset.c || '', status: card.dataset.s || '', hg: card.dataset.hg === '' || card.dataset.hg == null ? null : Number(card.dataset.hg), ag: card.dataset.ag === '' || card.dataset.ag == null ? null : Number(card.dataset.ag) }, card); return; }
+  if (!MV.open) return;
+  if (e.target.closest('#mv-back')) return closeMatch(false);
+  const tab = e.target.closest('.mv-tab'); if (tab) return mvSetTab(tab.dataset.tab);
+  const chip = e.target.closest('.mv-chip[data-stage]'); if (chip){ MV.stage = chip.dataset.stage; return mvRenderBody(); }
+});
+document.addEventListener('keydown', e => {
+  const card = e.target.closest && e.target.closest('.fx-card[data-fx], .fx-card[data-d]');
+  if (card && (e.key === 'Enter' || e.key === ' ') && !MV.open){ e.preventDefault(); card.click(); return; }
+  if (MV.open && e.target.classList && e.target.classList.contains('mv-tab') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){
+    const tabs = [...document.querySelectorAll('#mv-tabs .mv-tab')], i = tabs.indexOf(e.target), n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; mvSetTab(n.dataset.tab, true);
+  }
+});
+
 const PLAN_TAG = '\n\n[[script-plan]]';
 const stripPlan = t => String(t || '').replace(/\n*\[\[script-plan\]\]\s*$/, '');
 const SCRIPT_ASK_RX = /^\s*(please\s+)?(write|make|create|draft|give me|prepare)\b[^.\n]{0,30}\bscript\b/i;
