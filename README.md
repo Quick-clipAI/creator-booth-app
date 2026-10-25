@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.5.5 - web update (no change inside the app)
+
+Admin/data change on the website; version raised so both repos stay in step.
+
 ## v1.5.4 - web update (no change inside the app)
 
 Admin-only change on the website; version raised so both repos stay in step.
