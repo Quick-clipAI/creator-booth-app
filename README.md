@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.6.1 - web update (no change inside the app)
+
+Admin: duplicate-club "Needs checking" list. Version raised so both repos stay in step.
+
 ## v1.6.0 - match screen shows "Entered by hand"
 
 Small addition to the match facts (hand-entered details are labelled). Admin gained the by-hand match details import. Version raised so both repos stay in step.
