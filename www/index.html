@@ -1491,7 +1491,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.5.9';
+const APP_VERSION = '1.6.0';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3856,7 +3856,7 @@ function mvRenderTabs(v){
 function mvFactsHtml(v){
   const m = v.match, d = v.detail;
   const rows = [['Competition', m.competition], ['Round', m.round], ['Date', fixtureDateText(m.date, '')], [m.status === 'finished' ? 'Kick-off' : 'Kick-off', mvTime(m)], ['Venue', d && d.venue ? [d.venue.name, d.venue.city].filter(Boolean).join(', ') : ''], ['Referee', d && d.referee ? d.referee : ''],
-    ['Half-time', m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : '']].filter(r => r[1]);
+    ['Half-time', m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : ''], ['Details', d && d.source === 'manual' ? 'Entered by hand' : '']].filter(r => r[1]);
   let out = `<div class="mv-card"><div class="mv-h">Match</div><div class="mv-meta">${rows.map(r => `<div><span>${r[0]}</span><span>${escapeHtml(r[1])}</span></div>`).join('')}</div></div>`;
   if (!d) return out + `<div class="mv-card">${mvNoDetail(v)}</div>`;
   if (d.best) out += `<div class="mv-card"><div class="mv-h">Highest rated player</div><div class="mv-potm">${mvRt(d.best.rating)}<div><div class="nm">${escapeHtml(d.best.name)}</div><div class="cl">${escapeHtml(d.best.side === 'home' ? m.home : m.away)}</div></div></div></div>`;
