@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.6.4 - web update: Lineup tab on one shared pitch
+
+The Lineup tab shows both teams on one pitch (home on top, away at the bottom) with the two coaches opposite each other and the substitutes and bench in two columns. Delivered over the air; no new APK needed.
+
 ## v1.6.3 - web update (no change inside the app)
 
 Server-side: squads from API-Football. Version raised so both repos stay in step.

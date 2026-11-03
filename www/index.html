@@ -482,7 +482,11 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-rt{display:inline-block;min-width:34px;text-align:center;padding:2px 6px;border-radius:7px;font:700 12px var(--sans);font-variant-numeric:tabular-nums;color:#0b0b0a}
 .mv-rt.top{background:#5aa7ff}.mv-rt.good{background:#4fc17f}.mv-rt.ok{background:#f0a24a}.mv-rt.low{background:#e5695a}
 .mv-formation{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-weight:600}.mv-formation span{color:var(--text-dim);font-weight:500;font-size:13px}
-.mv-pitch{position:relative;display:flex;flex-direction:column;justify-content:space-around;gap:6px;padding:14px 4px;min-height:430px;border-radius:12px;background:repeating-linear-gradient(180deg,#1f4a33 0 12.5%,#235239 12.5% 25%);border:1px solid #2c6446;overflow:hidden}
+.mv-pitch{position:relative;display:flex;flex-direction:column;min-height:780px;border-radius:0;background:repeating-linear-gradient(180deg,#1f4a33 0 12.5%,#235239 12.5% 25%);border:1px solid #2c6446;border-width:0 1px;overflow:hidden}
+.mv-half{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:8px;padding:14px 4px}
+.mv-bar{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px;background:#17382a;color:#fff;font-weight:600;font-size:14px;border:1px solid #2c6446}.mv-bar .fm{font-weight:500;font-size:12.5px;opacity:.8}.mv-bar.top{border-radius:12px 12px 0 0}.mv-bar.bottom{border-radius:0 0 12px 12px}
+.mv-coaches{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-top:14px;font-size:13.5px}.mv-coaches b{color:var(--text-dim);font-size:12px;font-weight:600}.mv-coaches span:last-child{text-align:right}
+.mv-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.mv-sub2{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:6px;padding:8px 0;border-top:1px solid var(--border-soft);font-size:13px}.mv-sub2 .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.mv-sub2 small{display:block;color:var(--text-dim);font-size:11px}
 :root[data-theme="light"] .mv-pitch{background:repeating-linear-gradient(180deg,#5f9a72 0 12.5%,#66a379 12.5% 25%);border-color:#4d8561}
 .mv-pitch::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.25)}
 .mv-pitch::after{content:"";position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border:1px solid rgba(255,255,255,.25);border-radius:50%}
@@ -1491,7 +1495,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.6.3';
+const APP_VERSION = '1.6.4';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3883,7 +3887,8 @@ function mvPlayerHtml(p){
   if (p.min != null && p.min > 0 && p.min < 90 && !p.rc) tags.push('↓' + p.min + "'");
   return `<div class="mv-pl"><div class="mv-dot">${p.n != null ? p.n : ''}${p.rating != null ? mvRt(p.rating) : ''}</div><div class="mv-pn">${escapeHtml(p.name)}</div><div class="mv-tags">${tags.join(' ')}</div></div>`;
 }
-function mvPitchRows(xi){
+function mvPitchRows(xi, home){
+  // rows run goalkeeper -> attackers; each row left -> right as the team sees it
   const grid = xi.every(p => /^\d+:\d+$/.test(p.grid || ''));
   let rows;
   if (grid){
@@ -3893,19 +3898,30 @@ function mvPitchRows(xi){
   } else {
     rows = ['G', 'D', 'M', 'F'].map(pos => xi.filter(p => p.pos === pos)).filter(r => r.length);
   }
-  return rows.reverse();      // goalkeeper at the bottom, attackers at the top
+  // one shared pitch: the home side fills the top half (goalkeeper at the top, facing down, so its left is on the viewer's right),
+  // the away side the bottom half (goalkeeper at the bottom, attackers next to the halfway line)
+  return home ? rows.map(r => r.slice().reverse()) : rows.slice().reverse();
+}
+function mvSubCol(list){
+  return list.map(p => `<div class="mv-sub2"><span class="no">${p.n != null ? p.n : ''}</span><span class="nm">${escapeHtml(p.name)}<small>${escapeHtml(p.pos || '')}${p.min ? ' · ' + p.min + "'" : ''}</small></span>${p.rating != null ? mvRt(p.rating) : '<span></span>'}</div>`).join('');
 }
 function mvLineupHtml(v){
   const d = v.detail; if (!d || !d.lineups || !Object.keys(d.lineups).length) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
-  return ['home', 'away'].map(side => {
-    const l = d.lineups[side]; if (!l) return '';
-    const name = side === 'home' ? v.match.home : v.match.away;
-    const subs = l.subs.map(p => `<div class="mv-sub"><span class="no">${p.n != null ? p.n : ''}</span><span>${escapeHtml(p.name)}</span><span class="ps">${escapeHtml(p.pos)}${p.min ? ' · ' + p.min + "'" : ''}</span>${p.rating != null ? mvRt(p.rating) : '<span></span>'}</div>`).join('');
-    return `<div class="mv-card"><div class="mv-formation">${escapeHtml(name)}<span>${escapeHtml(l.formation || '')}</span></div>`
-      + `<div class="mv-pitch" role="img" aria-label="${escapeHtml(name + ' starting line-up' + (l.formation ? ', ' + l.formation : ''))}">${mvPitchRows(l.xi).map(r => `<div class="mv-row">${r.map(mvPlayerHtml).join('')}</div>`).join('')}</div>`
-      + (l.coach ? `<div class="mv-coach">Coach: ${escapeHtml(l.coach)}</div>` : '')
-      + (subs ? `<div class="mv-h" style="margin-top:16px">Substitutes</div><div class="mv-subs">${subs}</div>` : '') + `</div>`;
-  }).join('');
+  const H = d.lineups.home, A = d.lineups.away;
+  if (!H && !A) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
+  const bar = (name, l, cls) => `<div class="mv-bar ${cls}"><span>${escapeHtml(name)}</span><span class="fm">${escapeHtml((l && l.formation) || '')}</span></div>`;
+  const half = (l, home) => `<div class="mv-half">${l ? mvPitchRows(l.xi, home).map(r => `<div class="mv-row">${r.map(mvPlayerHtml).join('')}</div>`).join('') : ''}</div>`;
+  const played = l => (l && l.subs || []).filter(p => (p.min != null && p.min > 0) || p.rating != null);
+  const bench = l => (l && l.subs || []).filter(p => !((p.min != null && p.min > 0) || p.rating != null));
+  const two = (title, a, b) => (a.length || b.length) ? `<div class="mv-h" style="margin-top:16px;text-align:center">${title}</div><div class="mv-cols"><div>${mvSubCol(a)}</div><div>${mvSubCol(b)}</div></div>` : '';
+  const hn = v.match.home, an = v.match.away;
+  return `<div class="mv-card mv-lu">${bar(hn, H, 'top')}`
+    + `<div class="mv-pitch" role="img" aria-label="${escapeHtml('Starting line-ups: ' + hn + (H && H.formation ? ' ' + H.formation : '') + ' (top) against ' + an + (A && A.formation ? ' ' + A.formation : '') + ' (bottom)')}">${half(H, true)}${half(A, false)}</div>`
+    + bar(an, A, 'bottom')
+    + ((H && H.coach) || (A && A.coach) ? `<div class="mv-coaches"><span>${escapeHtml((H && H.coach) || '')}</span><b>Coach</b><span>${escapeHtml((A && A.coach) || '')}</span></div>` : '')
+    + two('Substitutes', played(H), played(A))
+    + two('Bench', bench(H), bench(A))
+    + `</div>`;
 }
 
 /* ---- Table */
