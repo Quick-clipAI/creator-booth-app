@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.6.6 - update sheet goes straight to the file download
+
+The quick update failed on the phone every time, so the update sheet now shows one button, Download update, which opens the APK. `OTA_ENABLED` in `www/index.html` turns the quick update back on. Install this APK once; the phone cannot receive it over the air.
+
 ## v1.6.5 - web update: competitions, logos, colours, analysis answers
 
 Competition cards and screens for the Champions League and the leagues, own league logos (bundled in `www/logos`), per-league brand colours, Champions League match data, and chat answers built from form, table and head-to-head instead of reputation. Delivered over the air; no new APK.

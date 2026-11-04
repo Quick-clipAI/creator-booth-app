@@ -1530,7 +1530,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.6.5';
+const APP_VERSION = '1.6.6';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -5123,10 +5123,11 @@ function openUpdateSheet(){
   const old = document.getElementById('update-sheet'); if (old) old.remove();
   const r = upd.remote || {};
   const ver = r.web ? 'v' + r.web : 'a newer version';
-  const needApk = upd.apkNeeded || upd.applyFailed;
-  const title = upd.apkNeeded ? 'Install the new app version' : (upd.applyFailed ? 'Update needs a download' : 'New version available');
+  const needApk = upd.apkNeeded || upd.applyFailed || !OTA_ENABLED;
+  const title = (upd.apkNeeded || !OTA_ENABLED) ? 'Install the new app version' : (upd.applyFailed ? 'Update needs a download' : 'New version available');
   let body;
   if (upd.apkNeeded) body = 'Creator Booth ' + ver + ' has changes that can only arrive as a fresh install. Download it, open the file when it finishes and tap Install. Your chats stay in your account.';
+  else if (!OTA_ENABLED) body = 'Creator Booth ' + ver + ' is ready. Download it, open the file when it finishes and tap Install. Your login and chats stay.';
   else if (upd.applyFailed) body = 'The quick update did not work this time. You can still get ' + ver + ': download it, open the file when it finishes and tap Install.';
   else body = 'Creator Booth ' + ver + ' is ready. It takes a few seconds and the app restarts by itself. You are on v' + APP_VERSION + '.';
   const box = document.createElement('div'); box.id = 'update-sheet';
@@ -5149,6 +5150,9 @@ function openUpdateSheet(){
 }
 
 // Downloads bundle.zip, then restarts the app on it. Any failure moves to the "Download update" fallback.
+// The in-app quick update (bundle.zip) failed on the phone every time ('Failed to download'), so the sheet goes straight to the file download.
+// Set to true to try the quick update again.
+const OTA_ENABLED = false;
 async function applyUpdate(btn){
   const Updater = nativePlugin('CapacitorUpdater'), remote = upd.remote;
   if (btn){ btn.disabled = true; btn.textContent = 'Downloading…'; }
