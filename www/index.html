@@ -484,7 +484,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-formation{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-weight:600}.mv-formation span{color:var(--text-dim);font-weight:500;font-size:13px}
 .mv-pitch{position:relative;display:flex;flex-direction:column;min-height:780px;border-radius:0;background:repeating-linear-gradient(180deg,#1f4a33 0 12.5%,#235239 12.5% 25%);border:1px solid #2c6446;border-width:0 1px;overflow:hidden}
 .mv-half{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:8px;padding:14px 4px}
-.mv-bar{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px;background:#17382a;color:#fff;font-weight:600;font-size:14px;border:1px solid #2c6446}.mv-bar .fm{font-weight:500;font-size:12.5px;opacity:.8}.mv-bar.top{border-radius:12px 12px 0 0}.mv-bar.bottom{border-radius:0 0 12px 12px}
+.mv-tbar{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px;background:#17382a;color:#fff;font-weight:600;font-size:14px;border:1px solid #2c6446}.mv-tbar .fm{font-weight:500;font-size:12.5px;opacity:.8}.mv-tbar.top{border-radius:12px 12px 0 0}.mv-tbar.bottom{border-radius:0 0 12px 12px}
 .mv-coaches{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-top:14px;font-size:13.5px}.mv-coaches b{color:var(--text-dim);font-size:12px;font-weight:600}.mv-coaches span:last-child{text-align:right}
 .mv-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.mv-sub2{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:6px;padding:8px 0;border-top:1px solid var(--border-soft);font-size:13px}.mv-sub2 .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.mv-sub2 small{display:block;color:var(--text-dim);font-size:11px}
 :root[data-theme="light"] .mv-pitch{background:repeating-linear-gradient(180deg,#5f9a72 0 12.5%,#66a379 12.5% 25%);border-color:#4d8561}
@@ -499,6 +499,39 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-subs{display:grid;gap:0}.mv-sub{display:grid;grid-template-columns:28px 1fr auto 40px;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--border-soft);font-size:13.5px}
 .mv-sub:first-child{border-top:0}.mv-sub .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.mv-sub .ps{color:var(--text-dim);font-size:12px}
 .mv-coach{margin-top:8px;font-size:13px;color:var(--text-dim)}
+.cp-card .cp-row{display:flex;align-items:center;gap:12px}.cp-txt{flex:1;min-width:0}.cp-name{font-weight:700;font-size:15px}.cp-sub{font-size:12px;color:var(--text-dim);margin-top:2px}
+.cp-logo{width:38px;height:38px;flex:0 0 auto;object-fit:contain;background:#fff;border-radius:10px;padding:4px;box-sizing:border-box}.cp-logo.big{width:52px;height:52px;border-radius:14px;padding:6px}
+.cp-logo.cp-fb{display:flex;align-items:center;justify-content:center;background:var(--surface2,#ddd);color:var(--text);font:700 12px var(--sans);padding:0}
+.cp-head{display:flex;align-items:center;gap:14px;padding:6px 16px 10px}.cp-title{font-weight:700;font-size:18px}.cp-season{font-size:13px;color:var(--text-dim);margin-top:2px}
+.cp-rounds{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.cp-rounds b{font-size:14px;text-align:center}.cp-rounds .mv-chip{min-width:44px}.cp-rounds .mv-chip:disabled{opacity:.35}
+.cp-filter{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;font-weight:600}
+.cp-fx{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;width:100%;padding:11px 0;background:none;border:0;border-top:1px solid var(--border-soft);color:var(--text);font:500 13.5px var(--sans);text-align:left;cursor:pointer;min-height:44px}
+.cp-fx:first-of-type{border-top:0}.cp-fx .h{text-align:right}.cp-fx .sc{font-weight:700;font-variant-numeric:tabular-nums;min-width:52px;text-align:center}.cp-fx .sc.up{font-weight:500;color:var(--text-dim)}.cp-fx small{grid-column:1/-1;text-align:center;color:var(--text-dim);font-size:11.5px}
+.cp-today{color:var(--brand);font-weight:700}
+.cp-st{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--border-soft);font-size:14px}.cp-st:first-of-type{border-top:0}.cp-st .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.cp-st .nm{display:flex;flex-direction:column;align-items:flex-start;gap:1px}.cp-st small{color:var(--text-dim);font-size:11.5px}
+.cp-club{background:none;border:0;padding:6px 0;min-height:32px;color:var(--text-dim);font:500 12px var(--sans);text-align:left;cursor:pointer;text-decoration:underline;text-decoration-style:dotted}.cp-club.main{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;padding:0;min-height:0}
+.cp-tbl tbody tr{cursor:pointer}
+.lg-MLS{--lg:#001F5B;--lg2:#E2231A;--lg-fill:#E2231A;--lg-on:#FFFFFF;--lg-pill:#E2231A;--lg-pill-on:#FFFFFF;--lg-edge:#E8423A}:root[data-theme="light"] .lg-MLS{--lg-edge:#CD2018}
+.lg-EPL{--lg:#3D195B;--lg2:#00FF87;--lg-fill:#00FF87;--lg-on:#111111;--lg-pill:#00FF87;--lg-pill-on:#111111;--lg-edge:#00FF87}:root[data-theme="light"] .lg-EPL{--lg-edge:#00753E}
+.lg-LALIGA{--lg:#FF4B44;--lg2:#111111;--lg-fill:#FF4B44;--lg-on:#111111;--lg-pill:#696969;--lg-pill-on:#FFFFFF;--lg-edge:#FF4B44}:root[data-theme="light"] .lg-LALIGA{--lg-edge:#D00800}
+.lg-SERIEA{--lg:#0081C6;--lg2:#00239C;--lg-fill:#0081C6;--lg-on:#111111;--lg-pill:#1F51FF;--lg-pill-on:#FFFFFF;--lg-edge:#0086CE}:root[data-theme="light"] .lg-SERIEA{--lg-edge:#006DA7}
+.lg-BUNDESLIGA{--lg:#D10214;--lg2:#1A1A1A;--lg-fill:#D10214;--lg-on:#FFFFFF;--lg-pill:#676767;--lg-pill-on:#FFFFFF;--lg-edge:#FD041A}:root[data-theme="light"] .lg-BUNDESLIGA{--lg-edge:#D10214}
+.lg-LIGUE1{--lg:#B2F600;--lg2:#0B1B3D;--lg-fill:#B2F600;--lg-on:#111111;--lg-pill:#2760D8;--lg-pill-on:#FFFFFF;--lg-edge:#B2F600}:root[data-theme="light"] .lg-LIGUE1{--lg-edge:#547400}
+.lg-SPL{--lg:#006C35;--lg2:#C5A059;--lg-fill:#006C35;--lg-on:#FFFFFF;--lg-pill:#C5A059;--lg-pill-on:#111111;--lg-edge:#C5A059}:root[data-theme="light"] .lg-SPL{--lg-edge:#7F632C}
+.lg-UCL{--lg:#000B29;--lg2:#0052B4;--lg-fill:#1050FF;--lg-on:#FFFFFF;--lg-pill:#0052B4;--lg-pill-on:#FFFFFF;--lg-edge:#0979FF}:root[data-theme="light"] .lg-UCL{--lg-edge:#0052B4}
+.lg-UEL{--lg:#FF6600;--lg2:#111111;--lg-fill:#FF6600;--lg-on:#111111;--lg-pill:#696969;--lg-pill-on:#FFFFFF;--lg-edge:#FF6600}:root[data-theme="light"] .lg-UEL{--lg-edge:#B24700}
+.lg-UECL{--lg:#00FF66;--lg2:#121212;--lg-fill:#00FF66;--lg-on:#111111;--lg-pill:#6A6A6A;--lg-pill-on:#FFFFFF;--lg-edge:#00FF66}:root[data-theme="light"] .lg-UECL{--lg-edge:#00752F}
+.lg-SUPERCUP{--lg:#3A3A3A;--lg2:#D0D0D0;--lg-fill:#D0D0D0;--lg-on:#111111;--lg-pill:#D0D0D0;--lg-pill-on:#111111;--lg-edge:#D0D0D0}:root[data-theme="light"] .lg-SUPERCUP{--lg-edge:#696969}
+.cp-card,.fx-card[class*="lg-"]{border-left:4px solid var(--lg-edge,var(--border))}
+.cp-card .fx-go,.fx-card[class*="lg-"] .fx-go{color:var(--lg-edge,var(--text-dim))}
+.cp-card{background:linear-gradient(90deg,color-mix(in srgb,var(--lg-fill,transparent) 22%,var(--surface2)),var(--surface2) 75%)}
+.lg-pill{display:inline-block;padding:1px 8px;border-radius:999px;background:var(--lg-pill,var(--surface3));color:var(--lg-pill-on,var(--text));font-weight:700;font-size:11.5px;letter-spacing:.02em}
+.cp-logo.dk{background:#1b1b1b}
+#mv-view[class*="lg-"] .mv-tab[aria-selected="true"]{border-bottom-color:var(--lg-edge);color:var(--text)}
+#mv-view[class*="lg-"] .mv-chip[aria-pressed="true"]{background:var(--lg-fill);border-color:var(--lg-fill);color:var(--lg-on)}
+#mv-view[class*="lg-"] .cp-head{border-bottom:2px solid var(--lg-edge);margin-bottom:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--lg-fill) 20%,transparent),transparent 70%)}
+#mv-view[class*="lg-"] .cp-today{color:var(--lg-edge)}
+
 .mv-tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
 .mv-tbl th{font-size:11px;color:var(--text-dim);font-weight:600;text-align:right;padding:6px 4px;white-space:nowrap}
 .mv-tbl td{padding:9px 4px;text-align:right;border-top:1px solid var(--border-soft)}
@@ -1352,6 +1385,8 @@ Match the format to what's asked: a video script should be a punchy, spoken-styl
 If a block labeled "=== VERIFIED DATA BANK ===", "=== VERIFIED MATCH DATA ===" or "=== VERIFIED CLUB/COACH DATA ===" appears below the request, treat every fact in it as ground truth and never contradict it, even if it conflicts with what you remember — they come from our own checked database and a live sports feed, which are more current than your training data. In the data bank, a league-season marked COMPLETE has every match; otherwise it lists exactly which results are missing, so never guess a missing result or a table position that depends on one — say it is not stored yet. Use web search for anything those blocks don't cover, and never invent a stat, score, quote, or current manager/coach you can't support — in either register.
 
 WHAT PEOPLE ARE SAYING: for anything that is debated (awards like the Ballon d'Or, title races, transfers, controversies, tactics, theories, rumours), do not stop at "nothing official yet". Explain the debate: the main sides, who argues each one (pundits, players, managers, journalists, fans), why, and what is still unresolved. Name a person or outlet only when web search results actually give it, and say "some fans argue" when it does not. Label what is confirmed, reported or speculation. Never present a rumour or allegation about real people as fact, and never invent a quote.\n\nIf someone asks about something with no football angle at all, you can still just help them — don't force a football connection onto an unrelated request, but keep in mind football is this tool's actual purpose.` + PLAIN_TEXT_NOTE
+
+ANALYSE WHAT IS HAPPENING NOW, NOT WHAT A CLUB IS KNOWN FOR: when asked about matches, clubs, players or "the biggest game", talk like a tactical analyst covering the current season. Use each side's current strength and form: league or competition position and points, recent results and the run they are on, goals scored and conceded, head-to-head if it exists, and what is at stake in the match. A club's size, history or famous names are never a reason on their own (a giant in a bad season is an underdog, and say so). Back every claim with the VERIFIED DATA BANK block or with a web search; if the block has no form for a club, search for it. Injuries, suspensions, line-ups and managerial news are NOT in our data: search for current team news before mentioning any, state only what a source says, and if you cannot confirm it say it is not confirmed. Never name a player as a star or as available from memory. Do this even when you are not writing a script: explain why, do not just list information.
   },
   {
     id: 'banter', icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2c2 3 4 5 4 8a4 4 0 01-8 0c0-1 .3-1.8.8-2.6.2.7.2 1.4.9 1.9C9.5 7 10.5 4.5 12 2z"/><path d="M8 14.5A4 4 0 1016 14.5"/></svg>', label: 'Banter',
@@ -1495,7 +1530,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.6.4';
+const APP_VERSION = '1.6.5';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3091,8 +3126,8 @@ function renderAssistantBubble(text, media, ts){
   div.dataset.ts = ts || nextTimestamp();
   const isPlan = /\[\[script-plan\]\]\s*$/.test(text || '');
   if (isPlan){ text = stripPlan(text); div.dataset.plan = '1'; }
-  const fx = (media || []).filter(m => m && m.type === 'fixture');
-  const mediaHtml = fixtureCardsHtml(fx) + (media || []).filter(m => m && m.type !== 'fixture' && m.label).map(m => `<div class="sources"><span>${escapeHtml(m.label || '')}</span></div>`).join('');
+  const fx = (media || []).filter(m => m && (m.type === 'fixture' || m.type === 'competition'));
+  const mediaHtml = fixtureCardsHtml(fx) + (media || []).filter(m => m && m.type !== 'fixture' && m.type !== 'competition' && m.label).map(m => `<div class="sources"><span>${escapeHtml(m.label || '')}</span></div>`).join('');
   div.innerHTML = `<div class="bubble-assistant">${renderMarkdown(text)}</div>${mediaHtml}`;
   div.querySelector('.bubble-assistant').dataset.full = text;
   appendToThread(div);
@@ -3400,15 +3435,15 @@ async function fetchApiFootballFixtureFacts(fixture, dateStr){
 /* server decides what is relevant to the question and returns a       */
 /* ready-made block; any failure just means no block.                  */
 /* ------------------------------------------------------------------ */
-async function gatherBankContext(queryText){
+async function gatherBankContext(queryText, hintLeague){
   try {
     const q = String(queryText || '').trim().slice(0, 500);
     if (q.length < 3) return null;
-    const r = await fetchWithTimeout(API_ORIGIN + '/api/bank?q=' + encodeURIComponent(q) + '&today=' + todayDateStr(), {}, 6000);
+    const r = await fetchWithTimeout(API_ORIGIN + '/api/bank?q=' + encodeURIComponent(q) + '&today=' + todayDateStr() + (hintLeague ? '&lg=' + encodeURIComponent(hintLeague) : ''), {}, 6000);
     if (!r.ok) return null;
     const d = await r.json();
-    if (!d || (!d.text && !(d.cards && d.cards.length))) return null;
-    return { text: d.text || '', labels: (d.labels && d.labels.length ? d.labels : ['Data bank']), clubs: d.clubs || [], coachMissing: d.coachMissing || [], cards: d.cards || [] };
+    if (!d || (!d.text && !(d.cards && d.cards.length) && !d.competition)) return null;
+    return { text: d.text || '', labels: (d.labels && d.labels.length ? d.labels : ['Data bank']), clubs: d.clubs || [], coachMissing: d.coachMissing || [], cards: d.cards || [], competition: d.competition || null };
   } catch (e) { return null; }
 }
 
@@ -3791,12 +3826,13 @@ function fixtureDateText(d, t){
   return dt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) + (t ? ' · ' + t : '');
 }
 function fixtureCardsHtml(cards){
-  return (cards || []).filter(c => c && c.home && c.away).map(c => {
+  const comps = (cards || []).filter(c => c && c.type === 'competition' && c.league).map(competitionCardHtml).join('');
+  return comps + (cards || []).filter(c => c && c.home && c.away).map(c => {
     const done = c.status === 'finished' && c.hg != null && c.ag != null;
     const mid = done ? `<span class="fx-score">${Number(c.hg)} – ${Number(c.ag)}</span>` : `<span class="fx-vs">v</span>`;
     const sub = done ? 'Full time' : 'Upcoming';
     const meta = [c.competition, c.round].filter(Boolean).join(' · ');
-    return `<div class="fx-card" role="button" tabindex="0" aria-label="${escapeHtml(c.home + ' versus ' + c.away + ', open match details')}" data-fx="${escapeHtml(c.id || '')}" data-d="${escapeHtml(c.date || '')}" data-h="${escapeHtml(c.home)}" data-a="${escapeHtml(c.away)}" data-c="${escapeHtml(c.competition || '')}" data-s="${escapeHtml(c.status || '')}" data-hg="${c.hg == null ? '' : Number(c.hg)}" data-ag="${c.ag == null ? '' : Number(c.ag)}">`
+    return `<div class="fx-card${LG_CLASS(c.league)}" role="button" tabindex="0" aria-label="${escapeHtml(c.home + ' versus ' + c.away + ', open match details')}" data-fx="${escapeHtml(c.id || '')}" data-d="${escapeHtml(c.date || '')}" data-h="${escapeHtml(c.home)}" data-a="${escapeHtml(c.away)}" data-c="${escapeHtml(c.competition || '')}" data-s="${escapeHtml(c.status || '')}" data-hg="${c.hg == null ? '' : Number(c.hg)}" data-ag="${c.ag == null ? '' : Number(c.ag)}">`
       + `<div class="fx-meta">${escapeHtml(meta)}</div>`
       + `<div class="fx-row"><div class="fx-team">${clubBadgeHtml(c.home)}<span class="fx-name">${escapeHtml(c.home)}</span></div>${mid}<div class="fx-team">${clubBadgeHtml(c.away)}<span class="fx-name">${escapeHtml(c.away)}</span></div></div>`
       + `<div class="fx-foot"><span>${escapeHtml(fixtureDateText(c.date, c.time))}</span><span class="fx-state${done ? '' : ' up'}">${sub}</span><span class="fx-go">Details ›</span></div></div>`;
@@ -3807,7 +3843,7 @@ function fixtureCardsHtml(cards){
 /* from /api/match (our own data bank); this code never calls the       */
 /* football API.                                                        */
 /* ------------------------------------------------------------------ */
-const MV = { cache: new Map(), view: null, tab: 'facts', stage: null, open: false, token: 0, opener: null };
+const MV = { kind: null, parent: null, cache: new Map(), view: null, tab: 'facts', stage: null, open: false, token: 0, opener: null };
 const mvq = id => document.getElementById(id);
 const mvMin = e => (e.m == null ? '' : e.m + (e.x ? '+' + e.x : '') + "'");
 function mvTime(m){
@@ -3838,7 +3874,11 @@ function mvScorersHtml(v){
     ev.filter(e => e.side === side && e.type === 'goal' && /^(normal goal|penalty)$/i.test(e.detail || '')).forEach(e => { const k = e.player || '?'; if (!map.has(k)) map.set(k, []); map.get(k).push(mvMin(e) + (/penalty/i.test(e.detail) ? ' (pen)' : '')); });
     return [...map].map(([n, ms]) => `${escapeHtml(n)} ${ms.join(', ')}`).join('<br>');
   };
-  const h = by('home'), a = by('away');
+  let h = by('home'), a = by('away');
+  if (!h && !a && v.detail && v.detail.source === 'strikerapi' && v.detail.lineups){      // player lines only (no goal minutes)
+    const own = side => { const l = v.detail.lineups[side]; return l ? [...l.xi, ...l.subs].filter(p => p.g > 0).map(p => escapeHtml(p.name) + (p.g > 1 ? ' ×' + p.g : '')).join('<br>') : ''; };
+    h = own('home'); a = own('away');
+  }
   return h || a ? `<div class="mv-scorers"><div>${h}</div><div aria-hidden="true">⚽</div><div>${a}</div></div>` : '';
 }
 function mvHeadHtml(v){
@@ -3860,7 +3900,7 @@ function mvRenderTabs(v){
 function mvFactsHtml(v){
   const m = v.match, d = v.detail;
   const rows = [['Competition', m.competition], ['Round', m.round], ['Date', fixtureDateText(m.date, '')], [m.status === 'finished' ? 'Kick-off' : 'Kick-off', mvTime(m)], ['Venue', d && d.venue ? [d.venue.name, d.venue.city].filter(Boolean).join(', ') : ''], ['Referee', d && d.referee ? d.referee : ''],
-    ['Half-time', m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : ''], ['Details', d && d.source === 'manual' ? 'Entered by hand' : '']].filter(r => r[1]);
+    ['Half-time', m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : ''], ['Details', d && d.source === 'manual' ? 'Entered by hand' : (d && d.source === 'strikerapi' ? 'Team stats and player lines (no goal minutes)' : '')]].filter(r => r[1]);
   let out = `<div class="mv-card"><div class="mv-h">Match</div><div class="mv-meta">${rows.map(r => `<div><span>${r[0]}</span><span>${escapeHtml(r[1])}</span></div>`).join('')}</div></div>`;
   if (!d) return out + `<div class="mv-card">${mvNoDetail(v)}</div>`;
   if (d.best) out += `<div class="mv-card"><div class="mv-h">Highest rated player</div><div class="mv-potm">${mvRt(d.best.rating)}<div><div class="nm">${escapeHtml(d.best.name)}</div><div class="cl">${escapeHtml(d.best.side === 'home' ? m.home : m.away)}</div></div></div></div>`;
@@ -3909,7 +3949,7 @@ function mvLineupHtml(v){
   const d = v.detail; if (!d || !d.lineups || !Object.keys(d.lineups).length) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
   const H = d.lineups.home, A = d.lineups.away;
   if (!H && !A) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
-  const bar = (name, l, cls) => `<div class="mv-bar ${cls}"><span>${escapeHtml(name)}</span><span class="fm">${escapeHtml((l && l.formation) || '')}</span></div>`;
+  const bar = (name, l, cls) => `<div class="mv-tbar ${cls}"><span>${escapeHtml(name)}</span><span class="fm">${escapeHtml((l && l.formation) || '')}</span></div>`;
   const half = (l, home) => `<div class="mv-half">${l ? mvPitchRows(l.xi, home).map(r => `<div class="mv-row">${r.map(mvPlayerHtml).join('')}</div>`).join('') : ''}</div>`;
   const played = l => (l && l.subs || []).filter(p => (p.min != null && p.min > 0) || p.rating != null);
   const bench = l => (l && l.subs || []).filter(p => !((p.min != null && p.min > 0) || p.rating != null));
@@ -3931,7 +3971,7 @@ function mvTableHtml(v){
   const body = t.rows.map(r => `<tr class="${me.has(r.team) ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${escapeHtml(r.team)}</td><td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.GD > 0 ? '+' + r.GD : r.GD}</td><td class="pts">${r.Pts}</td></tr>`).join('');
   const legend = t.legend.length ? `<div class="mv-legend">${t.legend.map(l => `<div><i style="background:var(--z-${l.key})"></i>${escapeHtml(l.label)}</div>`).join('')}</div>` : '';
   const notes = [t.note, t.usual ? 'Places shown are the usual ones. Extra European places depend on UEFA rankings and cup winners.' : '', t.tieUndecided ? 'Some clubs are level on every tie-break we apply.' : ''].filter(Boolean);
-  return `<div class="mv-card"><div class="mv-h">${escapeHtml(t.competition)} ${escapeHtml(String(t.season))}/${String((t.season + 1) % 100).padStart(2, '0')}</div><table class="mv-tbl"><caption class="sr-only" style="position:absolute;left:-9999px">League table</caption><thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">GD</th><th scope="col">Pts</th></tr></thead><tbody>${body}</tbody></table>${legend}${notes.map(n => `<div class="mv-note">${escapeHtml(n)}</div>`).join('')}</div>`;
+  return `<div class="mv-card"><div class="mv-h">${escapeHtml(t.competition)} ${escapeHtml(t.label || (String(t.season) + '/' + String((t.season + 1) % 100).padStart(2, '0')))}</div><table class="mv-tbl"><caption class="sr-only" style="position:absolute;left:-9999px">League table</caption><thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">GD</th><th scope="col">Pts</th></tr></thead><tbody>${body}</tbody></table>${legend}${notes.map(n => `<div class="mv-note">${escapeHtml(n)}</div>`).join('')}</div>`;
 }
 
 /* ---- Stats */
@@ -3966,6 +4006,7 @@ function mvPlayoffsHtml(v){
 
 function mvRenderBody(){
   const v = MV.view, el = mvq('mv-body'); if (!v) return;
+  if (v.kind === 'comp' || MV.kind === 'comp' && v.competition){ el.innerHTML = ({ table: cpTableHtml, fixtures: cpFixturesHtml, stats: cpStatsHtml, knockout: cpKnockoutHtml }[MV.tab] || cpTableHtml)(v); return; }
   el.innerHTML = ({ facts: mvFactsHtml, lineup: mvLineupHtml, table: mvTableHtml, stats: mvStatsHtml, playoffs: mvPlayoffsHtml }[MV.tab] || mvFactsHtml)(v);
 }
 function mvSetTab(k, focus){
@@ -3980,7 +4021,7 @@ async function openMatch(ref, opener){
   const el = mvq('mv-view'); if (!el) return;
   const key = ref.id || [ref.date, ref.home, ref.away].join('|'); const token = ++MV.token;
   if (!MV.open){ MV.open = true; MV.opener = opener || null; try { history.pushState({ mv: 1 }, ''); } catch (e) { /* history unavailable */ } }
-  el.hidden = false; el.classList.add('open'); MV.tab = 'facts'; MV.stage = null; MV.view = null;
+  el.hidden = false; el.classList.add('open'); cpTheme(String(ref.id || '').split('|')[0]); MV.kind = 'match'; MV.tab = 'facts'; MV.stage = null; MV.view = null;
   mvq('mv-comp').textContent = [ref.competition, ref.round].filter(Boolean).join(' · ');
   mvq('mv-head').innerHTML = mvHeadHtml({ match: { home: ref.home, away: ref.away, status: ref.status, hg: ref.hg, ag: ref.ag, date: ref.date, time: ref.time, kickoff: null }, detail: null });
   mvq('mv-tabs').innerHTML = ''; mvq('mv-body').innerHTML = '<div class="mv-skel"></div><div class="mv-skel"></div><div class="mv-skel"></div>';
@@ -4002,18 +4043,19 @@ async function openMatch(ref, opener){
   mvShow(v);
 }
 function closeMatch(fromPop){
-  if (!MV.open) return; MV.open = false; MV.token++;
+  if (!MV.open) return; MV.open = false; MV.token++; MV.parent = null; MV.kind = null;
   const el = mvq('mv-view'); el.classList.remove('open'); el.hidden = true;
   if (!fromPop) { try { if (history.state && history.state.mv) history.back(); } catch (e) { /* ignore */ } }
   if (MV.opener && document.contains(MV.opener)) MV.opener.focus(); MV.opener = null;
 }
-window.addEventListener('popstate', () => { if (MV.open) closeMatch(true); });
+function mvBackToParent(){ const p = MV.parent; if (!p) return false; MV.parent = null; MV.token++; CP.round = p.round; CP.club = p.club; cpShow(p.view, p.tab); return true; }
+window.addEventListener('popstate', () => { if (MV.open && MV.parent){ mvBackToParent(); try { history.pushState({ mv: 1 }, ''); } catch (e) { /* ignore */ } return; } if (MV.open) closeMatch(true); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && MV.open) closeMatch(false); });
 document.addEventListener('click', e => {
   const card = e.target.closest && e.target.closest('.fx-card[data-fx], .fx-card[data-d]');
   if (card && !MV.open){ openMatch({ id: card.dataset.fx || '', date: card.dataset.d || '', home: card.dataset.h || '', away: card.dataset.a || '', competition: card.dataset.c || '', status: card.dataset.s || '', hg: card.dataset.hg === '' || card.dataset.hg == null ? null : Number(card.dataset.hg), ag: card.dataset.ag === '' || card.dataset.ag == null ? null : Number(card.dataset.ag) }, card); return; }
   if (!MV.open) return;
-  if (e.target.closest('#mv-back')) return closeMatch(false);
+  if (e.target.closest('#mv-back')){ if (mvBackToParent()) return; return closeMatch(false); }
   const tab = e.target.closest('.mv-tab'); if (tab) return mvSetTab(tab.dataset.tab);
   const chip = e.target.closest('.mv-chip[data-stage]'); if (chip){ MV.stage = chip.dataset.stage; return mvRenderBody(); }
 });
@@ -4023,6 +4065,134 @@ document.addEventListener('keydown', e => {
   if (MV.open && e.target.classList && e.target.classList.contains('mv-tab') && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){
     const tabs = [...document.querySelectorAll('#mv-tabs .mv-tab')], i = tabs.indexOf(e.target), n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; mvSetTab(n.dataset.tab, true);
   }
+});
+
+/* ------------------------------------------------------------------ */
+/* Competition card + screen: a league or European cup. All data comes  */
+/* from /api/competition (our own data bank).                           */
+/* ------------------------------------------------------------------ */
+const CP = { round: null, club: '', seg: 'players', pstat: 'scorers', cstat: 'GF' };
+const CP_LOGO = { EPL: 'epl', LALIGA: 'laliga', SERIEA: 'seriea', BUNDESLIGA: 'bundesliga', LIGUE1: 'ligue1', SPL: 'spl', MLS: 'mls', UCL: 'ucl', UEL: 'uel', UECL: 'uecl', SUPERCUP: 'supercup' };
+const LG_CLASS = k => (CP_LOGO[k] ? ' lg-' + k : '');
+function cpLogoHtml(key, name, big){
+  const id = CP_LOGO[key], fb = escapeHtml(clubBadgeCode(name));
+  return id ? `<img class="cp-logo${big ? ' big' : ''}${key === 'SPL' ? ' dk' : ''}" src="logos/${id}.png" alt="" loading="lazy" data-fb="${fb}">` : `<span class="cp-logo cp-fb${big ? ' big' : ''}">${fb}</span>`;
+}
+document.addEventListener('error', e => {      // a logo that cannot load becomes a text badge
+  const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('cp-logo')){ const s = document.createElement('span'); s.className = t.className.replace('cp-logo', 'cp-logo cp-fb'); s.textContent = t.dataset.fb || ''; t.replaceWith(s); }
+}, true);
+function competitionCardHtml(c){
+  const tabs = ['Table', 'Fixtures', 'Stats'].join(' · ');
+  return `<div class="fx-card cp-card${LG_CLASS(c.league)}" role="button" tabindex="0" aria-label="${escapeHtml('Open ' + c.name + ' ' + (c.label || ''))}" data-cp="${escapeHtml(c.league)}" data-cs="${escapeHtml(String(c.season || ''))}" data-ct="${escapeHtml(c.tab || 'table')}">`
+    + `<div class="cp-row">${cpLogoHtml(c.league, c.name)}<div class="cp-txt"><div class="cp-name">${escapeHtml(c.name)}</div><div class="cp-sub"><span class="lg-pill">${escapeHtml(c.label || '')}</span> · ${escapeHtml(tabs)}</div></div><span class="fx-go">Open ›</span></div></div>`;
+}
+const CP_INTENT = [
+  ['knockout', /\b(knock ?outs?|round of 16|last 16|quarter ?finals?|semi ?finals?|play ?offs?|bracket|the final)\b/],
+  ['stats', /\b(top scorers?|golden boot|assists?|most goals|stats|statistics|clean sheets?)\b/],
+  ['table', /\b(table|standings?|situation|group stage|league phase|position|points|leaders?|who is top|who s top|relegat\w*|title race|ranked|qualif\w*)\b/],
+  ['fixtures', /\b(matches|match|fixtures?|games?|results?|scores?|today|tonight|tomorrow|schedule|kick ?off|biggest|big games?|play(ing)?)\b/]
+];
+function cpIntentTab(text){ const t = ' ' + String(text || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ') + ' '; for (const [k, rx] of CP_INTENT) if (rx.test(t)) return k; return 'table'; }
+/** A short follow-up ("which match is the biggest?", "what's the group stage situation?") about the competition shown just before. */
+function competitionFollowUp(text){
+  const all = document.querySelectorAll('.cp-card'); const last = all[all.length - 1]; if (!last) return null;
+  const t = ' ' + String(text || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ') + ' ';
+  if (!CP_INTENT.some(([, rx]) => rx.test(t))) return null;
+  const name = (last.querySelector('.cp-name') || {}).textContent || '';
+  const label = ((last.querySelector('.cp-sub') || {}).textContent || '').split(' · ')[0];
+  return { type: 'competition', league: last.dataset.cp, season: Number(last.dataset.cs) || null, name, label, tab: cpIntentTab(text) };
+}
+function cpTheme(key){ const el = mvq('mv-view'); if (!el) return; el.className = el.className.replace(/\blg-\w+\b/g, '').trim(); if (CP_LOGO[key]) el.classList.add('lg-' + key); }
+const cpq = (v, k) => (v.tabs.find(t => t.key === k) ? k : v.tabs[0].key);
+function cpRenderTabs(v){
+  mvq('mv-tabs').innerHTML = v.tabs.map(t => `<button class="mv-tab" role="tab" id="mvt-${t.key}" data-tab="${t.key}" aria-selected="${MV.tab === t.key}" tabindex="${MV.tab === t.key ? 0 : -1}">${escapeHtml(t.label)}</button>`).join('');
+}
+function cpShow(v, tab){
+  MV.kind = 'comp'; MV.view = v; MV.tab = cpq(v, tab || MV.tab);
+  const c = v.competition; cpTheme(c.key);
+  mvq('mv-comp').textContent = c.short;
+  mvq('mv-head').innerHTML = `<div class="cp-head">${cpLogoHtml(c.key, c.short, true)}<div><div class="cp-title">${escapeHtml(c.name)}</div><div class="cp-season"><span class="lg-pill">${escapeHtml(c.label)}</span></div></div></div>`;
+  cpRenderTabs(v); mvSetTab(MV.tab);
+}
+async function openCompetition(ref, opener){
+  const el = mvq('mv-view'); if (!el) return;
+  const token = ++MV.token;
+  if (!MV.open){ MV.open = true; MV.opener = opener || null; try { history.pushState({ mv: 1 }, ''); } catch (e) { /* history unavailable */ } }
+  MV.parent = null; MV.kind = 'comp'; MV.view = null; MV.stage = null; el.hidden = false; el.classList.add('open'); cpTheme(ref.league);
+  CP.round = null; CP.club = ''; CP.seg = 'players'; CP.pstat = 'scorers'; CP.cstat = 'GF';
+  mvq('mv-comp').textContent = ref.name || ''; mvq('mv-head').innerHTML = `<div class="cp-head">${cpLogoHtml(ref.league, ref.name || ref.league, true)}<div><div class="cp-title">${escapeHtml(ref.name || '')}</div><div class="cp-season">${ref.label ? '<span class="lg-pill">' + escapeHtml(ref.label) + '</span>' : ''}</div></div></div>`;
+  mvq('mv-tabs').innerHTML = ''; mvq('mv-body').innerHTML = '<div class="mv-skel"></div><div class="mv-skel"></div><div class="mv-skel"></div>';
+  mvq('mv-back').focus();
+  try {
+    const r = await fetch(API_ORIGIN + '/api/competition?league=' + encodeURIComponent(ref.league) + (ref.season ? '&season=' + encodeURIComponent(ref.season) : '') + '&today=' + todayDateStr());
+    const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || ('HTTP ' + r.status));
+    if (token !== MV.token) return;
+    CP.round = j.focusRound; MV.tab = cpq(j, ref.tab); cpShow(j, MV.tab);
+  } catch (e) {
+    if (token !== MV.token) return;
+    mvq('mv-body').innerHTML = `<div class="mv-empty"><b>Could not load this competition</b>${escapeHtml(String(e.message || e))}<br><br><button class="mv-chip" id="mv-retry">Try again</button></div>`;
+    mvq('mv-retry').onclick = () => openCompetition(ref, MV.opener);
+  }
+}
+function cpTableHtml(v){
+  if (!v.table) return `<div class="mv-card">${mvEmpty('No table yet', 'No results are stored for this competition.')}</div>`;
+  return mvTableHtml({ table: v.table, match: { home: '', away: '' } }).replace('<table class="mv-tbl">', '<table class="mv-tbl cp-tbl">') + `<div class="mv-note" style="margin-top:8px">Tap a club to see its matches.</div>`;
+}
+function cpFxRow(m, today){
+  const done = m.status === 'finished' && m.hg != null;
+  const mid = done ? `${m.hg} – ${m.ag}` : (mvTime(m) || 'v');
+  const tag = m.status === 'postponed' ? ' · postponed' : m.status === 'cancelled' ? ' · cancelled' : '';
+  return `<button class="cp-fx" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-s="${escapeHtml(m.status)}" data-hg="${m.hg == null ? '' : m.hg}" data-ag="${m.ag == null ? '' : m.ag}"><span class="h">${escapeHtml(m.home)}</span><span class="sc${done ? '' : ' up'}">${escapeHtml(mid)}</span><span class="a">${escapeHtml(m.away)}</span>${tag ? `<small>${escapeHtml(tag.slice(3))}</small>` : ''}</button>`;
+}
+function cpFixturesHtml(v){
+  const today = v.today; let list, head;
+  if (CP.club){
+    list = v.fixtures.filter(m => m.home === CP.club || m.away === CP.club);
+    head = `<div class="cp-filter"><span>${escapeHtml(CP.club)}</span><button class="mv-chip" data-cpclear="1">Show all</button></div>`;
+  } else {
+    const rounds = v.rounds, i = Math.max(0, rounds.indexOf(CP.round));
+    list = v.fixtures.filter(m => (m.round || 'Matches') === (rounds[i] || ''));
+    head = rounds.length > 1 ? `<div class="cp-rounds"><button class="mv-chip" data-cpr="-1" ${i === 0 ? 'disabled' : ''} aria-label="Previous round">‹</button><b>${escapeHtml(rounds[i] || '')}</b><button class="mv-chip" data-cpr="1" ${i >= rounds.length - 1 ? 'disabled' : ''} aria-label="Next round">›</button></div>` : '';
+  }
+  if (!list.length) return head + `<div class="mv-card">${mvEmpty('No matches', 'Nothing is stored for this selection.')}</div>`;
+  const byDay = new Map(); list.forEach(m => { if (!byDay.has(m.date)) byDay.set(m.date, []); byDay.get(m.date).push(m); });
+  return head + [...byDay].map(([d, ms]) => `<div class="mv-card"><div class="mv-h">${escapeHtml(fixtureDateText(d, ''))}${d === today ? ' · <span class="cp-today">Today</span>' : ''}</div>${ms.map(m => cpFxRow(m, today)).join('')}</div>`).join('');
+}
+function cpStatsHtml(v){
+  const st = v.stats;
+  const seg = `<div class="mv-stages" role="group" aria-label="Stats"><button class="mv-chip" data-cpseg="players" aria-pressed="${CP.seg === 'players'}">Players</button><button class="mv-chip" data-cpseg="clubs" aria-pressed="${CP.seg === 'clubs'}">Clubs</button></div>`;
+  if (CP.seg === 'players'){
+    const sub = `<div class="mv-stages" role="group" aria-label="Player stat"><button class="mv-chip" data-cpps="scorers" aria-pressed="${CP.pstat === 'scorers'}">Top scorers</button><button class="mv-chip" data-cpps="assists" aria-pressed="${CP.pstat === 'assists'}">Assists</button></div>`;
+    const p = st.players, rows = CP.pstat === 'scorers' ? p.scorers : p.assists, key = CP.pstat === 'scorers' ? 'goals' : 'assists';
+    if (!p.matchesWithDetails || !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('Player stats not available', 'Goal scorers and assists come from full match details, which are saved for the Premier League and La Liga only for now.')}</div>`;
+    return seg + sub + `<div class="mv-card">${rows.map((r, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm">${escapeHtml(r.name)}<button class="cp-club" data-club="${escapeHtml(r.club)}">${escapeHtml(r.club)}</button></span><b>${r[key]}</b></div>`).join('')}<div class="mv-note">From ${p.matchesWithDetails} of ${p.finishedMatches} finished matches with saved details. Own goals are not counted.</div></div>`;
+  }
+  const opts = [['GF', 'Goals scored'], ['GA', 'Goals conceded'], ['CS', 'Clean sheets'], ['AVG', 'Goals per match']];
+  const sub = `<div class="mv-stages" role="group" aria-label="Club stat">${opts.map(([k, l]) => `<button class="mv-chip" data-cpcs="${k}" aria-pressed="${CP.cstat === k}">${l}</button>`).join('')}</div>`;
+  const val = c => (CP.cstat === 'AVG' ? (c.P ? c.GF / c.P : 0) : c[CP.cstat]);
+  const rows = st.clubs.filter(c => c.P).slice().sort((a, b) => (CP.cstat === 'GA' ? val(a) - val(b) : val(b) - val(a)) || a.team.localeCompare(b.team)).slice(0, 20);
+  if (!rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('No results yet', 'Club figures appear once matches are played.')}</div>`;
+  return seg + sub + `<div class="mv-card">${rows.map((c, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm"><button class="cp-club main" data-club="${escapeHtml(c.team)}">${escapeHtml(c.team)}</button><small>${c.P} played</small></span><b>${CP.cstat === 'AVG' ? val(c).toFixed(2) : val(c)}</b></div>`).join('')}<div class="mv-note">Corners, passes and ball possession need a reliable source and are not shown yet.</div></div>`;
+}
+function cpKnockoutHtml(v){ return mvPlayoffsHtml({ bracket: v.bracket, match: { home: '', away: '' } }); }
+document.addEventListener('click', e => {
+  const card = e.target.closest && e.target.closest('.cp-card');
+  if (card && !MV.open){ openCompetition({ league: card.dataset.cp, season: Number(card.dataset.cs) || null, tab: card.dataset.ct, name: (card.querySelector('.cp-name') || {}).textContent || '', label: ((card.querySelector('.cp-sub') || {}).textContent || '').split(' · ')[0] }, card); return; }
+  if (!MV.open || MV.kind !== 'comp' || !MV.view) return;
+  const v = MV.view, repaint = () => { mvRenderBody(); };
+  const fx = e.target.closest('.cp-fx');
+  if (fx){ MV.parent = { view: v, tab: MV.tab, round: CP.round, club: CP.club }; const d = fx.dataset; openMatch({ id: d.id, date: d.d, home: d.h, away: d.a, round: d.r, competition: v.competition.short, status: d.s, hg: d.hg === '' ? null : Number(d.hg), ag: d.ag === '' ? null : Number(d.ag) }, MV.opener); return; }
+  const rb = e.target.closest('[data-cpr]'); if (rb){ const i = v.rounds.indexOf(CP.round) + Number(rb.dataset.cpr); if (i >= 0 && i < v.rounds.length){ CP.round = v.rounds[i]; repaint(); } return; }
+  if (e.target.closest('[data-cpclear]')){ CP.club = ''; repaint(); return; }
+  const sg = e.target.closest('[data-cpseg]'); if (sg){ CP.seg = sg.dataset.cpseg; repaint(); return; }
+  const ps = e.target.closest('[data-cpps]'); if (ps){ CP.pstat = ps.dataset.cpps; repaint(); return; }
+  const cs = e.target.closest('[data-cpcs]'); if (cs){ CP.cstat = cs.dataset.cpcs; repaint(); return; }
+  const cl = e.target.closest('.cp-club[data-club]') || e.target.closest('.cp-tbl tr[data-team]');
+  if (cl){ CP.club = cl.dataset.club || cl.dataset.team; mvSetTab('fixtures'); return; }
+}, true);
+document.addEventListener('keydown', e => {
+  const card = e.target.closest && e.target.closest('.cp-card');
+  if (card && (e.key === 'Enter' || e.key === ' ') && !MV.open){ e.preventDefault(); card.click(); }
 });
 
 const PLAN_TAG = '\n\n[[script-plan]]';
@@ -4061,7 +4231,7 @@ function addPlanActions(el){
 }
 // everything the real script prompt needs, same sources the normal reply uses
 async function gatherScriptContext(text){
-  const [matchData, bankData] = await Promise.all([gatherFootballContext(text), gatherBankContext(text)]);
+  const [matchData, bankData] = await Promise.all([gatherFootballContext(text), gatherBankContext(text, (competitionFollowUp(text) || {}).league)]);
   let ctx = bankData ? bankData.text : '';
   if (matchData) ctx = ctx ? ctx + '\n\n' + matchData.text : matchData.text;
   if (!(bankData && bankData.clubs.length && !bankData.coachMissing.length)){
@@ -4213,13 +4383,15 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   {
     // Checked silently — for a casual message like "hi" there's nothing to find, and the
     // stage label shouldn't claim we're doing football research when we might not be.
-    const [matchData, bankData] = await Promise.all([planMode ? null : gatherFootballContext(userText), gatherBankContext(planMode ? recentUserTexts(pipelineMsg, userText) : userText)]);
+    const [matchData, bankData] = await Promise.all([planMode ? null : gatherFootballContext(userText), gatherBankContext(planMode ? recentUserTexts(pipelineMsg, userText) : userText, planMode ? null : (competitionFollowUp(userText) || {}).league)]);
     if (bankData){
       setStage(stageEl, 'Checking our data bank…');
       footballContext = bankData.text;
       verifiedLabels = verifiedLabels.concat(bankData.labels);
       if (!planMode) fixtureCards = (bankData.cards || []).slice(0, 1);
+      if (!planMode && !fixtureCards.length && bankData.competition) fixtureCards = [bankData.competition];
     }
+    if (!planMode && !fixtureCards.length){ const f = competitionFollowUp(userText); if (f) fixtureCards = [f]; }
     if (matchData){
       setStage(stageEl, "Found today's match data — verifying…");
       footballContext = footballContext ? footballContext + '\n\n' + matchData.text : matchData.text;

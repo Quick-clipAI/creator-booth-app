@@ -14,6 +14,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## v1.6.5 - web update: competitions, logos, colours, analysis answers
+
+Competition cards and screens for the Champions League and the leagues, own league logos (bundled in `www/logos`), per-league brand colours, Champions League match data, and chat answers built from form, table and head-to-head instead of reputation. Delivered over the air; no new APK.
+
 ## v1.6.4 - web update: Lineup tab on one shared pitch
 
 The Lineup tab shows both teams on one pitch (home on top, away at the bottom) with the two coaches opposite each other and the substitutes and bench in two columns. Delivered over the air; no new APK needed.
