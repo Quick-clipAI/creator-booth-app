@@ -284,3 +284,6 @@ warn that it's from an unverified developer. That's expected. Tap Install anyway
 
 ## 1.6.7
 Player card (tap a name on a competition's stats tab) with season totals, match list and the Creator Booth rating, plus a Rating list. Install the APK once: quick update is off.
+
+## 1.6.8
+Sends the login token and a per-message id with every AI call; a guest who used the 3 free messages sees the sign-in screen. Install this APK before AI_GUARD is switched to enforce on the server.

@@ -1545,7 +1545,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.6.7';
+const APP_VERSION = '1.6.8';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3292,12 +3292,27 @@ function friendlyAiError(msg){
   if (/abort|timed out|took too long/i.test(m)) return 'The AI took too long to answer. Please try again.';
   return m || 'Something went wrong.';
 }
+// Who is asking: a signed-in person sends the login token, a guest sends only a per-message id. The server gives guests
+// a few free messages per phone and then answers "login_required". One chat message can trigger several calls
+// (search, retry, backup AI), so they all carry the same message id and count once.
+let AI_MSG = { id: '', at: 0 };
+function bumpAiMessage(){ AI_MSG = { id: 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8), at: Date.now() }; }
+async function aiHeaders(){
+  if (!AI_MSG.id || Date.now() - AI_MSG.at > 120000) bumpAiMessage();
+  const h = { 'Content-Type': 'application/json', 'x-msg-id': AI_MSG.id };
+  try { const { data } = await supabase.auth.getSession(); const tk = data && data.session && data.session.access_token; if (tk) h.Authorization = 'Bearer ' + tk; } catch (e) { /* guest */ }
+  return h;
+}
+function loginRequiredError(err){
+  if (!(err && err.error && err.error.code === 'login_required')) return null;
+  const e = new Error(err.error.message || 'Log in or create an account to keep chatting.'); e.loginRequired = true; return e;
+}
 async function callAI(requestBody, opts){
   const noBackup = !!(opts && opts.skipBackup);
   let res;
   try {
     res = await fetchWithTimeout(API_ORIGIN + '/api/gemini', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody)
+      method: 'POST', headers: await aiHeaders(), body: JSON.stringify(requestBody)
     }, 60000);
   } catch (e) {
     if (e && e.name === 'AbortError') return noBackup ? { data: null, provider: 'none', msg: 'took too long' } : groqFallback(requestBody, 'took too long');
@@ -3305,13 +3320,14 @@ async function callAI(requestBody, opts){
   }
   if (res.ok) return { data: await res.json(), provider: 'gemini' };
   const err = await res.json().catch(() => ({}));
+  const needLogin = loginRequiredError(err); if (needLogin) throw needLogin;
   let failMsg = (err && err.error && err.error.message) || ('status ' + res.status);
   if (res.status === 429 && requestBody.tools){
     // Is it Gemini as a whole, or only its search tool? Retry the same request without the search tool.
     try {
       const plainBody = { ...requestBody }; delete plainBody.tools;
       const r2 = await fetchWithTimeout(API_ORIGIN + '/api/gemini', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(plainBody)
+        method: 'POST', headers: await aiHeaders(), body: JSON.stringify(plainBody)
       }, 60000);
       if (r2.ok) return { data: await r2.json(), provider: 'gemini', searchBlocked: true };
       // The plain request failed too: report THAT reason (the search refusal is not the real problem).
@@ -3341,11 +3357,12 @@ async function groqFallback(requestBody, geminiMsg){
   const systemText = (baseSystem || '') + '\n\nIMPORTANT — ' + NO_SEARCH_NOTE;
   const messages = geminiContentsToOpenAIMessages(systemText, requestBody.contents);
   const res2 = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: await aiHeaders(),
     body: JSON.stringify({ model: GROQ_MODEL, messages })
   }, 45000);
   if (!res2.ok){
     const err2 = await res2.json().catch(() => ({}));
+    const needLogin2 = loginRequiredError(err2); if (needLogin2) throw needLogin2;
     const groqMsg = (err2 && err2.error && (err2.error.message || err2.error)) || res2.status;
     throw new Error('Gemini: ' + geminiMsg + ' — backup (Groq) also failed: ' + groqMsg);
   }
@@ -3357,7 +3374,7 @@ async function groqFallback(requestBody, geminiMsg){
 async function lightAI(systemText, userText){
   try {
     const r = await fetchWithTimeout(API_ORIGIN + '/api/groq', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: await aiHeaders(),
       body: JSON.stringify({ model: GROQ_LIGHT_MODEL, messages: [{ role: 'system', content: systemText }, { role: 'user', content: userText }] })
     }, 15000);
     if (r.ok){
@@ -3368,7 +3385,7 @@ async function lightAI(systemText, userText){
   } catch (e) { /* fall through to Gemini */ }
   try {
     const r = await fetchWithTimeout(API_ORIGIN + '/api/gemini', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: await aiHeaders(),
       body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: userText }] }], system_instruction: { parts: [{ text: systemText }] } })
     }, 20000);
     if (!r.ok) return '';
@@ -4467,6 +4484,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   userParts.push({ text: promptText });
 
   let resultText = '';
+  bumpAiMessage();
   let chunks = [];
   let usedFallback = false;
   let fallbackWhy = '';
@@ -4533,7 +4551,8 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
       // A network-level failure (as opposed to the API responding with an error) reads as
       // offline too, even if navigator.onLine hadn't flipped yet — that flag is unreliable on
       // some connections (e.g. connected to Wi-Fi with no real internet).
-      if (e instanceof TypeError || isOffline()){ offline = true; errorMsg = 'offline'; }
+      if (e && e.loginRequired){ errorMsg = e.message; try { openAuthView(); } catch (e2) { /* sign-in screen unavailable */ } }
+      else if (e instanceof TypeError || isOffline()){ offline = true; errorMsg = 'offline'; }
       else { console.warn('generation failed:', e); errorMsg = friendlyAiError(e && e.message); }
     }
   }
