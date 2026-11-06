@@ -281,3 +281,6 @@ warn that it's from an unverified developer. That's expected. Tap Install anyway
   and the real download of an update. Test those on a phone after the first build.
 - Update checks use GitHub's release download URL; updates need internet, the app works without it.
 - The update plugin's usage stats are switched off (`statsUrl` is empty in `capacitor.config.json`).
+
+## 1.6.7
+Player card (tap a name on a competition's stats tab) with season totals, match list and the Creator Booth rating, plus a Rating list. Install the APK once: quick update is off.
