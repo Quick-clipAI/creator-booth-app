@@ -287,3 +287,6 @@ Player card (tap a name on a competition's stats tab) with season totals, match 
 
 ## 1.6.8
 Sends the login token and a per-message id with every AI call; a guest who used the 3 free messages sees the sign-in screen. Install this APK before AI_GUARD is switched to enforce on the server.
+
+## 1.6.9
+Fixes the app not responding (a syntax error in the chat instructions since 1.6.5). Install this APK; skip 1.6.8.
