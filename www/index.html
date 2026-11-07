@@ -522,6 +522,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .pl-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:9px 0;border-top:1px solid var(--border-soft);font-size:14px}.pl-row:first-of-type{border-top:0}.pl-row small{display:block;color:var(--text-dim);font-size:12px;margin-top:2px}
 .pl-rt{min-width:44px;text-align:center;border-radius:10px;padding:4px 8px;font-weight:700;font-variant-numeric:tabular-nums;background:var(--surface-2,rgba(127,127,127,.15))}.pl-rt.hi{background:rgba(88,166,92,.25)}.pl-rt.lo{background:rgba(220,90,80,.22)}
 button.cp-pl{all:unset;cursor:pointer;display:block;font-weight:600;text-align:left}button.cp-pl:focus-visible{outline:2px solid var(--brand,#FF6A1A);outline-offset:2px}
+.crest{width:20px;height:20px;object-fit:contain;vertical-align:-5px;margin-right:6px}.cp-warn{margin:10px 0;padding:10px 12px;border-radius:12px;border:1px solid #6b4a1a;background:rgba(224,178,90,.1);color:var(--text);font-size:13px;line-height:1.45}.cp-warn b{color:#e0b25a}
 .cp-st{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--border-soft);font-size:14px}.cp-st:first-of-type{border-top:0}.cp-st .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.cp-st .nm{display:flex;flex-direction:column;align-items:flex-start;gap:1px}.cp-st small{color:var(--text-dim);font-size:11.5px}
 .cp-club{background:none;border:0;padding:6px 0;min-height:32px;color:var(--text-dim);font:500 12px var(--sans);text-align:left;cursor:pointer;text-decoration:underline;text-decoration-style:dotted}.cp-club.main{color:var(--text);font-size:14px;font-weight:500;text-decoration:none;padding:0;min-height:0}
 .cp-tbl tbody tr{cursor:pointer}
@@ -1546,7 +1547,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.6.9';
+const APP_VERSION = '1.6.10';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4001,7 +4002,7 @@ function mvLineupHtml(v){
 function mvTableHtml(v){
   const t = v.table; if (!t) return `<div class="mv-card">${mvEmpty('No table for this competition', 'It is not a league or league-phase competition.')}</div>`;
   const me = new Set([v.match.home, v.match.away]);
-  const body = t.rows.map(r => `<tr class="${me.has(r.team) ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${escapeHtml(r.team)}</td><td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.GD > 0 ? '+' + r.GD : r.GD}</td><td class="pts">${r.Pts}</td></tr>`).join('');
+  const body = t.rows.map(r => `<tr class="${me.has(r.team) ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${crest(r.team)}${escapeHtml(r.team)}</td><td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.GD > 0 ? '+' + r.GD : r.GD}</td><td class="pts">${r.Pts}</td></tr>`).join('');
   const legend = t.legend.length ? `<div class="mv-legend">${t.legend.map(l => `<div><i style="background:var(--z-${l.key})"></i>${escapeHtml(l.label)}</div>`).join('')}</div>` : '';
   const notes = [t.note, t.usual ? 'Places shown are the usual ones. Extra European places depend on UEFA rankings and cup winners.' : '', t.tieUndecided ? 'Some clubs are level on every tie-break we apply.' : ''].filter(Boolean);
   return `<div class="mv-card"><div class="mv-h">${escapeHtml(t.competition)} ${escapeHtml(t.label || (String(t.season) + '/' + String((t.season + 1) % 100).padStart(2, '0')))}</div><table class="mv-tbl"><caption class="sr-only" style="position:absolute;left:-9999px">League table</caption><thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">GD</th><th scope="col">Pts</th></tr></thead><tbody>${body}</tbody></table>${legend}${notes.map(n => `<div class="mv-note">${escapeHtml(n)}</div>`).join('')}</div>`;
@@ -4143,6 +4144,14 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && PL.open){ 
 const CP = { round: null, club: '', seg: 'players', pstat: 'scorers', cstat: 'GF' };
 const CP_LOGO = { EPL: 'epl', LALIGA: 'laliga', SERIEA: 'seriea', BUNDESLIGA: 'bundesliga', LIGUE1: 'ligue1', SPL: 'spl', MLS: 'mls', UCL: 'ucl', UEL: 'uel', UECL: 'uecl', SUPERCUP: 'supercup' };
 const LG_CLASS = k => (CP_LOGO[k] ? ' lg-' + k : '');
+/* Club crests: API-Football team ids come with the competition; the picture is API-Sports' free image host. A crest that cannot load disappears and the name stays. */
+const CP_CRESTS = {};
+function crest(club){ const id = CP_CRESTS[club]; return id ? `<img class="crest" src="https://media.api-sports.io/football/teams/${id}.png" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer">` : ''; }
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('crest')) t.remove(); }, true);
+function cpCoverageNote(p){
+  if (!p || !p.finishedMatches || p.matchesWithDetails >= p.finishedMatches * 0.9) return '';
+  return `<div class="cp-warn" role="note"><b>Incomplete.</b> These lists cover only ${p.matchesWithDetails} of ${p.finishedMatches} played matches, so goals and assists are lower than the real totals. More matches are added every day.</div>`;
+}
 function cpLogoHtml(key, name, big){
   const id = CP_LOGO[key], fb = escapeHtml(clubBadgeCode(name));
   return id ? `<img class="cp-logo${big ? ' big' : ''}${key === 'SPL' ? ' dk' : ''}" src="logos/${id}.png" alt="" loading="lazy" data-fb="${fb}">` : `<span class="cp-logo cp-fb${big ? ' big' : ''}">${fb}</span>`;
@@ -4196,6 +4205,7 @@ async function openCompetition(ref, opener){
     const r = await fetch(API_ORIGIN + '/api/competition?league=' + encodeURIComponent(ref.league) + (ref.season ? '&season=' + encodeURIComponent(ref.season) : '') + '&today=' + todayDateStr());
     const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || ('HTTP ' + r.status));
     if (token !== MV.token) return;
+    Object.assign(CP_CRESTS, j.crests || {});
     CP.round = j.focusRound; MV.tab = cpq(j, ref.tab); cpShow(j, MV.tab);
   } catch (e) {
     if (token !== MV.token) return;
@@ -4211,7 +4221,7 @@ function cpFxRow(m, today){
   const done = m.status === 'finished' && m.hg != null;
   const mid = done ? `${m.hg} – ${m.ag}` : (mvTime(m) || 'v');
   const tag = m.status === 'postponed' ? ' · postponed' : m.status === 'cancelled' ? ' · cancelled' : '';
-  return `<button class="cp-fx" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-s="${escapeHtml(m.status)}" data-hg="${m.hg == null ? '' : m.hg}" data-ag="${m.ag == null ? '' : m.ag}"><span class="h">${escapeHtml(m.home)}</span><span class="sc${done ? '' : ' up'}">${escapeHtml(mid)}</span><span class="a">${escapeHtml(m.away)}</span>${tag ? `<small>${escapeHtml(tag.slice(3))}</small>` : ''}</button>`;
+  return `<button class="cp-fx" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-s="${escapeHtml(m.status)}" data-hg="${m.hg == null ? '' : m.hg}" data-ag="${m.ag == null ? '' : m.ag}"><span class="h">${escapeHtml(m.home)}${crest(m.home)}</span><span class="sc${done ? '' : ' up'}">${escapeHtml(mid)}</span><span class="a">${crest(m.away)}${escapeHtml(m.away)}</span>${tag ? `<small>${escapeHtml(tag.slice(3))}</small>` : ''}</button>`;
 }
 function cpFixturesHtml(v){
   const today = v.today; let list, head;
@@ -4235,14 +4245,14 @@ function cpStatsHtml(v){
     const p = st.players, rows = CP.pstat === 'scorers' ? p.scorers : CP.pstat === 'ratings' ? (p.ratings || []) : p.assists, key = CP.pstat === 'scorers' ? 'goals' : CP.pstat === 'ratings' ? 'rating' : 'assists';
     if (CP.pstat === 'ratings' && p.matchesWithDetails && !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('No rating list yet', 'The Creator Booth rating is the average of a player\'s match ratings. A player appears after ' + (p.minRated || 2) + ' rated matches. Ratings are saved for matches collected since 4 November.')}</div>`;
     if (!p.matchesWithDetails || !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('Player stats not available', 'Goal scorers and assists come from full match details, which are saved for the Premier League and La Liga only for now.')}</div>`;
-    return seg + sub + `<div class="mv-card">${rows.map((r, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm"><button class="cp-pl" data-pk="${escapeHtml(r.key || '')}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}">${escapeHtml(r.name)}</button><button class="cp-club" data-club="${escapeHtml(r.club)}">${escapeHtml(r.club)}</button></span><b>${key === 'rating' ? Number(r.rating).toFixed(2) : r[key]}</b></div>`).join('')}<div class="mv-note">From ${p.matchesWithDetails} of ${p.finishedMatches} finished matches with saved details. Own goals are not counted.${CP.pstat === 'ratings' ? ' Creator Booth rating = the average of the match ratings we store (at least ' + (p.minRated || 2) + ' rated matches). Other sites rate differently.' : ''} Tap a player for his card.</div></div>`;
+    return seg + sub + cpCoverageNote(p) + `<div class="mv-card">${rows.map((r, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm"><button class="cp-pl" data-pk="${escapeHtml(r.key || '')}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}">${escapeHtml(r.name)}</button><button class="cp-club" data-club="${escapeHtml(r.club)}">${crest(r.club)}${escapeHtml(r.club)}</button></span><b>${key === 'rating' ? Number(r.rating).toFixed(2) : r[key]}</b></div>`).join('')}<div class="mv-note">From ${p.matchesWithDetails} of ${p.finishedMatches} finished matches with saved details. Own goals are not counted.${CP.pstat === 'ratings' ? ' Creator Booth rating = the average of the match ratings we store (at least ' + (p.minRated || 2) + ' rated matches). Other sites rate differently.' : ''} Tap a player for his card.</div></div>`;
   }
   const opts = [['GF', 'Goals scored'], ['GA', 'Goals conceded'], ['CS', 'Clean sheets'], ['AVG', 'Goals per match']];
   const sub = `<div class="mv-stages" role="group" aria-label="Club stat">${opts.map(([k, l]) => `<button class="mv-chip" data-cpcs="${k}" aria-pressed="${CP.cstat === k}">${l}</button>`).join('')}</div>`;
   const val = c => (CP.cstat === 'AVG' ? (c.P ? c.GF / c.P : 0) : c[CP.cstat]);
   const rows = st.clubs.filter(c => c.P).slice().sort((a, b) => (CP.cstat === 'GA' ? val(a) - val(b) : val(b) - val(a)) || a.team.localeCompare(b.team)).slice(0, 20);
   if (!rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('No results yet', 'Club figures appear once matches are played.')}</div>`;
-  return seg + sub + `<div class="mv-card">${rows.map((c, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm"><button class="cp-club main" data-club="${escapeHtml(c.team)}">${escapeHtml(c.team)}</button><small>${c.P} played</small></span><b>${CP.cstat === 'AVG' ? val(c).toFixed(2) : val(c)}</b></div>`).join('')}<div class="mv-note">Corners, passes and ball possession need a reliable source and are not shown yet.</div></div>`;
+  return seg + sub + `<div class="mv-card">${rows.map((c, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm"><button class="cp-club main" data-club="${escapeHtml(c.team)}">${crest(c.team)}${escapeHtml(c.team)}</button><small>${c.P} played</small></span><b>${CP.cstat === 'AVG' ? val(c).toFixed(2) : val(c)}</b></div>`).join('')}<div class="mv-note">Corners, passes and ball possession need a reliable source and are not shown yet.</div></div>`;
 }
 function cpKnockoutHtml(v){ return mvPlayoffsHtml({ bracket: v.bracket, match: { home: '', away: '' } }); }
 document.addEventListener('click', e => {
