@@ -1547,7 +1547,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.6.10';
+const APP_VERSION = '1.6.11';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4245,7 +4245,14 @@ function cpStatsHtml(v){
     const p = st.players, rows = CP.pstat === 'scorers' ? p.scorers : CP.pstat === 'ratings' ? (p.ratings || []) : p.assists, key = CP.pstat === 'scorers' ? 'goals' : CP.pstat === 'ratings' ? 'rating' : 'assists';
     if (CP.pstat === 'ratings' && p.matchesWithDetails && !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('No rating list yet', 'The Creator Booth rating is the average of a player\'s match ratings. A player appears after ' + (p.minRated || 2) + ' rated matches. Ratings are saved for matches collected since 4 November.')}</div>`;
     if (!p.matchesWithDetails || !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('Player stats not available', 'Goal scorers and assists come from full match details, which are saved for the Premier League and La Liga only for now.')}</div>`;
-    return seg + sub + cpCoverageNote(p) + `<div class="mv-card">${rows.map((r, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm"><button class="cp-pl" data-pk="${escapeHtml(r.key || '')}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}">${escapeHtml(r.name)}</button><button class="cp-club" data-club="${escapeHtml(r.club)}">${crest(r.club)}${escapeHtml(r.club)}</button></span><b>${key === 'rating' ? Number(r.rating).toFixed(2) : r[key]}</b></div>`).join('')}<div class="mv-note">From ${p.matchesWithDetails} of ${p.finishedMatches} finished matches with saved details. Own goals are not counted.${CP.pstat === 'ratings' ? ' Creator Booth rating = the average of the match ratings we store (at least ' + (p.minRated || 2) + ' rated matches). Other sites rate differently.' : ''} Tap a player for his card.</div></div>`;
+    const fdScorers = CP.pstat === 'scorers' && p.scorersSource === 'football-data.org';
+    const nameHtml = r => (r.key ? `<button class="cp-pl" data-pk="${escapeHtml(r.key)}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}">${escapeHtml(r.name)}</button>` : `<span class="cp-pl" style="font-weight:600;cursor:default">${escapeHtml(r.name)}</span>`);
+    const extra = r => (fdScorers && r.played != null ? `<small style="display:block;color:var(--text-dim);font-size:12px;margin-top:2px">${r.played} games${r.penalties ? ' · ' + r.penalties + ' pens' : ''}</small>` : '');
+    const when = p.scorersAt ? new Date(p.scorersAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '';
+    const foot = fdScorers
+      ? `Season totals from football-data.org: every match played, penalties included. Updated ${escapeHtml(when)}.${p.scorers.some(x => x.key) ? ' Tap a player for his card.' : ''}`
+      : `From ${p.matchesWithDetails} of ${p.finishedMatches} finished matches with saved details. Own goals are not counted.${CP.pstat === 'ratings' ? ' Creator Booth rating = the average of the match ratings we store (at least ' + (p.minRated || 2) + ' rated matches). Other sites rate differently.' : ''} Tap a player for his card.`;
+    return seg + sub + (fdScorers ? '' : cpCoverageNote(p)) + `<div class="mv-card">${rows.map((r, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm">${nameHtml(r)}<button class="cp-club" data-club="${escapeHtml(r.club)}">${crest(r.club)}${escapeHtml(r.club)}</button>${extra(r)}</span><b>${key === 'rating' ? Number(r.rating).toFixed(2) : r[key]}</b></div>`).join('')}<div class="mv-note">${foot}</div></div>`;
   }
   const opts = [['GF', 'Goals scored'], ['GA', 'Goals conceded'], ['CS', 'Clean sheets'], ['AVG', 'Goals per match']];
   const sub = `<div class="mv-stages" role="group" aria-label="Club stat">${opts.map(([k, l]) => `<button class="mv-chip" data-cpcs="${k}" aria-pressed="${CP.cstat === k}">${l}</button>`).join('')}</div>`;

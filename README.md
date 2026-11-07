@@ -293,3 +293,6 @@ Fixes the app not responding (a syntax error in the chat instructions since 1.6.
 
 ## 1.6.10
 Club crests next to club names (table, fixtures, club stats); an "Incomplete" note on the player lists showing how many played matches they cover.
+
+## 1.6.11
+Top scorers now show full-season totals from football-data.org (games and penalties under each name).
