@@ -317,3 +317,6 @@ Overwrite / preview / fill modes for the football-data.org player-details tool. 
 
 ## 1.7.8
 Fill gaps is the default for the football-data.org player tool; Korea spelling fix. Web files only.
+
+## 1.7.9
+Player-details preview lists up to 80 conflicts per league. Web files only.
