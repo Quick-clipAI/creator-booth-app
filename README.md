@@ -320,3 +320,6 @@ Fill gaps is the default for the football-data.org player tool; Korea spelling f
 
 ## 1.7.9
 Player-details preview lists up to 80 conflicts per league. Web files only.
+
+## 1.7.10
+The conflict preview is saved to Supabase. Web files only.
