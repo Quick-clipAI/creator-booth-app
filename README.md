@@ -302,3 +302,6 @@ Top scorers now land on the right club (Barcelona fix), the "Incomplete" banner 
 
 ## 1.7.3
 Quick (web-files-only) update switched back on for testing. Install this APK once; the next update tests the quick path.
+
+## 1.7.4
+New player card (photo, rating ring, form, colours), a table head-to-head note, and a fix that queues missed matches for line-ups. Web files only.

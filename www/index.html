@@ -521,6 +521,28 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .pl-h{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);margin:18px 0 6px}
 .pl-row{display:grid;grid-template-columns:1fr auto;gap:8px;padding:9px 0;border-top:1px solid var(--border-soft);font-size:14px}.pl-row:first-of-type{border-top:0}.pl-row small{display:block;color:var(--text-dim);font-size:12px;margin-top:2px}
 .pl-rt{min-width:44px;text-align:center;border-radius:10px;padding:4px 8px;font-weight:700;font-variant-numeric:tabular-nums;background:var(--surface-2,rgba(127,127,127,.15))}.pl-rt.hi{background:rgba(88,166,92,.25)}.pl-rt.lo{background:rgba(220,90,80,.22)}
+.pl2-hero{background:var(--surface,transparent);position:relative;display:flex;align-items:center;gap:14px;padding:16px;margin:-4px 0 12px;border-radius:20px;border:1px solid var(--lg-edge,var(--border-soft));background:linear-gradient(150deg,color-mix(in srgb,var(--lg,#FF6A1A) 34%,transparent),transparent 72%),var(--surface,transparent);overflow:hidden}
+.pl2-num{position:absolute;right:10px;top:-6px;font:800 84px/1 var(--serif,Georgia,serif);opacity:.1;pointer-events:none}
+.pl2-ph{flex:none}.pl2-photo{display:block;width:96px;height:96px;border-radius:50%;object-fit:cover;background:var(--surface-2,rgba(127,127,127,.2));border:3px solid var(--lg-edge,var(--brand,#FF6A1A));box-shadow:0 6px 22px rgba(0,0,0,.35)}
+.pl2-ini{display:flex;align-items:center;justify-content:center;font:700 30px var(--serif,Georgia,serif);color:var(--text-dim)}
+.pl2-id{min-width:0}.pl2-id .pl-name{font-size:24px;overflow-wrap:anywhere}.pl2-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pl2-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(127,127,127,.18)}.pl2-chip.club{background:rgba(127,127,127,.26)}.pl2-chip .crest{margin:0;width:16px;height:16px;vertical-align:0}
+.pl2-rate{display:flex;align-items:center;gap:16px;padding:14px;margin-bottom:12px;border-radius:18px;border:1px solid var(--border-soft);background:var(--surface,transparent)}
+.pl2-ring{--tier:var(--text-faint);flex:none;width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--tier) calc(var(--p,0) * 1%),rgba(127,127,127,.22) 0)}
+.pl2-ring.hi{--tier:#4CAF50}.pl2-ring.mid{--tier:#E0A93B}.pl2-ring.lo{--tier:#E5584B}
+.pl2-ring b{display:flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:50%;background:var(--bg);font-size:24px;font-variant-numeric:tabular-nums}
+.pl2-rt{min-width:0}.pl2-rt strong{display:block;font-size:14px}.pl2-rt span{display:block;font-size:12px;color:var(--text-dim);line-height:1.45;margin-top:2px}
+.pl2-form{display:flex;align-items:flex-end;gap:4px;margin-top:10px;height:56px}.pl2-form i{display:block;width:12px;border-radius:4px 4px 2px 2px;background:var(--text-faint)}.pl2-form i.hi{background:#4CAF50}.pl2-form i.mid{background:#E0A93B}.pl2-form i.lo{background:#E5584B}.pl2-form small{margin-left:6px;font-size:11px;color:var(--text-faint);align-self:center}
+.pl2-season{background:var(--surface,transparent);display:flex;align-items:center;gap:14px;padding:12px 14px;margin-bottom:12px;border-radius:16px;border:1px solid var(--lg-edge,var(--brand,#FF6A1A));background:color-mix(in srgb,var(--lg-edge,#FF6A1A) 12%,transparent)}
+.pl2-season div{flex:none;text-align:center}.pl2-season b{display:block;font-size:34px;line-height:1;font-variant-numeric:tabular-nums}.pl2-season small{font-size:11px;color:var(--text-dim)}.pl2-season span{font-size:12px;color:var(--text-dim);line-height:1.45}
+.pl2-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pl2-t{border:1px solid var(--border-soft);border-top:3px solid var(--text-faint);border-radius:12px;padding:10px 6px;text-align:center;background:var(--surface,transparent)}.pl2-t b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.pl2-t small{color:var(--text-dim);font-size:11px}
+.pl2-t.g{border-top-color:#FF6A1A}.pl2-t.a{border-top-color:#4DA3FF}.pl2-t.y{border-top-color:#F2C230}.pl2-t.r{border-top-color:#E5584B}
+.pl2-comp{display:flex;align-items:center;gap:12px;padding:10px 12px;margin-bottom:8px;border-radius:14px;border:1px solid var(--border-soft);background:var(--surface,transparent)}.pl2-comp .cp-logo{width:34px;height:34px;flex:none}.pl2-ct{flex:1;min-width:0}.pl2-ct b{display:block;font-size:14px}.pl2-ct small{color:var(--text-dim);font-size:12px}
+.pl2-m{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--border-soft)}.pl2-m:first-of-type{border-top:0}.pl2-mt{min-width:0}.pl2-mt b{display:block;font-size:14px;font-weight:600}.pl2-mt small{display:block;color:var(--text-dim);font-size:12px;margin-top:2px}
+.pl2-res{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;background:rgba(127,127,127,.2)}.pl2-res.W{background:rgba(76,175,80,.28);color:#6fcf73}.pl2-res.L{background:rgba(229,88,75,.26);color:#ff8579}.pl2-res.D{background:rgba(224,169,59,.26);color:#f0c25e}
+:root[data-theme="light"] .pl2-res.W{color:#2e7d32}:root[data-theme="light"] .pl2-res.L{color:#c62828}:root[data-theme="light"] .pl2-res.D{color:#9a6a00}
+.pl2-ev{display:flex;gap:4px;align-items:center}.pl2-ev em{font-style:normal;font-size:12px;font-weight:700;padding:2px 6px;border-radius:7px;background:rgba(127,127,127,.2)}.pl2-ev em.a{color:#4DA3FF}.pl2-ev em.y,.pl2-ev em.r{width:10px;height:14px;padding:0;border-radius:2px;background:#F2C230}.pl2-ev em.r{background:#E5584B}
+.pl-rt.mid{background:rgba(224,169,59,.24)}
 button.cp-pl{all:unset;cursor:pointer;display:block;font-weight:600;text-align:left}button.cp-pl:focus-visible{outline:2px solid var(--brand,#FF6A1A);outline-offset:2px}
 .crest{width:20px;height:20px;object-fit:contain;vertical-align:-5px;margin-right:6px}.cp-warn{margin:10px 0;padding:10px 12px;border-radius:12px;border:1px solid #6b4a1a;background:rgba(224,178,90,.1);color:var(--text);font-size:13px;line-height:1.45}.cp-warn b{color:#e0b25a}
 .cp-st{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--border-soft);font-size:14px}.cp-st:first-of-type{border-top:0}.cp-st .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.cp-st .nm{display:flex;flex-direction:column;align-items:flex-start;gap:1px}.cp-st small{color:var(--text-dim);font-size:11.5px}
@@ -1547,7 +1569,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.3';
+const APP_VERSION = '1.7.4';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4107,20 +4129,31 @@ document.addEventListener('keydown', e => {
 /* ------------------------------------------------------------------ */
 /* Player card: season totals, Creator Booth rating and the list of matches, from /api/competition?player= */
 const PL = { open: false, token: 0, opener: null };
-function plRt(r){ if (r == null) return '<span class="pl-rt">–</span>'; return '<span class="pl-rt ' + (r >= 7.5 ? 'hi' : r < 6 ? 'lo' : '') + '">' + Number(r).toFixed(1) + '</span>'; }
+function plRt(r){ if (r == null) return '<span class="pl-rt">–</span>'; return '<span class="pl-rt ' + plTier(r) + '">' + Number(r).toFixed(1) + '</span>'; }
+function plTier(r){ return r == null ? '' : r >= 7.5 ? 'hi' : r < 6 ? 'lo' : 'mid'; }
+function plInitials(n){ return String(n || '?').split(/\s+/).filter(Boolean).map(w => w[0]).slice(-2).join('').toUpperCase(); }
+function plResult(m){ const p = String(m.score || '').split('-').map(Number); if (p.length !== 2 || p.some(Number.isNaN)) return ''; const us = m.home ? p[0] : p[1], them = m.home ? p[1] : p[0]; return us > them ? 'W' : us < them ? 'L' : 'D'; }
 function plHtml(c, season){
-  const rateTxt = c.rating != null ? `<b>${Number(c.rating).toFixed(2)}</b><span><strong>Creator Booth rating</strong><br>Average of ${c.rated} rated match${c.rated === 1 ? '' : 'es'} this season. It is our own average, so other sites show different numbers.</span>` : `<b>–</b><span><strong>Creator Booth rating</strong><br>No rated match stored yet. Ratings are saved for matches collected since 4 November.</span>`;
-  const grid = [['Games', c.apps], ['Minutes', c.minutes || '–'], ['Goals', c.goals], ['Assists', c.assists], ['Yellow', c.yellow], ['Red', c.red]].map(([l, v]) => `<div><b>${v}</b><small>${l}</small></div>`).join('');
-  const comps = c.competitions.map(x => `<div class="pl-row"><div>${escapeHtml(x.comp)}<small>${x.apps} game${x.apps === 1 ? '' : 's'} · ${x.goals} goal${x.goals === 1 ? '' : 's'} · ${x.assists} assist${x.assists === 1 ? '' : 's'}</small></div>${plRt(x.rating)}</div>`).join('');
-  const ms = c.matches.map(m => `<div class="pl-row"><div>${m.home ? 'v' : 'at'} ${escapeHtml(m.opp)} · ${escapeHtml(m.score)}<small>${escapeHtml(m.date)} · ${escapeHtml(m.comp)}${m.min ? ' · ' + m.min + "'" : ''}${m.played ? '' : ' · not in the squad list'}${m.g ? ' · ⚽' + (m.g > 1 ? '×' + m.g : '') : ''}${m.a ? ' · 🅰' + (m.a > 1 ? '×' + m.a : '') : ''}${m.yc ? ' · 🟨' : ''}${m.rc ? ' · 🟥' : ''}</small></div>${plRt(m.rating)}</div>`).join('');
-  return `<h2 class="pl-name">${escapeHtml(c.name)}</h2><div class="pl-sub">${escapeHtml(c.club)}${c.pos ? ' · ' + escapeHtml({ G: 'Goalkeeper', D: 'Defender', M: 'Midfielder', F: 'Forward' }[c.pos] || c.pos) : ''} · this season</div><div class="pl-rate">${rateTxt}</div><div class="pl-grid">${grid}</div>` +
-    (season ? `<div class="mv-note" style="margin:0 0 12px"><b>${season.goals} ${escapeHtml(season.comp)} goal${season.goals === 1 ? '' : 's'}${season.played != null ? ' in ' + season.played + ' games' : ''} this season</b> (football-data.org, every match). The figures below only cover the matches we hold full details for, so they can be lower until more are added.</div>` : '') + `<div class="pl-h">By competition</div>${comps}<div class="pl-h">Matches</div>${ms}<div class="mv-note">${escapeHtml(c.note || '')} Matches played before we started saving full details are not in these numbers.</div>`;
+  const tier = plTier(c.rating), pct = c.rating != null ? Math.max(0, Math.min(100, c.rating * 10)) : 0;
+  const posTxt = c.pos ? { G: 'Goalkeeper', D: 'Defender', M: 'Midfielder', F: 'Forward' }[c.pos] || c.pos : '';
+  const photo = c.pid ? `<img class="pl2-photo" src="https://media.api-sports.io/football/players/${c.pid}.png" alt="" width="96" height="96" referrerpolicy="no-referrer" data-ini="${escapeHtml(plInitials(c.name))}">` : `<span class="pl2-photo pl2-ini">${escapeHtml(plInitials(c.name))}</span>`;
+  const hero = `<div class="pl2-hero">${c.num ? `<span class="pl2-num" aria-hidden="true">${c.num}</span>` : ''}<div class="pl2-ph">${photo}</div><div class="pl2-id"><h2 class="pl-name">${escapeHtml(c.name)}</h2><div class="pl2-chips"><span class="pl2-chip club">${crest(c.club)}${escapeHtml(c.club)}</span>${posTxt ? `<span class="pl2-chip">${escapeHtml(posTxt)}</span>` : ''}${c.num ? `<span class="pl2-chip">#${c.num}</span>` : ''}</div></div></div>`;
+  const rated = (c.matches || []).filter(m => m.rating != null).slice(0, 8).reverse();
+  const form = rated.length > 1 ? `<div class="pl2-form" aria-label="Recent ratings">${rated.map(m => `<i class="${plTier(m.rating)}" style="height:${Math.round(14 + Math.max(0, Math.min(1, (m.rating - 4) / 6)) * 38)}px" title="${Number(m.rating).toFixed(1)}"></i>`).join('')}<small>last ${rated.length} rated</small></div>` : '';
+  const rateBox = c.rating != null
+    ? `<div class="pl2-rate"><div class="pl2-ring ${tier}" style="--p:${pct}"><b>${Number(c.rating).toFixed(2)}</b></div><div class="pl2-rt"><strong>Creator Booth rating</strong><span>Average of ${c.rated} rated match${c.rated === 1 ? '' : 'es'} this season. It is our own average, so other sites show different numbers.</span>${form}</div></div>`
+    : `<div class="pl2-rate"><div class="pl2-ring"><b>–</b></div><div class="pl2-rt"><strong>Creator Booth rating</strong><span>No rated match saved yet. The rating is the average of the match ratings we store.</span></div></div>`;
+  const seasonBox = season ? `<div class="pl2-season"><div><b>${season.goals}</b><small>${escapeHtml(season.comp)} goals${season.played != null ? ' in ' + season.played + ' games' : ''}</small></div><span>Season total from football-data.org, every match. The figures below cover only the matches we hold full details for, so they can be lower until more are added.</span></div>` : '';
+  const tiles = [['Games', c.apps, ''], ['Minutes', c.minutes || '–', ''], ['Goals', c.goals, 'g'], ['Assists', c.assists, 'a'], ['Yellow', c.yellow, 'y'], ['Red', c.red, 'r']].map(([l, v, k]) => `<div class="pl2-t ${k}"><b>${v}</b><small>${l}</small></div>`).join('');
+  const comps = c.competitions.map(x => `<div class="pl2-comp">${cpLogoHtml(x.league, x.comp)}<div class="pl2-ct"><b>${escapeHtml(x.comp)}</b><small>${x.apps} game${x.apps === 1 ? '' : 's'} · ${x.goals} goal${x.goals === 1 ? '' : 's'} · ${x.assists} assist${x.assists === 1 ? '' : 's'}</small></div>${plRt(x.rating)}</div>`).join('');
+  const ms = c.matches.map(m => { const r = plResult(m); return `<div class="pl2-m"><span class="pl2-res ${r}">${r || '·'}</span><div class="pl2-mt"><b>${m.home ? 'v' : 'at'} ${escapeHtml(m.opp)}</b><small>${escapeHtml(m.score)} · ${escapeHtml(m.date)} · ${escapeHtml(m.comp)}${m.min ? ' · ' + m.min + "'" : ''}${m.played ? '' : ' · not in the squad list'}</small></div><span class="pl2-ev">${m.g ? '<em class="g">⚽' + (m.g > 1 ? '×' + m.g : '') + '</em>' : ''}${m.a ? '<em class="a">A' + (m.a > 1 ? '×' + m.a : '') + '</em>' : ''}${m.yc ? '<em class="y"></em>' : ''}${m.rc ? '<em class="r"></em>' : ''}</span>${plRt(m.rating)}</div>`; }).join('');
+  return hero + rateBox + seasonBox + `<div class="pl2-grid">${tiles}</div><div class="pl-h">By competition</div>${comps}<div class="pl-h">Matches</div>${ms || '<div class="mv-note">No matches saved yet.</div>'}<div class="mv-note">${escapeHtml(c.note || '')} Matches played before we started saving full details are not in these numbers.</div>`;
 }
-async function openPlayer(key, name, club, opener, season){
+async function openPlayer(key, name, club, opener, season, lg){
   const el = document.getElementById('pl-sheet'); if (!el || !key) return;
   const token = ++PL.token; PL.opener = opener || null;
   if (!PL.open){ PL.open = true; try { history.pushState({ pl: 1 }, ''); } catch (e) { /* history unavailable */ } }
-  el.hidden = false; el.classList.add('open'); document.getElementById('pl-title').textContent = name || '';
+  el.className = 'pl-sheet open' + LG_CLASS(lg || ''); el.hidden = false; document.getElementById('pl-title').textContent = name || '';
   document.getElementById('pl-body').innerHTML = '<div class="mv-skel"></div><div class="mv-skel"></div><div class="mv-skel"></div>';
   document.getElementById('pl-back').focus();
   try {
@@ -4148,6 +4181,7 @@ const LG_CLASS = k => (CP_LOGO[k] ? ' lg-' + k : '');
 const CP_CRESTS = {};
 function crest(club){ const id = CP_CRESTS[club]; return id ? `<img class="crest" src="https://media.api-sports.io/football/teams/${id}.png" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer">` : ''; }
 document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('crest')) t.remove(); }, true);
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('pl2-photo')){ const sp = document.createElement('span'); sp.className = 'pl2-photo pl2-ini'; sp.textContent = t.dataset.ini || ''; t.replaceWith(sp); } }, true);
 function cpLogoHtml(key, name, big){
   const id = CP_LOGO[key], fb = escapeHtml(clubBadgeCode(name));
   return id ? `<img class="cp-logo${big ? ' big' : ''}${key === 'SPL' ? ' dk' : ''}" src="logos/${id}.png" alt="" loading="lazy" data-fb="${fb}">` : `<span class="cp-logo cp-fb${big ? ' big' : ''}">${fb}</span>`;
@@ -4211,7 +4245,19 @@ async function openCompetition(ref, opener){
 }
 function cpTableHtml(v){
   if (!v.table) return `<div class="mv-card">${mvEmpty('No table yet', 'No results are stored for this competition.')}</div>`;
-  return mvTableHtml({ table: v.table, match: { home: '', away: '' } }).replace('<table class="mv-tbl">', '<table class="mv-tbl cp-tbl">') + `<div class="mv-note" style="margin-top:8px">Tap a club to see its matches.</div>`;
+  return mvTableHtml({ table: v.table, match: { home: '', away: '' } }).replace('<table class="mv-tbl">', '<table class="mv-tbl cp-tbl">') + cpTieNote(v) + `<div class="mv-note" style="margin-top:8px">Tap a club to see its matches.</div>`;
+}
+/** La Liga (and other head-to-head leagues) order clubs level on points by the results between them before goal difference. Explain it when that puts a club with the worse goal difference higher. */
+function cpTieNote(v){
+  try {
+    if (!v.competition || v.competition.tiebreak !== 'h2h') return '';
+    const rows = (v.table && v.table.rows) || [];
+    for (let i = 0; i < rows.length - 1; i++){
+      const a = rows[i], b = rows[i + 1];
+      if (a.Pts === b.Pts && a.GD < b.GD) return `<div class="mv-note" style="margin-top:8px"><b>${escapeHtml(a.team)}</b> are above <b>${escapeHtml(b.team)}</b> on ${a.Pts} points because ${escapeHtml(a.team)} did better in the matches between the two clubs. ${escapeHtml(v.competition.short || v.competition.name)} uses this head-to-head rule before goal difference.</div>`;
+    }
+  } catch (e) { /* the note is optional */ }
+  return '';
 }
 function cpFxRow(m, today){
   const done = m.status === 'finished' && m.hg != null;
@@ -4242,7 +4288,7 @@ function cpStatsHtml(v){
     if (CP.pstat === 'ratings' && p.matchesWithDetails && !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('No rating list yet', 'The Creator Booth rating is the average of a player\'s match ratings. A player appears after ' + (p.minRated || 2) + ' rated matches. Ratings are saved for matches collected since 4 November.')}</div>`;
     if (!p.matchesWithDetails || !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('Player stats not available', 'Goal scorers and assists come from full match details, which are saved for the Premier League and La Liga only for now.')}</div>`;
     const fdScorers = CP.pstat === 'scorers' && p.scorersSource === 'football-data.org';
-    const nameHtml = r => (r.key ? `<button class="cp-pl" data-pk="${escapeHtml(r.key)}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}"${fdScorers ? ` data-sg="${r.goals}" data-sp="${r.played == null ? '' : r.played}" data-sc="${escapeHtml(v.competition ? (v.competition.name || '') : '')}"` : ''}>${escapeHtml(r.name)}</button>` : `<span class="cp-pl" style="font-weight:600;cursor:default">${escapeHtml(r.name)}</span>`);
+    const nameHtml = r => (r.key ? `<button class="cp-pl" data-pk="${escapeHtml(r.key)}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}" data-sl="${escapeHtml(v.competition ? v.competition.key : '')}"${fdScorers ? ` data-sg="${r.goals}" data-sp="${r.played == null ? '' : r.played}" data-sc="${escapeHtml(v.competition ? (v.competition.name || '') : '')}"` : ''}>${escapeHtml(r.name)}</button>` : `<span class="cp-pl" style="font-weight:600;cursor:default">${escapeHtml(r.name)}</span>`);
     const extra = r => (fdScorers && r.played != null ? `<small style="display:block;color:var(--text-dim);font-size:12px;margin-top:2px">${r.played} games${r.penalties ? ' · ' + r.penalties + ' pens' : ''}</small>` : '');
     const when = p.scorersAt ? new Date(p.scorersAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '';
     const foot = fdScorers
@@ -4269,7 +4315,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-cpclear]')){ CP.club = ''; repaint(); return; }
   const sg = e.target.closest('[data-cpseg]'); if (sg){ CP.seg = sg.dataset.cpseg; repaint(); return; }
   const ps = e.target.closest('[data-cpps]'); if (ps){ CP.pstat = ps.dataset.cpps; repaint(); return; }
-  const pk = e.target.closest('[data-pk]'); if (pk){ openPlayer(pk.dataset.pk, pk.dataset.pn, pk.dataset.pc, pk, pk.dataset.sg ? { goals: Number(pk.dataset.sg), played: pk.dataset.sp === '' ? null : Number(pk.dataset.sp), comp: pk.dataset.sc || 'the league' } : null); return; }
+  const pk = e.target.closest('[data-pk]'); if (pk){ openPlayer(pk.dataset.pk, pk.dataset.pn, pk.dataset.pc, pk, pk.dataset.sg ? { goals: Number(pk.dataset.sg), played: pk.dataset.sp === '' ? null : Number(pk.dataset.sp), comp: pk.dataset.sc || 'the league' } : null, pk.dataset.sl); return; }
   const cs = e.target.closest('[data-cpcs]'); if (cs){ CP.cstat = cs.dataset.cpcs; repaint(); return; }
   const cl = e.target.closest('.cp-club[data-club]') || e.target.closest('.cp-tbl tr[data-team]');
   if (cl){ CP.club = cl.dataset.club || cl.dataset.team; mvSetTab('fixtures'); return; }
