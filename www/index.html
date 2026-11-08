@@ -527,6 +527,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .pl2-ini{display:flex;align-items:center;justify-content:center;font:700 30px var(--serif,Georgia,serif);color:var(--text-dim)}
 .pl2-id{min-width:0}.pl2-id .pl-name{font-size:24px;overflow-wrap:anywhere}.pl2-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .pl2-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;background:rgba(127,127,127,.18)}.pl2-chip.club{background:rgba(127,127,127,.26)}.pl2-chip .crest{margin:0;width:16px;height:16px;vertical-align:0}
+.pl2-facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin-bottom:12px}.pl2-facts div{border:1px solid var(--border-soft);border-radius:12px;padding:9px 10px;background:var(--surface,transparent)}.pl2-facts small{display:block;color:var(--text-faint);font-size:11px;letter-spacing:.04em;text-transform:uppercase}.pl2-facts b{display:block;font-size:14px;margin-top:2px;overflow-wrap:anywhere}
 .pl2-rate{display:flex;align-items:center;gap:16px;padding:14px;margin-bottom:12px;border-radius:18px;border:1px solid var(--border-soft);background:var(--surface,transparent)}
 .pl2-ring{--tier:var(--text-faint);flex:none;width:92px;height:92px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--tier) calc(var(--p,0) * 1%),rgba(127,127,127,.22) 0)}
 .pl2-ring.hi{--tier:#4CAF50}.pl2-ring.mid{--tier:#E0A93B}.pl2-ring.lo{--tier:#E5584B}
@@ -1569,7 +1570,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.4';
+const APP_VERSION = '1.7.5';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4130,6 +4131,9 @@ document.addEventListener('keydown', e => {
 /* Player card: season totals, Creator Booth rating and the list of matches, from /api/competition?player= */
 const PL = { open: false, token: 0, opener: null };
 function plRt(r){ if (r == null) return '<span class="pl-rt">–</span>'; return '<span class="pl-rt ' + plTier(r) + '">' + Number(r).toFixed(1) + '</span>'; }
+const FLAG_ISO = { 'Argentina':'AR','Algeria':'DZ','Australia':'AU','Austria':'AT','Belgium':'BE','Brazil':'BR','Cameroon':'CM','Canada':'CA','Chile':'CL','Colombia':'CO','Croatia':'HR','Czech Republic':'CZ','Czechia':'CZ','Denmark':'DK','Ecuador':'EC','Egypt':'EG','England':'GB','France':'FR','Germany':'DE','Ghana':'GH','Greece':'GR','Hungary':'HU','Iran':'IR','Ireland':'IE','Italy':'IT','Ivory Coast':'CI',"Cote d'Ivoire":'CI','Japan':'JP','Mali':'ML','Mexico':'MX','Morocco':'MA','Netherlands':'NL','Nigeria':'NG','Norway':'NO','Paraguay':'PY','Peru':'PE','Poland':'PL','Portugal':'PT','Romania':'RO','Scotland':'GB','Senegal':'SN','Serbia':'RS','Slovakia':'SK','Slovenia':'SI','South Africa':'ZA','South Korea':'KR','Korea Republic':'KR','Spain':'ES','Sweden':'SE','Switzerland':'CH','Tunisia':'TN','Turkey':'TR','Türkiye':'TR','Ukraine':'UA','United States':'US','USA':'US','Uruguay':'UY','Venezuela':'VE','Wales':'GB','DR Congo':'CD','Congo DR':'CD','Gabon':'GA','Guinea':'GN','Burkina Faso':'BF','Albania':'AL','Bosnia-Herzegovina':'BA','Bosnia and Herzegovina':'BA','Finland':'FI','Iceland':'IS','Israel':'IL','Jamaica':'JM','New Zealand':'NZ','North Macedonia':'MK','Kosovo':'XK','Georgia':'GE','Armenia':'AM','Bulgaria':'BG','Cape Verde':'CV','Costa Rica':'CR','Panama':'PA','Honduras':'HN','Zambia':'ZM','Zimbabwe':'ZW','Angola':'AO','Mozambique':'MZ','Benin':'BJ','Togo':'TG','Sierra Leone':'SL','Gambia':'GM','The Gambia':'GM','Uzbekistan':'UZ','Saudi Arabia':'SA','Qatar':'QA','China':'CN','Philippines':'PH','Montenegro':'ME','Luxembourg':'LU','Cyprus':'CY','Northern Ireland':'GB' };
+function plFlag(nat){ const c = FLAG_ISO[nat]; return c ? String.fromCodePoint(...[...c].map(ch => 127397 + ch.charCodeAt(0))) + ' ' : ''; }
+function plBorn(d){ try { return new Date(d + 'T00:00:00Z').toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }); } catch (e) { return d; } }
 function plTier(r){ return r == null ? '' : r >= 7.5 ? 'hi' : r < 6 ? 'lo' : 'mid'; }
 function plInitials(n){ return String(n || '?').split(/\s+/).filter(Boolean).map(w => w[0]).slice(-2).join('').toUpperCase(); }
 function plResult(m){ const p = String(m.score || '').split('-').map(Number); if (p.length !== 2 || p.some(Number.isNaN)) return ''; const us = m.home ? p[0] : p[1], them = m.home ? p[1] : p[0]; return us > them ? 'W' : us < them ? 'L' : 'D'; }
@@ -4138,6 +4142,8 @@ function plHtml(c, season){
   const posTxt = c.pos ? { G: 'Goalkeeper', D: 'Defender', M: 'Midfielder', F: 'Forward' }[c.pos] || c.pos : '';
   const photo = c.pid ? `<img class="pl2-photo" src="https://media.api-sports.io/football/players/${c.pid}.png" alt="" width="96" height="96" referrerpolicy="no-referrer" data-ini="${escapeHtml(plInitials(c.name))}">` : `<span class="pl2-photo pl2-ini">${escapeHtml(plInitials(c.name))}</span>`;
   const hero = `<div class="pl2-hero">${c.num ? `<span class="pl2-num" aria-hidden="true">${c.num}</span>` : ''}<div class="pl2-ph">${photo}</div><div class="pl2-id"><h2 class="pl-name">${escapeHtml(c.name)}</h2><div class="pl2-chips"><span class="pl2-chip club">${crest(c.club)}${escapeHtml(c.club)}</span>${posTxt ? `<span class="pl2-chip">${escapeHtml(posTxt)}</span>` : ''}${c.num ? `<span class="pl2-chip">#${c.num}</span>` : ''}</div></div></div>`;
+  const facts = [c.age != null ? ['Age', c.age + ' years'] : null, c.nationality ? ['Nationality', plFlag(c.nationality) + c.nationality] : null, c.dob ? ['Born', plBorn(c.dob)] : null].filter(Boolean);
+  const factsHtml = facts.length ? `<div class="pl2-facts">${facts.map(([l, v]) => `<div><small>${l}</small><b>${escapeHtml(v)}</b></div>`).join('')}</div>` : '';
   const rated = (c.matches || []).filter(m => m.rating != null).slice(0, 8).reverse();
   const form = rated.length > 1 ? `<div class="pl2-form" aria-label="Recent ratings">${rated.map(m => `<i class="${plTier(m.rating)}" style="height:${Math.round(14 + Math.max(0, Math.min(1, (m.rating - 4) / 6)) * 38)}px" title="${Number(m.rating).toFixed(1)}"></i>`).join('')}<small>last ${rated.length} rated</small></div>` : '';
   const rateBox = c.rating != null
@@ -4147,7 +4153,7 @@ function plHtml(c, season){
   const tiles = [['Games', c.apps, ''], ['Minutes', c.minutes || '–', ''], ['Goals', c.goals, 'g'], ['Assists', c.assists, 'a'], ['Yellow', c.yellow, 'y'], ['Red', c.red, 'r']].map(([l, v, k]) => `<div class="pl2-t ${k}"><b>${v}</b><small>${l}</small></div>`).join('');
   const comps = c.competitions.map(x => `<div class="pl2-comp">${cpLogoHtml(x.league, x.comp)}<div class="pl2-ct"><b>${escapeHtml(x.comp)}</b><small>${x.apps} game${x.apps === 1 ? '' : 's'} · ${x.goals} goal${x.goals === 1 ? '' : 's'} · ${x.assists} assist${x.assists === 1 ? '' : 's'}</small></div>${plRt(x.rating)}</div>`).join('');
   const ms = c.matches.map(m => { const r = plResult(m); return `<div class="pl2-m"><span class="pl2-res ${r}">${r || '·'}</span><div class="pl2-mt"><b>${m.home ? 'v' : 'at'} ${escapeHtml(m.opp)}</b><small>${escapeHtml(m.score)} · ${escapeHtml(m.date)} · ${escapeHtml(m.comp)}${m.min ? ' · ' + m.min + "'" : ''}${m.played ? '' : ' · not in the squad list'}</small></div><span class="pl2-ev">${m.g ? '<em class="g">⚽' + (m.g > 1 ? '×' + m.g : '') + '</em>' : ''}${m.a ? '<em class="a">A' + (m.a > 1 ? '×' + m.a : '') + '</em>' : ''}${m.yc ? '<em class="y"></em>' : ''}${m.rc ? '<em class="r"></em>' : ''}</span>${plRt(m.rating)}</div>`; }).join('');
-  return hero + rateBox + seasonBox + `<div class="pl2-grid">${tiles}</div><div class="pl-h">By competition</div>${comps}<div class="pl-h">Matches</div>${ms || '<div class="mv-note">No matches saved yet.</div>'}<div class="mv-note">${escapeHtml(c.note || '')} Matches played before we started saving full details are not in these numbers.</div>`;
+  return hero + factsHtml + rateBox + seasonBox + `<div class="pl2-grid">${tiles}</div><div class="pl-h">By competition</div>${comps}<div class="pl-h">Matches</div>${ms || '<div class="mv-note">No matches saved yet.</div>'}<div class="mv-note">${escapeHtml(c.note || '')} Matches played before we started saving full details are not in these numbers.</div>`;
 }
 async function openPlayer(key, name, club, opener, season, lg){
   const el = document.getElementById('pl-sheet'); if (!el || !key) return;

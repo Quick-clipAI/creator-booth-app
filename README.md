@@ -305,3 +305,6 @@ Quick (web-files-only) update switched back on for testing. Install this APK onc
 
 ## 1.7.4
 New player card (photo, rating ring, form, colours), a table head-to-head note, and a fix that queues missed matches for line-ups. Web files only.
+
+## 1.7.5
+Player cards show age, nationality and birth date from the stored squads. Web files only.
