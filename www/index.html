@@ -1547,7 +1547,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.2';
+const APP_VERSION = '1.7.3';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -5238,7 +5238,7 @@ function openUpdateSheet(){
 // Downloads bundle.zip, then restarts the app on it. Any failure moves to the "Download update" fallback.
 // The in-app quick update (bundle.zip) failed on the phone every time ('Failed to download'), so the sheet goes straight to the file download.
 // Set to true to try the quick update again.
-const OTA_ENABLED = false;
+const OTA_ENABLED = true;
 async function applyUpdate(btn){
   const Updater = nativePlugin('CapacitorUpdater'), remote = upd.remote;
   if (btn){ btn.disabled = true; btn.textContent = 'Downloading…'; }

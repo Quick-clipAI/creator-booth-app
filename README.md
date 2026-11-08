@@ -299,3 +299,6 @@ Top scorers now show full-season totals from football-data.org (games and penalt
 
 ## 1.7.2
 Top scorers now land on the right club (Barcelona fix), the "Incomplete" banner is removed, and a scorer's card shows the football-data.org season total. Web content only; no new APK is needed beyond the usual rebuild.
+
+## 1.7.3
+Quick (web-files-only) update switched back on for testing. Install this APK once; the next update tests the quick path.
