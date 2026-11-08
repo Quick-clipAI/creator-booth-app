@@ -314,3 +314,6 @@ Admin tool to fill missing birth dates and nationality from football-data.org. W
 
 ## 1.7.7
 Overwrite / preview / fill modes for the football-data.org player-details tool. Web files only.
+
+## 1.7.8
+Fill gaps is the default for the football-data.org player tool; Korea spelling fix. Web files only.
