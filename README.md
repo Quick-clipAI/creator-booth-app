@@ -296,3 +296,6 @@ Club crests next to club names (table, fixtures, club stats); an "Incomplete" no
 
 ## 1.6.11
 Top scorers now show full-season totals from football-data.org (games and penalties under each name).
+
+## 1.6.12
+Top scorers now land on the right club (Barcelona fix), the "Incomplete" banner is removed, and a scorer's card shows the football-data.org season total. Web content only; no new APK is needed beyond the usual rebuild.

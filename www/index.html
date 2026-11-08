@@ -1547,7 +1547,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.6.11';
+const APP_VERSION = '1.6.12';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4108,15 +4108,15 @@ document.addEventListener('keydown', e => {
 /* Player card: season totals, Creator Booth rating and the list of matches, from /api/competition?player= */
 const PL = { open: false, token: 0, opener: null };
 function plRt(r){ if (r == null) return '<span class="pl-rt">–</span>'; return '<span class="pl-rt ' + (r >= 7.5 ? 'hi' : r < 6 ? 'lo' : '') + '">' + Number(r).toFixed(1) + '</span>'; }
-function plHtml(c){
+function plHtml(c, season){
   const rateTxt = c.rating != null ? `<b>${Number(c.rating).toFixed(2)}</b><span><strong>Creator Booth rating</strong><br>Average of ${c.rated} rated match${c.rated === 1 ? '' : 'es'} this season. It is our own average, so other sites show different numbers.</span>` : `<b>–</b><span><strong>Creator Booth rating</strong><br>No rated match stored yet. Ratings are saved for matches collected since 4 November.</span>`;
   const grid = [['Games', c.apps], ['Minutes', c.minutes || '–'], ['Goals', c.goals], ['Assists', c.assists], ['Yellow', c.yellow], ['Red', c.red]].map(([l, v]) => `<div><b>${v}</b><small>${l}</small></div>`).join('');
   const comps = c.competitions.map(x => `<div class="pl-row"><div>${escapeHtml(x.comp)}<small>${x.apps} game${x.apps === 1 ? '' : 's'} · ${x.goals} goal${x.goals === 1 ? '' : 's'} · ${x.assists} assist${x.assists === 1 ? '' : 's'}</small></div>${plRt(x.rating)}</div>`).join('');
   const ms = c.matches.map(m => `<div class="pl-row"><div>${m.home ? 'v' : 'at'} ${escapeHtml(m.opp)} · ${escapeHtml(m.score)}<small>${escapeHtml(m.date)} · ${escapeHtml(m.comp)}${m.min ? ' · ' + m.min + "'" : ''}${m.played ? '' : ' · not in the squad list'}${m.g ? ' · ⚽' + (m.g > 1 ? '×' + m.g : '') : ''}${m.a ? ' · 🅰' + (m.a > 1 ? '×' + m.a : '') : ''}${m.yc ? ' · 🟨' : ''}${m.rc ? ' · 🟥' : ''}</small></div>${plRt(m.rating)}</div>`).join('');
   return `<h2 class="pl-name">${escapeHtml(c.name)}</h2><div class="pl-sub">${escapeHtml(c.club)}${c.pos ? ' · ' + escapeHtml({ G: 'Goalkeeper', D: 'Defender', M: 'Midfielder', F: 'Forward' }[c.pos] || c.pos) : ''} · this season</div><div class="pl-rate">${rateTxt}</div><div class="pl-grid">${grid}</div>` +
-    `<div class="pl-h">By competition</div>${comps}<div class="pl-h">Matches</div>${ms}<div class="mv-note">${escapeHtml(c.note || '')} Matches played before we started saving full details are not in these numbers.</div>`;
+    (season ? `<div class="mv-note" style="margin:0 0 12px"><b>${season.goals} ${escapeHtml(season.comp)} goal${season.goals === 1 ? '' : 's'}${season.played != null ? ' in ' + season.played + ' games' : ''} this season</b> (football-data.org, every match). The figures below only cover the matches we hold full details for, so they can be lower until more are added.</div>` : '') + `<div class="pl-h">By competition</div>${comps}<div class="pl-h">Matches</div>${ms}<div class="mv-note">${escapeHtml(c.note || '')} Matches played before we started saving full details are not in these numbers.</div>`;
 }
-async function openPlayer(key, name, club, opener){
+async function openPlayer(key, name, club, opener, season){
   const el = document.getElementById('pl-sheet'); if (!el || !key) return;
   const token = ++PL.token; PL.opener = opener || null;
   if (!PL.open){ PL.open = true; try { history.pushState({ pl: 1 }, ''); } catch (e) { /* history unavailable */ } }
@@ -4126,7 +4126,7 @@ async function openPlayer(key, name, club, opener){
   try {
     const r = await fetch(API_ORIGIN + '/api/competition?player=' + encodeURIComponent(key) + '&today=' + todayDateStr());
     const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || ('HTTP ' + r.status));
-    if (token !== PL.token) return; document.getElementById('pl-body').innerHTML = plHtml(j);
+    if (token !== PL.token) return; document.getElementById('pl-body').innerHTML = plHtml(j, season);
   } catch (e) {
     if (token !== PL.token) return;
     document.getElementById('pl-body').innerHTML = `<div class="mv-empty"><b>Could not load this player</b>${escapeHtml(String(e.message || e))}</div>`;
@@ -4148,10 +4148,6 @@ const LG_CLASS = k => (CP_LOGO[k] ? ' lg-' + k : '');
 const CP_CRESTS = {};
 function crest(club){ const id = CP_CRESTS[club]; return id ? `<img class="crest" src="https://media.api-sports.io/football/teams/${id}.png" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer">` : ''; }
 document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('crest')) t.remove(); }, true);
-function cpCoverageNote(p){
-  if (!p || !p.finishedMatches || p.matchesWithDetails >= p.finishedMatches * 0.9) return '';
-  return `<div class="cp-warn" role="note"><b>Incomplete.</b> These lists cover only ${p.matchesWithDetails} of ${p.finishedMatches} played matches, so goals and assists are lower than the real totals. More matches are added every day.</div>`;
-}
 function cpLogoHtml(key, name, big){
   const id = CP_LOGO[key], fb = escapeHtml(clubBadgeCode(name));
   return id ? `<img class="cp-logo${big ? ' big' : ''}${key === 'SPL' ? ' dk' : ''}" src="logos/${id}.png" alt="" loading="lazy" data-fb="${fb}">` : `<span class="cp-logo cp-fb${big ? ' big' : ''}">${fb}</span>`;
@@ -4246,13 +4242,13 @@ function cpStatsHtml(v){
     if (CP.pstat === 'ratings' && p.matchesWithDetails && !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('No rating list yet', 'The Creator Booth rating is the average of a player\'s match ratings. A player appears after ' + (p.minRated || 2) + ' rated matches. Ratings are saved for matches collected since 4 November.')}</div>`;
     if (!p.matchesWithDetails || !rows.length) return seg + sub + `<div class="mv-card">${mvEmpty('Player stats not available', 'Goal scorers and assists come from full match details, which are saved for the Premier League and La Liga only for now.')}</div>`;
     const fdScorers = CP.pstat === 'scorers' && p.scorersSource === 'football-data.org';
-    const nameHtml = r => (r.key ? `<button class="cp-pl" data-pk="${escapeHtml(r.key)}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}">${escapeHtml(r.name)}</button>` : `<span class="cp-pl" style="font-weight:600;cursor:default">${escapeHtml(r.name)}</span>`);
+    const nameHtml = r => (r.key ? `<button class="cp-pl" data-pk="${escapeHtml(r.key)}" data-pn="${escapeHtml(r.name)}" data-pc="${escapeHtml(r.club)}"${fdScorers ? ` data-sg="${r.goals}" data-sp="${r.played == null ? '' : r.played}" data-sc="${escapeHtml(v.competition ? (v.competition.name || '') : '')}"` : ''}>${escapeHtml(r.name)}</button>` : `<span class="cp-pl" style="font-weight:600;cursor:default">${escapeHtml(r.name)}</span>`);
     const extra = r => (fdScorers && r.played != null ? `<small style="display:block;color:var(--text-dim);font-size:12px;margin-top:2px">${r.played} games${r.penalties ? ' · ' + r.penalties + ' pens' : ''}</small>` : '');
     const when = p.scorersAt ? new Date(p.scorersAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '';
     const foot = fdScorers
       ? `Season totals from football-data.org: every match played, penalties included. Updated ${escapeHtml(when)}.${p.scorers.some(x => x.key) ? ' Tap a player for his card.' : ''}`
       : `From ${p.matchesWithDetails} of ${p.finishedMatches} finished matches with saved details. Own goals are not counted.${CP.pstat === 'ratings' ? ' Creator Booth rating = the average of the match ratings we store (at least ' + (p.minRated || 2) + ' rated matches). Other sites rate differently.' : ''} Tap a player for his card.`;
-    return seg + sub + (fdScorers ? '' : cpCoverageNote(p)) + `<div class="mv-card">${rows.map((r, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm">${nameHtml(r)}<button class="cp-club" data-club="${escapeHtml(r.club)}">${crest(r.club)}${escapeHtml(r.club)}</button>${extra(r)}</span><b>${key === 'rating' ? Number(r.rating).toFixed(2) : r[key]}</b></div>`).join('')}<div class="mv-note">${foot}</div></div>`;
+    return seg + sub + `<div class="mv-card">${rows.map((r, i) => `<div class="cp-st"><span class="no">${i + 1}</span><span class="nm">${nameHtml(r)}<button class="cp-club" data-club="${escapeHtml(r.club)}">${crest(r.club)}${escapeHtml(r.club)}</button>${extra(r)}</span><b>${key === 'rating' ? Number(r.rating).toFixed(2) : r[key]}</b></div>`).join('')}<div class="mv-note">${foot}</div></div>`;
   }
   const opts = [['GF', 'Goals scored'], ['GA', 'Goals conceded'], ['CS', 'Clean sheets'], ['AVG', 'Goals per match']];
   const sub = `<div class="mv-stages" role="group" aria-label="Club stat">${opts.map(([k, l]) => `<button class="mv-chip" data-cpcs="${k}" aria-pressed="${CP.cstat === k}">${l}</button>`).join('')}</div>`;
@@ -4273,7 +4269,7 @@ document.addEventListener('click', e => {
   if (e.target.closest('[data-cpclear]')){ CP.club = ''; repaint(); return; }
   const sg = e.target.closest('[data-cpseg]'); if (sg){ CP.seg = sg.dataset.cpseg; repaint(); return; }
   const ps = e.target.closest('[data-cpps]'); if (ps){ CP.pstat = ps.dataset.cpps; repaint(); return; }
-  const pk = e.target.closest('[data-pk]'); if (pk){ openPlayer(pk.dataset.pk, pk.dataset.pn, pk.dataset.pc, pk); return; }
+  const pk = e.target.closest('[data-pk]'); if (pk){ openPlayer(pk.dataset.pk, pk.dataset.pn, pk.dataset.pc, pk, pk.dataset.sg ? { goals: Number(pk.dataset.sg), played: pk.dataset.sp === '' ? null : Number(pk.dataset.sp), comp: pk.dataset.sc || 'the league' } : null); return; }
   const cs = e.target.closest('[data-cpcs]'); if (cs){ CP.cstat = cs.dataset.cpcs; repaint(); return; }
   const cl = e.target.closest('.cp-club[data-club]') || e.target.closest('.cp-tbl tr[data-team]');
   if (cl){ CP.club = cl.dataset.club || cl.dataset.team; mvSetTab('fixtures'); return; }
