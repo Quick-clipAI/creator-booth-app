@@ -308,3 +308,6 @@ New player card (photo, rating ring, form, colours), a table head-to-head note, 
 
 ## 1.7.5
 Player cards show age, nationality and birth date from the stored squads. Web files only.
+
+## 1.7.6
+Admin tool to fill missing birth dates and nationality from football-data.org. Web files only.
