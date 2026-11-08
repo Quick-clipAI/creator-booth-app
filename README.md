@@ -311,3 +311,6 @@ Player cards show age, nationality and birth date from the stored squads. Web fi
 
 ## 1.7.6
 Admin tool to fill missing birth dates and nationality from football-data.org. Web files only.
+
+## 1.7.7
+Overwrite / preview / fill modes for the football-data.org player-details tool. Web files only.
