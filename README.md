@@ -326,3 +326,6 @@ The conflict preview is saved to Supabase. Web files only.
 
 ## Data note 2026-11-09
 Player data clean-up (conflicts resolved, duplicate clubs merged, gaps filled). No app change.
+
+## 1.7.11
+The player tool saves the players it could not match. Web files only.
