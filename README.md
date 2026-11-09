@@ -323,3 +323,6 @@ Player-details preview lists up to 80 conflicts per league. Web files only.
 
 ## 1.7.10
 The conflict preview is saved to Supabase. Web files only.
+
+## Data note 2026-11-09
+Player data clean-up (conflicts resolved, duplicate clubs merged, gaps filled). No app change.
