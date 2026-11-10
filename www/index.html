@@ -437,6 +437,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .fx-vs{font-size:14px;color:var(--text-dim)}
 .fx-foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font-size:12px;color:var(--text-dim)}
 .fx-state.up{color:var(--brand)}
+.fx-team .mv-crest{width:40px;height:40px}
 /* ---- Match screen (opens from a fixture card) ---- */
 :root{--z-ucl:#3fa66b;--z-q:#3fa66b;--z-po:#4a8fe0;--z-uel:#e0953a;--z-uecl:#2fa8a0;--z-rel:#d0584a;--z-out:#d0584a;--mv-away:#6e8fd8}
 .fx-card[data-fx],.fx-card[data-d]{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,transform .15s}
@@ -489,7 +490,9 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.mv-sub2{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:6px;padding:8px 0;border-top:1px solid var(--border-soft);font-size:13px}.mv-sub2 .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.mv-sub2 small{display:block;color:var(--text-dim);font-size:11px}
 .mv-crest{object-fit:contain;flex:none;display:inline-block}
 .mv-pitch::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.14)}
-.mv-pitch::after{content:"";position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border:1px solid rgba(255,255,255,.14);border-radius:50%}
+.mv-pitch::after{content:"";position:absolute;left:50%;top:50%;width:27%;aspect-ratio:1;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.14);border-radius:50%}
+.mv-box{position:absolute;left:20.5%;width:59%;height:15.7%;border:1px solid rgba(255,255,255,.16);pointer-events:none}.mv-box.t{top:-1px;border-top:0}.mv-box.b{bottom:-1px;border-bottom:0}
+.mv-box::before{content:"";position:absolute;left:27.5%;width:45%;height:33%;border:1px solid rgba(255,255,255,.16)}.mv-box.t::before{top:-1px;border-top:0}.mv-box.b::before{bottom:-1px;border-bottom:0}
 .mv-row{position:relative;z-index:1;display:flex;justify-content:space-around;align-items:flex-start;padding-top:16px}
 .mv-pl{display:flex;flex-direction:column;align-items:center;width:20%;min-width:58px;text-align:center;color:#f2f2f2}
 .mv-av{position:relative;width:46px;height:46px;border-radius:50%;background:#3a3b3f;border:2px solid #5a5b60;flex:none}
@@ -1582,7 +1585,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.13';
+const APP_VERSION = '1.7.14';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3181,6 +3184,7 @@ function renderAssistantBubble(text, media, ts){
   const fx = (media || []).filter(m => m && (m.type === 'fixture' || m.type === 'competition'));
   const mediaHtml = fixtureCardsHtml(fx) + (media || []).filter(m => m && m.type !== 'fixture' && m.type !== 'competition' && m.label).map(m => `<div class="sources"><span>${escapeHtml(m.label || '')}</span></div>`).join('');
   div.innerHTML = `<div class="bubble-assistant">${renderMarkdown(text)}</div>${mediaHtml}`;
+  if (fx.length) setTimeout(() => fxRefresh(div), 0);
   div.querySelector('.bubble-assistant').dataset.full = text;
   appendToThread(div);
   return div;
@@ -3907,6 +3911,51 @@ function fixtureCardsHtml(cards){
       + `<div class="fx-foot"><span>${escapeHtml(fixtureDateText(c.date, c.time))}</span><span class="fx-state${done ? '' : ' up'}">${sub}</span><span class="fx-go">Details ›</span></div></div>`;
   }).join('');
 }
+/* Fixture cards are snapshots made when the answer was written, so a card for a match that is played later would stay "Upcoming".
+   fxRefresh asks /api/match?cards= for the current status and score and for the club crest ids, then updates the cards in place. */
+const FX_CREST_KEY = 'cb_fx_crests', FXR = { crests: {}, busy: false };
+try { FXR.crests = JSON.parse(localStorage.getItem(FX_CREST_KEY) || '{}') || {}; } catch (e) { FXR.crests = {}; }
+const fxKey = c => c.dataset.fx || [c.dataset.d, c.dataset.h, c.dataset.a].join('|');
+function fxStateText(st, date){
+  if (st === 'finished') return 'Full time';
+  if (st === 'postponed') return 'Postponed';
+  if (st === 'cancelled' || st === 'canceled') return 'Cancelled';
+  const today = new Date().toISOString().slice(0, 10);
+  return date && date < today ? 'Result pending' : 'Upcoming';
+}
+function fxApplyCrests(card){
+  const teams = card.querySelectorAll('.fx-team'); const names = [card.dataset.h, card.dataset.a];
+  teams.forEach((t, i) => { const id = FXR.crests[names[i]]; const first = t.firstElementChild;
+    if (id && first && first.classList.contains('fx-badge')) first.outerHTML = `<img class="mv-crest" src="https://media.api-sports.io/football/teams/${id}.png" alt="" width="40" height="40" data-club="${escapeHtml(names[i])}" referrerpolicy="no-referrer">`; });
+}
+function fxApplyState(card, s){
+  card.dataset.fresh = String(Date.now()); if (!s) return;
+  const done = s.status === 'finished' && s.hg != null && s.ag != null;
+  card.dataset.s = s.status || ''; card.dataset.hg = s.hg == null ? '' : String(s.hg); card.dataset.ag = s.ag == null ? '' : String(s.ag); if (s.date) card.dataset.d = s.date;
+  const mid = card.querySelector('.fx-score, .fx-vs');
+  if (mid){ const n = document.createElement('span'); if (done){ n.className = 'fx-score'; n.textContent = Number(s.hg) + ' – ' + Number(s.ag); } else { n.className = 'fx-vs'; n.textContent = 'v'; } mid.replaceWith(n); }
+  const st = card.querySelector('.fx-state'); if (st){ st.textContent = fxStateText(s.status, s.date); st.classList.toggle('up', !done); }
+  const when = card.querySelector('.fx-foot span'); if (when && s.date) when.textContent = fixtureDateText(s.date, s.time || '');
+}
+async function fxRefresh(root){
+  if (FXR.busy) return;
+  const now = Date.now();
+  const cards = [...(root || document).querySelectorAll('.fx-card[data-h][data-a]')];
+  cards.forEach(fxApplyCrests);
+  const need = cards.filter(c => !c.dataset.fresh || (c.dataset.s !== 'finished' && now - Number(c.dataset.fresh) > 120000));
+  if (!need.length) return;
+  const seen = new Set(), refs = [];
+  need.forEach(c => { const k = fxKey(c); if (seen.has(k) || refs.length >= 24) return; seen.add(k); refs.push({ k, id: c.dataset.fx || '', date: c.dataset.d || '', home: c.dataset.h, away: c.dataset.a }); });
+  FXR.busy = true;
+  try {
+    const r = await fetch(API_ORIGIN + '/api/match?cards=' + encodeURIComponent(JSON.stringify(refs))); const j = await r.json();
+    if (j && j.crests){ Object.assign(FXR.crests, j.crests); try { localStorage.setItem(FX_CREST_KEY, JSON.stringify(FXR.crests)); } catch (e) {} }
+    need.forEach(c => { fxApplyState(c, j && j.cards ? j.cards[fxKey(c)] : null); fxApplyCrests(c); });
+  } catch (e) { /* offline: the cards keep what they showed */ }
+  FXR.busy = false;
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden) fxRefresh(); });
+setInterval(() => { if (!document.hidden) fxRefresh(); }, 180000);
 /* ------------------------------------------------------------------ */
 /* Match screen: opens when a fixture card is tapped. All data comes    */
 /* from /api/match (our own data bank); this code never calls the       */
@@ -4063,7 +4112,7 @@ function mvLineupHtml(v){
   let cells = ''; for (let i = 0; i < n; i++) cells += mvBenchCell(bh[i], bh[i] && mh.on.get(bh[i])) + mvBenchCell(ba[i], ba[i] && ma.on.get(ba[i]));
   const legend = `<div class="mv-lg"><span>${MV_ARR_OFF} Subbed off</span><span>${MV_ARR_ON} Subbed on</span><span><b class="mv-b">⚽</b> Goal</span><span><b class="mv-b as">A</b> Assist</span><span><i class="mv-cd y"></i> Yellow card</span><span><i class="mv-cd r"></i> Red card</span></div>`;
   return `<div class="mv-card mv-lu">${bar(hn, H, 'top')}`
-    + `<div class="mv-pitch" role="img" aria-label="${escapeHtml('Starting line-ups: ' + hn + (H && H.formation ? ' ' + H.formation : '') + ' (top) against ' + an + (A && A.formation ? ' ' + A.formation : '') + ' (bottom)')}">${half(H, true, mh.off)}${half(A, false, ma.off)}</div>`
+    + `<div class="mv-pitch" role="img" aria-label="${escapeHtml('Starting line-ups: ' + hn + (H && H.formation ? ' ' + H.formation : '') + ' (top) against ' + an + (A && A.formation ? ' ' + A.formation : '') + ' (bottom)')}"><i class="mv-box t"></i><i class="mv-box b"></i>${half(H, true, mh.off)}${half(A, false, ma.off)}</div>`
     + bar(an, A, 'bottom')
     + ((H && H.coach) || (A && A.coach) ? `<div class="mv-coaches"><span>${escapeHtml((H && H.coach) || '')}</span><b>Coach</b><span>${escapeHtml((A && A.coach) || '')}</span></div>` : '')
     + (n ? `<div class="mv-h" style="margin-top:16px;text-align:center">Bench</div><div class="mv-bnch">${cells}</div>` : '')
@@ -4723,6 +4772,7 @@ async function runGeneration(pipelineMsg, stageEl, userText, images, isRegenerat
   const bubbleEl = pipelineMsg.querySelector('.bubble-assistant');
   revealWords(bubbleEl, resultText, () => {
     pipelineMsg.insertAdjacentHTML('beforeend', fixtureCardsHtml(fixtureCards) + suggestionsHtml + sourcesHtml + actionsHtml);
+    fxRefresh(pipelineMsg);
     if (planMode) addPlanActions(pipelineMsg);
     wireMsgActions(pipelineMsg, resultText, userText, images, true);
     wireSourcesToggle(pipelineMsg);

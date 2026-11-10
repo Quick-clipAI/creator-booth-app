@@ -344,3 +344,9 @@ The player tool saves the players it could not match. Web files only.
 - The connection test now also downloads the real `bundle.zip` with the phone's own HTTP and reports status, size and time. If that works but the update still fails, the updater itself is the problem; if it fails, the phone's network is.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
+
+## 1.7.14 — fixture cards stay current, crests on the cards, 18-yard boxes on the pitch
+- Fixture cards under a chat answer were snapshots: a card made before a match stayed "Upcoming" after it was played. They now refresh themselves from our data bank (`GET /api/match?cards=...`, no new function file, still 12 in `api/`): score and "Full time", "Postponed", or "Result pending" when the date has passed but no result is saved yet. A card checks when it appears, when the app comes back to the front, and every 3 minutes while open; finished cards are checked once.
+- The same call returns the clubs' API-Football ids, so the cards show club crests (kept in the phone for next time); the letter badge stays where no id is known yet.
+- Line-up pitch: 18-yard and 6-yard boxes at both ends, and the centre circle now scales with the pitch.
+- `lib/match-view.js` `cardStates()`; test `tests/cardstate.test.mjs`.
