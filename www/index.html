@@ -1582,7 +1582,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.12';
+const APP_VERSION = '1.7.13';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -5199,7 +5199,7 @@ async function handleAuthDeepLink(url){
 const UPDATE_KEY = 'cb_update_info';
 const UPDATE_SNOOZE_KEY = 'cb_update_snooze';
 const UPDATE_APK_URL = API_ORIGIN + '/download';
-let upd = { status: 'idle', diag: '', remote: null, apkNeeded: false, applyFailed: false, error: '', checkedAt: 0, apkVersion: '', localBuild: '' };
+let upd = { status: 'idle', diag: '', detail: '', remote: null, apkNeeded: false, applyFailed: false, error: '', checkedAt: 0, apkVersion: '', localBuild: '' };
 let updBusy = false;
 try { const saved = JSON.parse(localStorage.getItem(UPDATE_KEY) || 'null'); if (saved && saved.checkedAt){ upd.checkedAt = saved.checkedAt; upd.error = saved.error || ''; } } catch (e) {}
 
@@ -5210,6 +5210,14 @@ function verCompare(a, b){
   if (!A || !B) return 0;
   for (let i = 0; i < 3; i++){ if (A[i] !== B[i]) return A[i] > B[i] ? 1 : -1; }
   return 0;
+}
+// Everything the phone's updater says about a failure, not just the short message (shown as "Detail" in Settings > App updates).
+function updErrDetail(e){
+  try {
+    const o = {}; if (e && typeof e === 'object') { for (const k of ['name', 'code', 'message', 'errorMessage', 'error', 'status', 'data']) if (e[k] != null && e[k] !== '') o[k] = typeof e[k] === 'object' ? JSON.stringify(e[k]).slice(0, 120) : String(e[k]).slice(0, 160); }
+    else o.message = String(e);
+    return JSON.stringify(o).slice(0, 380);
+  } catch (x) { return ''; }
 }
 function updErr(e){ return String((e && (e.message || e.errorMessage || e.error)) || e || 'unknown problem').slice(0, 170); }
 function updFmtTime(ts){
@@ -5262,6 +5270,16 @@ async function updProbe(){
       out.push(base.name + ' ' + (r && r.status) + ' in ' + ((Date.now() - t0) / 1000).toFixed(1) + 's');
     } catch (e) { out.push(base.name + ' failed: ' + updErr(e).slice(0, 50)); }
   }
+  // Can the phone's own HTTP fetch the real file? (separates "the network blocks it" from "the updater fails on it")
+  const base0 = updBases().find(b => !(b.name === 'GitHub' && UPDATE_REPO.indexOf('__') === 0));
+  if (base0){
+    const t1 = Date.now();
+    try {
+      const r = await updTimeout(Http.get({ url: base0.url + 'bundle.zip?t=' + Date.now(), responseType: 'arraybuffer', connectTimeout: 15000, readTimeout: 30000 }), 35000, 'bundle test');
+      const len = r && typeof r.data === 'string' ? Math.round(r.data.length * 0.75 / 1024) : 0;
+      out.push('bundle.zip ' + (r && r.status) + ', ' + len + ' KB in ' + ((Date.now() - t1) / 1000).toFixed(1) + 's');
+    } catch (e) { out.push('bundle.zip failed: ' + updErr(e).slice(0, 60)); }
+  }
   return out.join(' · ');
 }
 async function updReadLocal(){
@@ -5302,6 +5320,7 @@ function updRender(){
   if (upd.remote) lines.push('Newest published: v' + (upd.remote.web || '?') + ' (build ' + upd.remote.build + ')');
   lines.push('Last checked: ' + updFmtTime(upd.checkedAt));
   if (upd.error) lines.push('Problem: ' + upd.error);
+  if (upd.detail) lines.push('Detail: ' + upd.detail);
   if (upd.diag) lines.push('Connection test: ' + upd.diag);
   det.textContent = lines.join('\n'); det.style.display = '';
 }
@@ -5348,7 +5367,9 @@ const OTA_ENABLED = true;
 async function applyUpdate(btn){
   const Updater = nativePlugin('CapacitorUpdater'), remote = upd.remote;
   if (btn){ btn.disabled = true; btn.textContent = 'Downloading…'; }
-  upd.status = 'applying'; upd.applyFailed = false; upd.error = ''; upd.diag = ''; updRender();
+  upd.status = 'applying'; upd.applyFailed = false; upd.error = ''; upd.diag = ''; upd.detail = ''; updRender();
+  let failEvent = '', failHandle = null;
+  try { if (Updater && Updater.addListener) failHandle = await Updater.addListener('downloadFailed', ev => { try { failEvent = JSON.stringify(ev).slice(0, 200); } catch (x) {} }); } catch (x) {}
   try {
     if (!Updater || !remote) throw new Error('this app file has no updater; install the newest app file once');
     const version = String(remote.version || remote.web || remote.build);
@@ -5376,6 +5397,8 @@ async function applyUpdate(btn){
   } catch (e) {
     console.warn('update failed:', e);
     upd.status = 'available'; upd.applyFailed = true; upd.error = updErr(e);
+    upd.detail = (updErrDetail(e) + (failEvent ? ' · event ' + failEvent : '')).slice(0, 460);
+    try { if (failHandle && failHandle.remove) failHandle.remove(); } catch (x) {}
     updRender(); openUpdateSheet();
   }
 }
