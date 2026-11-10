@@ -482,20 +482,32 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-rt{display:inline-block;min-width:34px;text-align:center;padding:2px 6px;border-radius:7px;font:700 12px var(--sans);font-variant-numeric:tabular-nums;color:#0b0b0a}
 .mv-rt.top{background:#5aa7ff}.mv-rt.good{background:#4fc17f}.mv-rt.ok{background:#f0a24a}.mv-rt.low{background:#e5695a}
 .mv-formation{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-weight:600}.mv-formation span{color:var(--text-dim);font-weight:500;font-size:13px}
-.mv-pitch{position:relative;display:flex;flex-direction:column;min-height:780px;border-radius:0;background:repeating-linear-gradient(180deg,#1f4a33 0 12.5%,#235239 12.5% 25%);border:1px solid #2c6446;border-width:0 1px;overflow:hidden}
+.mv-pitch{position:relative;display:flex;flex-direction:column;min-height:800px;background:linear-gradient(#202123,#1a1b1d);border:1px solid #38383b;border-width:0 1px;overflow:hidden}
 .mv-half{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:8px;padding:14px 4px}
-.mv-tbar{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px;background:#17382a;color:#fff;font-weight:600;font-size:14px;border:1px solid #2c6446}.mv-tbar .fm{font-weight:500;font-size:12.5px;opacity:.8}.mv-tbar.top{border-radius:12px 12px 0 0}.mv-tbar.bottom{border-radius:0 0 12px 12px}
+.mv-tbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;background:#2a2b2e;color:#f2f2f2;font-weight:600;font-size:14px;border:1px solid #38383b}.mv-tbar .tn{display:flex;align-items:center;gap:8px;min-width:0}.mv-tbar .fm{font-weight:500;font-size:12.5px;opacity:.8}.mv-tbar.top{border-radius:12px 12px 0 0}.mv-tbar.bottom{border-radius:0 0 12px 12px}
 .mv-coaches{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-top:14px;font-size:13.5px}.mv-coaches b{color:var(--text-dim);font-size:12px;font-weight:600}.mv-coaches span:last-child{text-align:right}
 .mv-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.mv-sub2{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:6px;padding:8px 0;border-top:1px solid var(--border-soft);font-size:13px}.mv-sub2 .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.mv-sub2 small{display:block;color:var(--text-dim);font-size:11px}
-:root[data-theme="light"] .mv-pitch{background:repeating-linear-gradient(180deg,#5f9a72 0 12.5%,#66a379 12.5% 25%);border-color:#4d8561}
-.mv-pitch::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.25)}
-.mv-pitch::after{content:"";position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border:1px solid rgba(255,255,255,.25);border-radius:50%}
-.mv-row{position:relative;z-index:1;display:flex;justify-content:space-around;align-items:flex-start}
-.mv-pl{display:flex;flex-direction:column;align-items:center;width:20%;min-width:56px;text-align:center;color:#fff}
-.mv-dot{position:relative;width:38px;height:38px;border-radius:50%;background:rgba(10,10,9,.78);border:2px solid rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;font:700 14px var(--sans)}
-.mv-dot .mv-rt{position:absolute;top:-9px;right:-16px;font-size:10.5px;min-width:28px;padding:1px 4px}
-.mv-pn{margin-top:4px;font-size:11.5px;line-height:1.15;text-shadow:0 1px 2px rgba(0,0,0,.7);overflow-wrap:anywhere}
-.mv-tags{font-size:10.5px;text-shadow:0 1px 2px rgba(0,0,0,.7);min-height:13px}
+.mv-crest{object-fit:contain;flex:none;display:inline-block}
+.mv-pitch::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.14)}
+.mv-pitch::after{content:"";position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border:1px solid rgba(255,255,255,.14);border-radius:50%}
+.mv-row{position:relative;z-index:1;display:flex;justify-content:space-around;align-items:flex-start;padding-top:16px}
+.mv-pl{display:flex;flex-direction:column;align-items:center;width:20%;min-width:58px;text-align:center;color:#f2f2f2}
+.mv-av{position:relative;width:46px;height:46px;border-radius:50%;background:#3a3b3f;border:2px solid #5a5b60;flex:none}
+.mv-av .mv-ph,.mv-av .mv-img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%}
+.mv-av .mv-ph{display:flex;align-items:flex-end;justify-content:center;overflow:hidden;background:#3a3b3f}
+.mv-av .mv-sil{width:78%;height:78%;fill:#6b6c72}
+.mv-av .mv-img{object-fit:cover;background:#3a3b3f;opacity:0;transition:opacity .15s}.mv-av .mv-img.ok{opacity:1}
+.mv-av .mv-rt{position:absolute;top:-9px;right:-14px;font-size:10.5px;min-width:28px;padding:1px 4px;z-index:2}
+.mv-av .mv-so{position:absolute;top:-19px;left:-13px;display:flex;flex-direction:column;align-items:center;gap:1px;font:600 10.5px/1 var(--sans);color:#f2f2f2;z-index:2}
+.mv-av .mv-so svg{width:14px;height:14px;flex:none}
+.mv-av .mv-bd{position:absolute;bottom:-4px;display:flex;align-items:center;gap:2px;z-index:2}
+.mv-av .mv-bd.l{left:-8px}.mv-av .mv-bd.r{right:-8px}
+.mv-b{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:8px;background:#f2f2f2;color:#111;font:700 10px var(--sans);box-sizing:border-box;padding:0 3px}
+.mv-b.as{background:#5aa7ff;color:#0b0b0a}.mv-cd{display:inline-block;width:9px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}.mv-cd.y{background:#e8c437}.mv-cd.r{background:#d84a3a}
+.mv-pn{margin-top:6px;font-size:11.5px;line-height:1.15;max-width:100%;white-space:nowrap;color:inherit}.mv-pitch .mv-pn{overflow:visible}.mv-bc .mv-pn{overflow:hidden;text-overflow:ellipsis}.mv-pn .no{opacity:.65;margin-right:3px;font-variant-numeric:tabular-nums}
+.mv-bnch{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;margin-top:6px}.mv-bc{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;color:var(--text)}.mv-bc .mv-pn{color:var(--text)}.mv-bc .mv-ps{font-size:11px;color:var(--text-dim)}
+.mv-bc .mv-av{width:42px;height:42px;border-color:var(--border,#555)}.mv-bc .mv-av .mv-so{color:var(--text)}
+.mv-lg{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;padding-top:12px;border-top:1px solid var(--border-soft);font-size:12px;color:var(--text-dim)}.mv-lg span{display:inline-flex;align-items:center;gap:6px}.mv-lg svg{width:14px;height:14px}
 .mv-subs{display:grid;gap:0}.mv-sub{display:grid;grid-template-columns:28px 1fr auto 40px;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--border-soft);font-size:13.5px}
 .mv-sub:first-child{border-top:0}.mv-sub .no{color:var(--text-dim);font-variant-numeric:tabular-nums}.mv-sub .ps{color:var(--text-dim);font-size:12px}
 .mv-coach{margin-top:8px;font-size:13px;color:var(--text-dim)}
@@ -1570,7 +1582,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.11';
+const APP_VERSION = '1.7.12';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3941,7 +3953,7 @@ function mvScorersHtml(v){
 function mvHeadHtml(v){
   const m = v.match, done = m.status === 'finished', st = mvStateText(m);
   const mid = done ? `<div class="mv-big" aria-label="${m.hg} to ${m.ag}">${m.hg} – ${m.ag}</div>` : `<div class="mv-big">${escapeHtml(mvTime(m) || 'v')}</div>`;
-  const team = (n, side) => `<button class="mv-team" data-team="${escapeHtml(n)}" aria-label="${escapeHtml(n + (side === 'home' ? ', home' : ', away'))}">${clubBadgeHtml(n)}<span class="mv-tname">${escapeHtml(n)}</span></button>`;
+  const team = (n, side) => `<button class="mv-team" data-team="${escapeHtml(n)}" aria-label="${escapeHtml(n + (side === 'home' ? ', home' : ', away'))}">${clubMark(n, 44)}<span class="mv-tname">${escapeHtml(n)}</span></button>`;
   return `<div class="mv-score">${team(m.home, 'home')}<div class="mv-mid">${mid}<div class="mv-state${st.up ? ' up' : ''}">${escapeHtml(st.t)}</div></div>${team(m.away, 'away')}</div>${mvScorersHtml(v)}`;
 }
 function mvTabsFor(v){
@@ -3976,13 +3988,45 @@ function mvFactsHtml(v){
 function mvRt(r){ if (r == null) return ''; const c = r >= 8 ? 'top' : r >= 7 ? 'good' : r >= 6 ? 'ok' : 'low'; return `<b class="mv-rt ${c}">${Number(r).toFixed(1)}</b>`; }
 
 /* ---- Lineup */
-function mvPlayerHtml(p){
-  const tags = [];
-  if (p.g) tags.push('⚽' + (p.g > 1 ? p.g : ''));
-  if (p.yc && !p.rc) tags.push('<i class="mv-ic y" style="width:8px;height:11px;margin:0"></i>');
-  if (p.rc) tags.push('<i class="mv-ic r" style="width:8px;height:11px;margin:0"></i>');
-  if (p.min != null && p.min > 0 && p.min < 90 && !p.rc) tags.push('↓' + p.min + "'");
-  return `<div class="mv-pl"><div class="mv-dot">${p.n != null ? p.n : ''}${p.rating != null ? mvRt(p.rating) : ''}</div><div class="mv-pn">${escapeHtml(p.name)}</div><div class="mv-tags">${tags.join(' ')}</div></div>`;
+/* Line-up pieces, FotMob style: round player photo (API-Football image, blank portrait when there is none or it fails to load),
+   rating only for players who played, a red arrow + minute for "subbed off", a green arrow + minute for "subbed on". */
+const MV_SIL = '<svg class="mv-sil" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4.3"/><path d="M3.5 24c.6-5.4 4.1-8.4 8.5-8.4s7.9 3 8.5 8.4z"/></svg>';
+const MV_ARR_OFF = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#e5484d"/><path d="M12 8H4.5M7.5 4.5 4 8l3.5 3.5" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const MV_ARR_ON = '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#2fa866"/><path d="M4 8h7.5M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const mvTok = s => String(s || '').normalize('NFKD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(Boolean);
+/* The events carry full names ("Bradley Barcola"), the line-ups often "B. Barcola": same person when the surname words match and the first name or its initial matches. */
+function mvSameName(a, b){
+  const x = mvTok(a), y = mvTok(b); if (!x.length || !y.length) return false;
+  const [s, l] = x.length <= y.length ? [x, y] : [y, x];
+  if (s.length === 1) return l.includes(s[0]);
+  if (!(s[0] === l[0] || (s[0].length === 1 && l[0][0] === s[0]))) return false;
+  return s.slice(1).every(t => l.includes(t));
+}
+/* minutes of the substitutions of one side: off = the player who left, on = the player who came on */
+function mvSubMinutes(d, side, l){
+  const off = new Map(), on = new Map(); if (!l) return { off, on };
+  const all = [...(l.xi || []), ...(l.subs || [])];
+  ((d && d.events) || []).filter(e => e.type === 'subst' && e.side === side).forEach(e => {
+    const po = all.find(p => mvSameName(p.name, e.player)), pi = all.find(p => mvSameName(p.name, e.other));
+    if (po) off.set(po, mvMin(e)); if (pi) on.set(pi, mvMin(e));
+  });
+  return { off, on };
+}
+const mvPlayed = p => !!p && (p.min == null ? Number(p.rating) > 0 : p.min > 0);
+const mvSurname = n => String(n || '').replace(/^(?:[^\s.]{1,2}\.\s*)+/, '').trim();
+function mvAv(p, o){
+  o = o || {};
+  const photo = p.id ? `<img class="mv-img" src="https://media.api-sports.io/football/players/${p.id}.png" alt="" loading="lazy" referrerpolicy="no-referrer">` : '';
+  const rt = Number(p.rating) > 0 && p.min !== 0 ? mvRt(p.rating) : '';                 // no rating for someone who did not play
+  const so = o.off ? `<span class="mv-so" title="Substituted off">${MV_ARR_OFF}${escapeHtml(o.off)}</span>` : o.on ? `<span class="mv-so" title="Substituted on">${MV_ARR_ON}${escapeHtml(o.on)}</span>` : '';
+  const left = [], right = [];
+  if (p.rc) left.push('<i class="mv-cd r" title="Red card"></i>'); else if (p.yc) left.push('<i class="mv-cd y" title="Yellow card"></i>');
+  if (p.a) left.push(`<b class="mv-b as" title="Assist">A${p.a > 1 ? p.a : ''}</b>`);
+  if (p.g) right.push(`<b class="mv-b" title="Goal">⚽${p.g > 1 ? p.g : ''}</b>`);
+  return `<div class="mv-av"><span class="mv-ph">${MV_SIL}</span>${photo}${so}${rt}${left.length ? `<span class="mv-bd l">${left.join('')}</span>` : ''}${right.length ? `<span class="mv-bd r">${right.join('')}</span>` : ''}</div>`;
+}
+function mvPlayerHtml(p, off){
+  return `<div class="mv-pl">${mvAv(p, { off })}<div class="mv-pn"><span class="no">${p.n != null ? p.n : ''}</span>${escapeHtml(mvSurname(p.name))}</div></div>`;
 }
 function mvPitchRows(xi, home){
   // rows run goalkeeper -> attackers; each row left -> right as the team sees it
@@ -3999,26 +4043,31 @@ function mvPitchRows(xi, home){
   // the away side the bottom half (goalkeeper at the bottom, attackers next to the halfway line)
   return home ? rows.map(r => r.slice().reverse()) : rows.slice().reverse();
 }
-function mvSubCol(list){
-  return list.map(p => `<div class="mv-sub2"><span class="no">${p.n != null ? p.n : ''}</span><span class="nm">${escapeHtml(p.name)}<small>${escapeHtml(p.pos || '')}${p.min ? ' · ' + p.min + "'" : ''}</small></span>${p.rating != null ? mvRt(p.rating) : '<span></span>'}</div>`).join('');
+const MV_POS = { G: 'Keeper', D: 'Defender', M: 'Midfielder', F: 'Attacker' };
+function mvBenchCell(p, on){
+  if (!p) return '<div></div>';
+  return `<div class="mv-bc">${mvAv(p, { on })}<div class="mv-pn"><span class="no">${p.n != null ? p.n : ''}</span>${escapeHtml(mvSurname(p.name))}</div><div class="mv-ps">${escapeHtml(MV_POS[p.pos] || '')}</div></div>`;
 }
 function mvLineupHtml(v){
   const d = v.detail; if (!d || !d.lineups || !Object.keys(d.lineups).length) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
   const H = d.lineups.home, A = d.lineups.away;
   if (!H && !A) return `<div class="mv-card">${mvNoDetail(v)}</div>`;
-  const bar = (name, l, cls) => `<div class="mv-tbar ${cls}"><span>${escapeHtml(name)}</span><span class="fm">${escapeHtml((l && l.formation) || '')}</span></div>`;
-  const half = (l, home) => `<div class="mv-half">${l ? mvPitchRows(l.xi, home).map(r => `<div class="mv-row">${r.map(mvPlayerHtml).join('')}</div>`).join('') : ''}</div>`;
-  const played = l => (l && l.subs || []).filter(p => (p.min != null && p.min > 0) || p.rating != null);
-  const bench = l => (l && l.subs || []).filter(p => !((p.min != null && p.min > 0) || p.rating != null));
-  const two = (title, a, b) => (a.length || b.length) ? `<div class="mv-h" style="margin-top:16px;text-align:center">${title}</div><div class="mv-cols"><div>${mvSubCol(a)}</div><div>${mvSubCol(b)}</div></div>` : '';
   const hn = v.match.home, an = v.match.away;
+  const mh = mvSubMinutes(d, 'home', H), ma = mvSubMinutes(d, 'away', A);
+  const bar = (name, l, cls) => `<div class="mv-tbar ${cls}"><span class="tn">${clubMark(name, 22)}<span>${escapeHtml(name)}</span></span><span class="fm">${escapeHtml((l && l.formation) || '')}</span></div>`;
+  const half = (l, home, offs) => `<div class="mv-half">${l ? mvPitchRows(l.xi, home).map(r => `<div class="mv-row">${r.map(p => mvPlayerHtml(p, offs.get(p))).join('')}</div>`).join('') : ''}</div>`;
+  // bench: players who came on first (in the order they came on), then the unused ones
+  const benchOf = (l, m) => { const subs = (l && l.subs) || []; const key = p => { const t = m.on.get(p); return t ? parseInt(t, 10) + (/\+(\d+)/.exec(t) ? Number(/\+(\d+)/.exec(t)[1]) / 100 : 0) : 999; };
+    return subs.map(p => ({ p, k: mvPlayed(p) ? key(p) : 1000 })).sort((a, b) => a.k - b.k).map(x => x.p); };
+  const bh = benchOf(H, mh), ba = benchOf(A, ma), n = Math.max(bh.length, ba.length);
+  let cells = ''; for (let i = 0; i < n; i++) cells += mvBenchCell(bh[i], bh[i] && mh.on.get(bh[i])) + mvBenchCell(ba[i], ba[i] && ma.on.get(ba[i]));
+  const legend = `<div class="mv-lg"><span>${MV_ARR_OFF} Subbed off</span><span>${MV_ARR_ON} Subbed on</span><span><b class="mv-b">⚽</b> Goal</span><span><b class="mv-b as">A</b> Assist</span><span><i class="mv-cd y"></i> Yellow card</span><span><i class="mv-cd r"></i> Red card</span></div>`;
   return `<div class="mv-card mv-lu">${bar(hn, H, 'top')}`
-    + `<div class="mv-pitch" role="img" aria-label="${escapeHtml('Starting line-ups: ' + hn + (H && H.formation ? ' ' + H.formation : '') + ' (top) against ' + an + (A && A.formation ? ' ' + A.formation : '') + ' (bottom)')}">${half(H, true)}${half(A, false)}</div>`
+    + `<div class="mv-pitch" role="img" aria-label="${escapeHtml('Starting line-ups: ' + hn + (H && H.formation ? ' ' + H.formation : '') + ' (top) against ' + an + (A && A.formation ? ' ' + A.formation : '') + ' (bottom)')}">${half(H, true, mh.off)}${half(A, false, ma.off)}</div>`
     + bar(an, A, 'bottom')
     + ((H && H.coach) || (A && A.coach) ? `<div class="mv-coaches"><span>${escapeHtml((H && H.coach) || '')}</span><b>Coach</b><span>${escapeHtml((A && A.coach) || '')}</span></div>` : '')
-    + two('Substitutes', played(H), played(A))
-    + two('Bench', bench(H), bench(A))
-    + `</div>`;
+    + (n ? `<div class="mv-h" style="margin-top:16px;text-align:center">Bench</div><div class="mv-bnch">${cells}</div>` : '')
+    + legend + `</div>`;
 }
 
 /* ---- Table */
@@ -4071,6 +4120,7 @@ function mvSetTab(k, focus){
   mvq('mv-body').setAttribute('aria-labelledby', 'mvt-' + k); mvRenderBody(); mvq('mv-body').scrollTop = 0;
 }
 function mvShow(v){
+  Object.assign(CP_CRESTS, v.crests || {});
   MV.view = v; mvq('mv-comp').textContent = [v.match.competition, v.match.round].filter(Boolean).join(' · ');
   mvq('mv-head').innerHTML = mvHeadHtml(v); mvRenderTabs(v); mvSetTab(MV.tab);
 }
@@ -4185,6 +4235,10 @@ const CP_LOGO = { EPL: 'epl', LALIGA: 'laliga', SERIEA: 'seriea', BUNDESLIGA: 'b
 const LG_CLASS = k => (CP_LOGO[k] ? ' lg-' + k : '');
 /* Club crests: API-Football team ids come with the competition; the picture is API-Sports' free image host. A crest that cannot load disappears and the name stays. */
 const CP_CRESTS = {};
+function clubMark(name, px){ const id = CP_CRESTS[name]; if (!id) return clubBadgeHtml(name); return `<img class="mv-crest" src="https://media.api-sports.io/football/teams/${id}.png" alt="" width="${px}" height="${px}" data-club="${escapeHtml(name)}" referrerpolicy="no-referrer">`; }
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('mv-crest')) t.outerHTML = clubBadgeHtml(t.dataset.club || ''); }, true);
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('mv-img')) t.remove(); }, true);
+document.addEventListener('load', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('mv-img')) t.classList.add('ok'); }, true);
 function crest(club){ const id = CP_CRESTS[club]; return id ? `<img class="crest" src="https://media.api-sports.io/football/teams/${id}.png" alt="" width="20" height="20" loading="lazy" referrerpolicy="no-referrer">` : ''; }
 document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('crest')) t.remove(); }, true);
 document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.classList.contains('pl2-photo')){ const sp = document.createElement('span'); sp.className = 'pl2-photo pl2-ini'; sp.textContent = t.dataset.ini || ''; t.replaceWith(sp); } }, true);

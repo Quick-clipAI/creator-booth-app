@@ -329,3 +329,12 @@ Player data clean-up (conflicts resolved, duplicate clubs merged, gaps filled). 
 
 ## 1.7.11
 The player tool saves the players it could not match. Web files only.
+
+## 1.7.12 — line-up screen redone (FotMob style), club crests on the match screen
+- Line-up: no green pitch any more (dark neutral pitch). Each player is a round photo from API-Football (`media.api-sports.io/football/players/<id>.png`); with no id, or if the photo fails to load, a blank portrait stays.
+- A rating shows only for players who played (rating above 0 and minutes not 0). Unused substitutes show none.
+- Substitutions: red arrow + minute = subbed off, green arrow + minute = subbed on (minutes from the match events, e.g. 90+1). A legend under the line-up explains the icons.
+- Bench is one grid like FotMob: players who came on first, then the unused ones, each with shirt number and position.
+- Club crests: `lib/crests.js` finds a club's API-Football id by exact name, then `bank_aliases`, then its distinctive words ("Leipzig" finds "RB Leipzig"). Used by the competition screen and the match screen (head and line-up bars); a letter badge stays when no id is known.
+- Clubs with no crest yet are mostly European-cup clubs from outside our five leagues (about 80). Their ids arrive when their fixtures are fetched from API-Football.
+- Tests: `tests/crests.test.mjs`, `tests/lineup-ui.test.mjs`.
