@@ -345,6 +345,12 @@ The player tool saves the players it could not match. Web files only.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
 
+## 1.7.17 — league table: Short, Full and Form views, crests on every row
+
+- The table now has a **Short / Full / Form** switch (your choice is remembered). Short: P, GD, Pts. Full: P, W, D, L, goals for-against, GD, Pts. Form: each club's last five results as W/D/L badges, oldest first, newest underlined. Form comes from `formByTeam` in `lib/match-view.js` (finished matches only, sorted by date). Test: `tests/table-form.test.mjs`.
+- The match screen's table now shows a crest for every club, not just the two playing (the server sends crest ids for all clubs of the competition).
+- Next up: a full team tab (overview, matches, table, stats, squad) and the player card in the chat. No trophies tab: we hold no trophy data.
+
 ## 1.7.16 — the backup AI now reads our data bank about players
 
 - **Player facts (lib/player-facts.js):** when a question names a player, the chat adds a `PLAYER (data bank)` line: club, position, shirt, nationality, birth date, age worked out for today, loan, and this season's appearances, goals, assists and average rating from the stored matches. A name counts only when it matches exactly one stored player (a surname shared by two players adds nothing). It goes to every answering AI, so Groq (the backup) no longer invents age or club. Test: `tests/player-facts.test.mjs`.

@@ -594,6 +594,14 @@ button.cp-pl{all:unset;cursor:pointer;display:block;font-weight:600;text-align:l
 .mv-tbl td.tm{font-weight:500;overflow-wrap:anywhere}
 .mv-tbl tr.me td{background:color-mix(in srgb,var(--brand) 16%,transparent);font-weight:700}
 .mv-tbl td.pts{font-weight:700}
+.tv-seg{margin:2px 0 10px}
+.mv-tbl td{white-space:nowrap}.mv-tbl td.tm{white-space:normal}
+.mv-tbl.tv-full{font-size:12px}.mv-tbl.tv-full td,.mv-tbl.tv-full th{padding-left:3px;padding-right:3px}
+.mv-tbl .tf-h{text-align:right}.mv-tbl td.tf-c{white-space:nowrap}
+.tf{display:inline-flex;gap:3px;vertical-align:middle}
+.tf i{width:20px;height:20px;border-radius:5px;font-style:normal;font-size:11px;font-weight:700;line-height:20px;text-align:center;color:#fff}
+.tf-w{background:#1f9d57}.tf-d{background:#6b7280}.tf-l{background:#dc3b3b}.tf i.tf-e{background:transparent;border:1px dashed var(--border-soft)}
+.tf i:last-child:not(.tf-e){box-shadow:0 2px 0 -1px currentColor}
 .mv-legend{display:grid;gap:7px;margin-top:12px;font-size:12.5px;color:var(--text-dim)}
 .mv-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:-1px}
 .mv-note{margin-top:10px;font-size:12px;color:var(--text-faint);line-height:1.45}
@@ -1585,7 +1593,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.16';
+const APP_VERSION = '1.7.17';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4120,13 +4128,28 @@ function mvLineupHtml(v){
 }
 
 /* ---- Table */
+let TV = 'short'; try { const x = localStorage.getItem('cb_table_view'); if (x === 'short' || x === 'full' || x === 'form') TV = x; } catch (e) {}
+function tvSetView(k){ TV = k; try { localStorage.setItem('cb_table_view', k); } catch (e) {} mvRenderBody(); }
+function mvFormPills(form){
+  const f = form || []; const pad = 5 - f.length;
+  return `<span class="tf" aria-label="${escapeHtml(f.length ? 'Last ' + f.length + ' results: ' + f.join(' ') : 'No results yet')}">` + '<i class="tf-e"></i>'.repeat(Math.max(0, pad)) + f.map(r => `<i class="tf-${r.toLowerCase()}">${r}</i>`).join('') + '</span>';
+}
 function mvTableHtml(v){
   const t = v.table; if (!t) return `<div class="mv-card">${mvEmpty('No table for this competition', 'It is not a league or league-phase competition.')}</div>`;
   const me = new Set([v.match.home, v.match.away]);
-  const body = t.rows.map(r => `<tr class="${me.has(r.team) ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${crest(r.team)}${escapeHtml(r.team)}</td><td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.GD > 0 ? '+' + r.GD : r.GD}</td><td class="pts">${r.Pts}</td></tr>`).join('');
+  const view = TV;
+  const head = view === 'form' ? '<th scope="col" class="tf-h">Last 5 matches</th>'
+    : view === 'full' ? ['P', 'W', 'D', 'L', '+/-', 'GD', 'Pts'].map(h => `<th scope="col">${h}</th>`).join('')
+    : ['P', 'GD', 'Pts'].map(h => `<th scope="col">${h}</th>`).join('');
+  const gd = r => (r.GD > 0 ? '+' + r.GD : r.GD);
+  const cells = r => view === 'form' ? `<td class="tf-c">${mvFormPills(r.form)}</td>`
+    : view === 'full' ? `<td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.GF}-${r.GA}</td><td>${gd(r)}</td><td class="pts">${r.Pts}</td>`
+    : `<td>${r.P}</td><td>${gd(r)}</td><td class="pts">${r.Pts}</td>`;
+  const body = t.rows.map(r => `<tr class="${me.has(r.team) ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${crest(r.team)}${escapeHtml(r.team)}</td>${cells(r)}</tr>`).join('');
   const legend = t.legend.length ? `<div class="mv-legend">${t.legend.map(l => `<div><i style="background:var(--z-${l.key})"></i>${escapeHtml(l.label)}</div>`).join('')}</div>` : '';
   const notes = [t.note, t.usual ? 'Places shown are the usual ones. Extra European places depend on UEFA rankings and cup winners.' : '', t.tieUndecided ? 'Some clubs are level on every tie-break we apply.' : ''].filter(Boolean);
-  return `<div class="mv-card"><div class="mv-h">${escapeHtml(t.competition)} ${escapeHtml(t.label || (String(t.season) + '/' + String((t.season + 1) % 100).padStart(2, '0')))}</div><table class="mv-tbl"><caption class="sr-only" style="position:absolute;left:-9999px">League table</caption><thead><tr><th scope="col">#</th><th scope="col">Team</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">GD</th><th scope="col">Pts</th></tr></thead><tbody>${body}</tbody></table>${legend}${notes.map(n => `<div class="mv-note">${escapeHtml(n)}</div>`).join('')}</div>`;
+  const seg = `<div class="mv-stages tv-seg" role="group" aria-label="Table view">${[['short', 'Short'], ['full', 'Full'], ['form', 'Form']].map(([k, l]) => `<button class="mv-chip" data-tv="${k}" aria-pressed="${view === k}">${l}</button>`).join('')}</div>`;
+  return `<div class="mv-card"><div class="mv-h">${escapeHtml(t.competition)} ${escapeHtml(t.label || (String(t.season) + '/' + String((t.season + 1) % 100).padStart(2, '0')))}</div>${seg}<table class="mv-tbl tv-${view}"><caption class="sr-only" style="position:absolute;left:-9999px">League table</caption><thead><tr><th scope="col">#</th><th scope="col">Team</th>${head}</tr></thead><tbody>${body}</tbody></table>${legend}${notes.map(n => `<div class="mv-note">${escapeHtml(n)}</div>`).join('')}</div>`;
 }
 
 /* ---- Stats */
@@ -4354,7 +4377,7 @@ async function openCompetition(ref, opener){
 }
 function cpTableHtml(v){
   if (!v.table) return `<div class="mv-card">${mvEmpty('No table yet', 'No results are stored for this competition.')}</div>`;
-  return mvTableHtml({ table: v.table, match: { home: '', away: '' } }).replace('<table class="mv-tbl">', '<table class="mv-tbl cp-tbl">') + cpTieNote(v) + `<div class="mv-note" style="margin-top:8px">Tap a club to see its matches.</div>`;
+  return mvTableHtml({ table: v.table, match: { home: '', away: '' } }).replace('<table class="mv-tbl ', '<table class="mv-tbl cp-tbl ') + cpTieNote(v) + `<div class="mv-note" style="margin-top:8px">Tap a club to see its matches.</div>`;
 }
 /** La Liga (and other head-to-head leagues) order clubs level on points by the results between them before goal difference. Explain it when that puts a club with the worse goal difference higher. */
 function cpTieNote(v){
@@ -4422,6 +4445,7 @@ document.addEventListener('click', e => {
   if (fx){ MV.parent = { view: v, tab: MV.tab, round: CP.round, club: CP.club }; const d = fx.dataset; openMatch({ id: d.id, date: d.d, home: d.h, away: d.a, round: d.r, competition: v.competition.short, status: d.s, hg: d.hg === '' ? null : Number(d.hg), ag: d.ag === '' ? null : Number(d.ag) }, MV.opener); return; }
   const rb = e.target.closest('[data-cpr]'); if (rb){ const i = v.rounds.indexOf(CP.round) + Number(rb.dataset.cpr); if (i >= 0 && i < v.rounds.length){ CP.round = v.rounds[i]; repaint(); } return; }
   if (e.target.closest('[data-cpclear]')){ CP.club = ''; repaint(); return; }
+  const tvb = e.target.closest('[data-tv]'); if (tvb){ tvSetView(tvb.dataset.tv); return; }
   const sg = e.target.closest('[data-cpseg]'); if (sg){ CP.seg = sg.dataset.cpseg; repaint(); return; }
   const ps = e.target.closest('[data-cpps]'); if (ps){ CP.pstat = ps.dataset.cpps; repaint(); return; }
   const pk = e.target.closest('[data-pk]'); if (pk){ openPlayer(pk.dataset.pk, pk.dataset.pn, pk.dataset.pc, pk, pk.dataset.sg ? { goals: Number(pk.dataset.sg), played: pk.dataset.sp === '' ? null : Number(pk.dataset.sp), comp: pk.dataset.sc || 'the league' } : null, pk.dataset.sl); return; }
