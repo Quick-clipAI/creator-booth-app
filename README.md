@@ -345,6 +345,10 @@ The player tool saves the players it could not match. Web files only.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
 
+## Backup / Gemini model retirement (api/gemini.js)
+
+The chat showed "Backup AI used (Gemini model unavailable)": every model in `GEMINI_MODEL` answered 404 ("no longer available"), so the weaker backup (Groq, from memory) answered and made mistakes (e.g. Raphinha's foot). Google has been retiring Gemini 2.5 models early (reported from 9 July 2026). Now, when every listed model answers 404, the server asks Google for the Flash models the key can use, tries the newest stable ones, remembers the one that works for an hour and skips 404 models for an hour. `GEMINI_MODEL` still wins when its models work. Test: `tests/gemini-discover.test.mjs`.
+
 ## 1.7.15 — why the app update failed, and the fix
 
 **Cause:** the update plugin (Capgo 7.51.23) refuses any bundle download that has no SHA-256 checksum. It throws "Checksum required" before touching the network, and the app only showed the generic "Failed to download from…". That is why the connection test showed bundle.zip reachable (200, 287 KB) while the update still failed.
