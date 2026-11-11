@@ -347,7 +347,7 @@ The player tool saves the players it could not match. Web files only.
 
 ## 1.7.19 — team screen fix
 
-The team screen failed with "Cannot read properties of undefined (reading 'toUpperCase')": a squad player with no stored position broke the position check in `lib/team-view.js`. A missing position is now handled, and such players are listed under "Other". Test added to `tests/team-view.test.mjs`. Server-only fix: it works without a new APK (version number bumped for the record).
+The team screen failed with "Cannot read properties of undefined (reading 'toUpperCase')": a player known only from goal events (no line-up position) broke the position check in `lib/team-view.js`. Every stored squad player (4,497) has a position. A missing line-up position is now handled and filled from the stored squad list. Test added to `tests/team-view.test.mjs`. Server-only fix: it works without a new APK (version number bumped for the record).
 
 ## 1.7.18 — team screen
 
