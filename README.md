@@ -345,6 +345,17 @@ The player tool saves the players it could not match. Web files only.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
 
+## 1.7.18 — team screen
+
+Tap a club (the crest or name at the top of a match, a row in any table, or a club in a competition) to open its team screen. Back returns to where you were.
+- **Overview:** form, next match, last 5 results (oldest to newest), best XI by Creator Booth rating (4-3-3, players with 2 or more rated matches, photos from API-Sports), coach.
+- **Matches:** upcoming and results across every competition we store, with a filter per competition.
+- **Table:** a dropdown of the competitions the club is in, with the Short / Full / Form views; the club's row is highlighted; tapping another club opens its team.
+- **Stats:** record per competition (P, W, D, L, goals, clean sheets) and player leaders (rating, goals, assists, yellow cards); tapping a player opens the player card.
+- **Squad:** coach and players grouped by position with shirt, nationality and age (age worked out for today).
+- No trophies tab (we hold no trophy data). Ratings and player stats come only from matches whose details we hold; each screen says how many.
+- Server: `GET /api/competition?team=<club>` (no new function file, so the 12-function limit is unchanged), built by `lib/team-view.js`; `lib/player-card.js` now also exposes the season's matches. Test: `tests/team-view.test.mjs`.
+
 ## 1.7.17 — league table: Short, Full and Form views, crests on every row
 
 - The table now has a **Short / Full / Form** switch (your choice is remembered). Short: P, GD, Pts. Full: P, W, D, L, goals for-against, GD, Pts. Form: each club's last five results as W/D/L badges, oldest first, newest underlined. Form comes from `formByTeam` in `lib/match-view.js` (finished matches only, sorted by date). Test: `tests/table-form.test.mjs`.

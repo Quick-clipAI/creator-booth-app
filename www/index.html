@@ -595,6 +595,18 @@ button.cp-pl{all:unset;cursor:pointer;display:block;font-weight:600;text-align:l
 .mv-tbl tr.me td{background:color-mix(in srgb,var(--brand) 16%,transparent);font-weight:700}
 .mv-tbl td.pts{font-weight:700}
 .tv-seg{margin:2px 0 10px}
+.tm-pitch{min-height:460px;border-radius:12px;border-width:1px}.tm-pitch::before,.tm-pitch::after{display:none}.tm-pitch .mv-half{padding:18px 4px 10px}
+.tm-last{display:flex;gap:8px}.tm-lf{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border:0;border-radius:10px;background:var(--surface-2,rgba(127,127,127,.14));min-width:0;flex:1;grid-template-columns:none;min-height:0}
+.tm-lf b{font-size:13px;color:#fff;padding:2px 6px;border-radius:6px}.tm-lf.w b{background:#1f9d57}.tm-lf.d b{background:#6b7280}.tm-lf.l b{background:#dc3b3b}
+.cp-fx .sc.w{color:#38c172}.cp-fx .sc.l{color:#e5534b}
+.tm-coach{display:flex;justify-content:space-between;font-weight:600}.tm-coach span{font-weight:400;color:var(--text-dim)}
+.tm-sel select{width:100%;margin-bottom:10px;padding:12px;border-radius:12px;background:var(--surface-2,#222);color:var(--text);border:1px solid var(--border-soft);font:600 14px var(--sans)}
+.tm-pr{display:flex;align-items:center;gap:10px;width:100%;padding:8px 0;background:none;border:0;border-top:1px solid var(--border-soft);color:var(--text);font:500 14px var(--sans);text-align:left;cursor:pointer;min-height:48px}
+.tm-pr .mv-av{width:36px;height:36px;flex:none}.tm-pr .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tm-pr b{font-variant-numeric:tabular-nums}
+.tm-sq{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--border-soft)}
+.tm-ph{width:40px;height:40px;border-width:1px;flex:none;font-size:13px}.tm-sn{flex:1;min-width:0;display:flex;flex-direction:column}.tm-sn b{font-weight:600;font-size:14px}.tm-sn i{font-style:normal;color:var(--text-dim);font-weight:500;margin-right:4px}.tm-sn span{font-size:12px;color:var(--text-dim)}
+.tm-age{font-variant-numeric:tabular-nums;color:var(--text-dim)}.tm-agh{float:right;font-weight:500;color:var(--text-dim);font-size:11px}
+.tm-ct th:first-child,.tm-ct td:first-child{text-align:left;width:100%;white-space:normal}.tm-ct th:nth-child(2),.tm-ct td:nth-child(2){text-align:right;width:auto}.tm-head .mv-crest,.tm-head .fx-badge{width:52px;height:52px;flex:none}.tm-head{display:flex;align-items:center;gap:14px}
 .mv-tbl td{white-space:nowrap}.mv-tbl td.tm{white-space:normal}
 .mv-tbl.tv-full{font-size:12px}.mv-tbl.tv-full td,.mv-tbl.tv-full th{padding-left:3px;padding-right:3px}
 .mv-tbl .tf-h{text-align:right}.mv-tbl td.tf-c{white-space:nowrap}
@@ -1593,7 +1605,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.17';
+const APP_VERSION = '1.7.18';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4145,7 +4157,7 @@ function mvTableHtml(v){
   const cells = r => view === 'form' ? `<td class="tf-c">${mvFormPills(r.form)}</td>`
     : view === 'full' ? `<td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td><td>${r.GF}-${r.GA}</td><td>${gd(r)}</td><td class="pts">${r.Pts}</td>`
     : `<td>${r.P}</td><td>${gd(r)}</td><td class="pts">${r.Pts}</td>`;
-  const body = t.rows.map(r => `<tr class="${me.has(r.team) ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${crest(r.team)}${escapeHtml(r.team)}</td>${cells(r)}</tr>`).join('');
+  const body = t.rows.map(r => `<tr class="${me.has(r.team) || r.me ? 'me' : ''}" data-team="${escapeHtml(r.team)}"><td class="pos" style="--zc:${r.zone ? `var(--z-${r.zone})` : 'transparent'}">${r.rank}</td><td class="tm">${crest(r.team)}${escapeHtml(r.team)}</td>${cells(r)}</tr>`).join('');
   const legend = t.legend.length ? `<div class="mv-legend">${t.legend.map(l => `<div><i style="background:var(--z-${l.key})"></i>${escapeHtml(l.label)}</div>`).join('')}</div>` : '';
   const notes = [t.note, t.usual ? 'Places shown are the usual ones. Extra European places depend on UEFA rankings and cup winners.' : '', t.tieUndecided ? 'Some clubs are level on every tie-break we apply.' : ''].filter(Boolean);
   const seg = `<div class="mv-stages tv-seg" role="group" aria-label="Table view">${[['short', 'Short'], ['full', 'Full'], ['form', 'Form']].map(([k, l]) => `<button class="mv-chip" data-tv="${k}" aria-pressed="${view === k}">${l}</button>`).join('')}</div>`;
@@ -4184,6 +4196,7 @@ function mvPlayoffsHtml(v){
 
 function mvRenderBody(){
   const v = MV.view, el = mvq('mv-body'); if (!v) return;
+  if (MV.kind === 'team' && v.overview){ el.innerHTML = tmRender(v); return; }
   if (v.kind === 'comp' || MV.kind === 'comp' && v.competition){ el.innerHTML = ({ table: cpTableHtml, fixtures: cpFixturesHtml, stats: cpStatsHtml, knockout: cpKnockoutHtml }[MV.tab] || cpTableHtml)(v); return; }
   el.innerHTML = ({ facts: mvFactsHtml, lineup: mvLineupHtml, table: mvTableHtml, stats: mvStatsHtml, playoffs: mvPlayoffsHtml }[MV.tab] || mvFactsHtml)(v);
 }
@@ -4222,19 +4235,23 @@ async function openMatch(ref, opener){
   mvShow(v);
 }
 function closeMatch(fromPop){
-  if (!MV.open) return; MV.open = false; MV.token++; MV.parent = null; MV.kind = null;
+  if (!MV.open) return; MV.open = false; MV.token++; MV.parent = null; MV.kind = null; TM.restore = null; TM.fromTeam = null;
   const el = mvq('mv-view'); el.classList.remove('open'); el.hidden = true;
   if (!fromPop) { try { if (history.state && history.state.mv) history.back(); } catch (e) { /* ignore */ } }
   if (MV.opener && document.contains(MV.opener)) MV.opener.focus(); MV.opener = null;
 }
 function mvBackToParent(){ const p = MV.parent; if (!p) return false; MV.parent = null; MV.token++; CP.round = p.round; CP.club = p.club; cpShow(p.view, p.tab); return true; }
-window.addEventListener('popstate', () => { if (PL.open) return; if (MV.open && MV.parent){ mvBackToParent(); try { history.pushState({ mv: 1 }, ''); } catch (e) { /* ignore */ } return; } if (MV.open) closeMatch(true); });
+window.addEventListener('popstate', () => { if (PL.open) return; if (MV.open && (MV.kind === 'team' ? TM.restore : (MV.kind === 'match' && TM.fromTeam))){ tmBack(); try { history.pushState({ mv: 1 }, ''); } catch (e) { /* ignore */ } return; } if (MV.open && MV.parent){ mvBackToParent(); try { history.pushState({ mv: 1 }, ''); } catch (e) { /* ignore */ } return; } if (MV.open) closeMatch(true); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && MV.open) closeMatch(false); });
+document.addEventListener('click', e => {
+  if (!MV.open || MV.kind !== 'match') return;
+  const t = e.target.closest('.mv-team[data-team], .mv-tbl tr[data-team]'); if (t && t.dataset.team){ openTeam(t.dataset.team, MV.opener); }
+}, true);
 document.addEventListener('click', e => {
   const card = e.target.closest && e.target.closest('.fx-card[data-fx], .fx-card[data-d]');
   if (card && !MV.open){ openMatch({ id: card.dataset.fx || '', date: card.dataset.d || '', home: card.dataset.h || '', away: card.dataset.a || '', competition: card.dataset.c || '', status: card.dataset.s || '', hg: card.dataset.hg === '' || card.dataset.hg == null ? null : Number(card.dataset.hg), ag: card.dataset.ag === '' || card.dataset.ag == null ? null : Number(card.dataset.ag) }, card); return; }
   if (!MV.open) return;
-  if (e.target.closest('#mv-back')){ if (mvBackToParent()) return; return closeMatch(false); }
+  if (e.target.closest('#mv-back')){ if (tmBack()) return; if (mvBackToParent()) return; return closeMatch(false); }
   const tab = e.target.closest('.mv-tab'); if (tab) return mvSetTab(tab.dataset.tab);
   const chip = e.target.closest('.mv-chip[data-stage]'); if (chip){ MV.stage = chip.dataset.stage; return mvRenderBody(); }
 });
@@ -4375,9 +4392,122 @@ async function openCompetition(ref, opener){
     mvq('mv-retry').onclick = () => openCompetition(ref, MV.opener);
   }
 }
+/* ------------------------------------------------------------------ */
+/* Team screen: tapping a club opens it. All data comes from           */
+/* /api/competition?team= (our own data bank).                          */
+/* ------------------------------------------------------------------ */
+const TM = { view: null, restore: null, fromTeam: null, comp: '', fx: '', seg: 'rating' };
+function tmHead(club, crestId){
+  const mark = crestId ? `<img class="mv-crest" src="https://media.api-sports.io/football/teams/${crestId}.png" alt="" width="52" height="52" data-club="${escapeHtml(club)}" referrerpolicy="no-referrer">` : clubBadgeHtml(club);
+  return `<div class="cp-head tm-head">${mark}<div><div class="cp-title">${escapeHtml(club)}</div><div class="cp-season"><span class="lg-pill">Team</span></div></div></div>`;
+}
+async function openTeam(club, opener){
+  const el = mvq('mv-view'); if (!el || !club) return;
+  const token = ++MV.token;
+  // remember where we came from, so Back returns there
+  TM.restore = null; TM.fromTeam = null;
+  if (MV.open && MV.kind === 'match' && MV.view){ const v0 = MV.view, t0 = MV.tab; TM.restore = () => { MV.kind = 'match'; mvShow(v0); mvSetTab(t0); }; }
+  else if (MV.open && MV.kind === 'comp' && MV.view){ const v0 = MV.view, t0 = MV.tab, r0 = CP.round, c0 = CP.club; TM.restore = () => { CP.round = r0; CP.club = c0; cpShow(v0, t0); }; }
+  else if (MV.open && MV.kind === 'team' && TM.view){ const v0 = TM.view, t0 = MV.tab; TM.restore = () => tmShow(v0, t0); }
+  if (!MV.open){ MV.open = true; MV.opener = opener || null; try { history.pushState({ mv: 1 }, ''); } catch (e) { /* history unavailable */ } }
+  MV.parent = null; MV.kind = 'team'; MV.view = null; MV.stage = null; TM.view = null; TM.comp = ''; TM.fx = ''; TM.seg = 'rating';
+  el.hidden = false; el.classList.add('open'); cpTheme('');
+  mvq('mv-comp').textContent = 'Team'; mvq('mv-head').innerHTML = tmHead(club, CP_CRESTS[club]);
+  mvq('mv-tabs').innerHTML = ''; mvq('mv-body').innerHTML = '<div class="mv-skel"></div><div class="mv-skel"></div><div class="mv-skel"></div>';
+  mvq('mv-back').focus();
+  try {
+    const r = await fetch(API_ORIGIN + '/api/competition?team=' + encodeURIComponent(club) + '&today=' + todayDateStr());
+    const j = await r.json(); if (!r.ok || j.error) throw new Error(j.error || ('HTTP ' + r.status));
+    if (token !== MV.token) return;
+    Object.assign(CP_CRESTS, j.crests || {}); j.kind = 'team';
+    tmShow(j, 'overview');
+  } catch (e) {
+    if (token !== MV.token) return;
+    mvq('mv-body').innerHTML = `<div class="mv-empty"><b>Could not load this team</b>${escapeHtml(String(e.message || e))}<br><br><button class="mv-chip" id="mv-retry">Try again</button></div>`;
+    mvq('mv-retry').onclick = () => openTeam(club, MV.opener);
+  }
+}
+function tmShow(v, tab){
+  MV.kind = 'team'; MV.view = v; TM.view = v; MV.tab = (v.tabs.some(t => t.key === tab) ? tab : 'overview'); cpTheme('');
+  mvq('mv-comp').textContent = 'Team'; mvq('mv-head').innerHTML = tmHead(v.club, v.crest);
+  mvq('mv-tabs').innerHTML = v.tabs.map(t => `<button class="mv-tab" role="tab" id="mvt-${t.key}" data-tab="${t.key}" aria-selected="${MV.tab === t.key}" tabindex="${MV.tab === t.key ? 0 : -1}">${escapeHtml(t.label)}</button>`).join('');
+  mvSetTab(MV.tab);
+}
+function tmBack(){
+  if (MV.kind === 'team' && TM.restore){ const r = TM.restore; TM.restore = null; r(); return true; }
+  if (MV.kind === 'match' && TM.fromTeam){ const f = TM.fromTeam; TM.fromTeam = null; tmShow(f.view, f.tab); return true; }
+  return false;
+}
+function tmFxRow(m){
+  const done = m.status === 'finished' && m.hg != null;
+  const me = m.mine; let cls = '';
+  if (done){ const home = m.home === me; const gf = home ? m.hg : m.ag, ga = home ? m.ag : m.hg; cls = gf > ga ? 'w' : gf < ga ? 'l' : 'd'; }
+  const mid = done ? `${m.hg} – ${m.ag}` : (mvTime(m) || 'v');
+  const tag = m.status === 'postponed' ? ' · postponed' : m.status === 'cancelled' ? ' · cancelled' : '';
+  return `<button class="cp-fx tm-fx" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-c="${escapeHtml(m.competition || '')}" data-s="${escapeHtml(m.status)}" data-hg="${m.hg == null ? '' : m.hg}" data-ag="${m.ag == null ? '' : m.ag}"><span class="h">${escapeHtml(m.home)}${crest(m.home)}</span><span class="sc${done ? ' ' + cls : ' up'}">${escapeHtml(mid)}</span><span class="a">${crest(m.away)}${escapeHtml(m.away)}</span><small>${escapeHtml([m.competition, tag.slice(3)].filter(Boolean).join(' · '))}</small></button>`;
+}
+function tmOverview(v){
+  const o = v.overview; let h = '';
+  if (o.next) h += `<div class="mv-card"><div class="mv-h">Next match</div>${tmFxRow(o.next)}<div class="mv-note">${escapeHtml(fixtureDateText(o.next.date, ''))}</div></div>`;
+  if (o.lastFive.length) h += `<div class="mv-card"><div class="mv-h">Last ${o.lastFive.length} matches</div><div class="tm-last">${o.lastFive.slice().reverse().map(m => { const home = m.home === m.mine || (m.mine == null && m.home === v.club); const gf = home ? m.hg : m.ag, ga = home ? m.ag : m.hg; const cls = gf > ga ? 'w' : gf < ga ? 'l' : 'd'; const opp = home ? m.away : m.home; return `<button class="cp-fx tm-lf ${cls}" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-c="${escapeHtml(m.competition || '')}" data-s="finished" data-hg="${m.hg}" data-ag="${m.ag}" aria-label="${escapeHtml((home ? 'Home' : 'Away') + ' v ' + opp + ' ' + m.hg + '-' + m.ag)}">${clubMark(opp, 26)}<b>${m.hg}–${m.ag}</b></button>`; }).join('')}</div></div>`;
+  const lines = o.xi.lines, n = lines.reduce((s, l) => s + l.length, 0);
+  if (n){
+    const rows = lines.filter(l => l.length).map(l => `<div class="mv-row">${l.map(p => mvPlayerHtml({ id: p.pid, n: p.num, name: p.name, rating: p.rating, min: 90, pos: p.pos }, null)).join('')}</div>`).join('');
+    h += `<div class="mv-card"><div class="mv-h">Best XI by rating</div><div class="mv-pitch tm-pitch" role="img" aria-label="Best starting eleven by average rating"><i class="mv-box b"></i><div class="mv-half">${rows}</div></div><div class="mv-note">Average Creator Booth rating, ${n < 11 ? 'only ' + n + ' players have 2 or more rated matches so far. ' : ''}Built from ${o.coverage.detailsHeld} of ${o.coverage.matchesPlayed} played matches whose details we hold. Positions are 4-3-3.</div></div>`;
+  } else h += `<div class="mv-card"><div class="mv-h">Best XI by rating</div>${mvEmpty('Not enough rated matches yet', 'A player appears after two rated matches. Details are saved after each match.')}</div>`;
+  if (o.coach) h += `<div class="mv-card"><div class="mv-h">Coach</div><div class="tm-coach">${escapeHtml(o.coach.name)}${o.coach.nationality ? `<span>${plFlag(o.coach.nationality)}${escapeHtml(o.coach.nationality)}</span>` : ''}</div></div>`;
+  return (v.overview.form.length ? `<div class="mv-card"><div class="mv-h">Form</div>${mvFormPills(v.overview.form)}</div>` : '') + h;
+}
+function tmMatches(v){
+  const comps = v.competitions;
+  const chips = comps.length > 1 ? `<div class="mv-stages" role="group" aria-label="Competition"><button class="mv-chip" data-tmfx="" aria-pressed="${!TM.fx}">All</button>${comps.map(c => `<button class="mv-chip" data-tmfx="${escapeHtml(c.key)}" aria-pressed="${TM.fx === c.key}">${escapeHtml(c.name)}</button>`).join('')}</div>` : '';
+  const list = v.fixtures.filter(m => !TM.fx || m.league === TM.fx);
+  if (!list.length) return chips + `<div class="mv-card">${mvEmpty('No matches', 'Nothing is stored for this selection.')}</div>`;
+  const up = list.filter(m => !(m.status === 'finished')), done = list.filter(m => m.status === 'finished').reverse();
+  const card = (t, arr) => arr.length ? `<div class="mv-card"><div class="mv-h">${t}</div>${arr.map(tmFxRow).join('')}</div>` : '';
+  return chips + card('Upcoming', up) + card('Results', done);
+}
+function tmTable(v){
+  if (!v.tables.length) return `<div class="mv-card">${mvEmpty('No table', 'This club has no league table stored.')}</div>`;
+  const cur = v.tables.find(t => t.key === TM.comp) || v.tables[0];
+  const sel = v.tables.length > 1 ? `<label class="tm-sel"><span class="sr-only">Competition</span><select id="tm-comp" aria-label="Competition">${v.tables.map(t => `<option value="${escapeHtml(t.key)}"${t.key === cur.key ? ' selected' : ''}>${escapeHtml(t.name)}</option>`).join('')}</select></label>` : '';
+  return sel + mvTableHtml({ table: cur.table, match: { home: v.club, away: '' } }).replace('<table class="mv-tbl ', '<table class="mv-tbl cp-tbl ');
+}
+function tmPlayerRow(p, val){ return `<button class="tm-pr" data-pk="${escapeHtml(p.key)}" data-pn="${escapeHtml(p.name)}" data-pc="${escapeHtml(TM.view.club)}">${mvAv({ id: p.pid }, {})}<span class="n">${escapeHtml(p.name)}</span><b>${val}</b></button>`; }
+function tmStats(v){
+  const s = v.stats; let h = '';
+  const rows = s.competitions.map(c => `<tr><td>${escapeHtml(c.name)}</td><td>${c.played}</td><td>${c.W}</td><td>${c.D}</td><td>${c.L}</td><td>${c.GF}-${c.GA}</td><td>${c.cleanSheets}</td></tr>`).join('');
+  h += `<div class="mv-card"><div class="mv-h">Team</div><table class="mv-tbl tv-full tm-ct"><thead><tr><th scope="col">Competition</th><th scope="col">P</th><th scope="col">W</th><th scope="col">D</th><th scope="col">L</th><th scope="col">+/-</th><th scope="col">CS</th></tr></thead><tbody>${rows}</tbody></table>`
+    + (s.competitions.length === 1 && s.competitions[0].perGame ? `<div class="mv-note">${s.competitions[0].perGame.scored} goals scored and ${s.competitions[0].perGame.conceded} conceded per match. CS = clean sheets.</div>` : '<div class="mv-note">CS = clean sheets.</div>') + `</div>`;
+  const segs = [['rating', 'Rating'], ['goals', 'Goals'], ['assists', 'Assists'], ['yellow', 'Yellow cards']];
+  const L = s.leaders[TM.seg] || [];
+  h += `<div class="mv-card"><div class="mv-h">Players</div><div class="mv-stages" role="group" aria-label="Player stat">${segs.map(([k, l]) => `<button class="mv-chip" data-tmseg="${k}" aria-pressed="${TM.seg === k}">${l}</button>`).join('')}</div>`
+    + (L.length ? L.map(p => tmPlayerRow(p, TM.seg === 'rating' ? Number(p.rating).toFixed(2) : p[TM.seg])).join('') : mvEmpty('Nothing yet', 'No player has this stat in the matches we hold.'))
+    + `<div class="mv-note">From ${s.detailsHeld} of ${s.matchesPlayed} played matches whose details we hold. Ratings need 2 rated matches.</div></div>`;
+  return h;
+}
+function tmSquad(v){
+  if (!v.squad.length) return `<div class="mv-card">${mvEmpty('No squad stored', 'We have no squad list for this club yet.')}</div>`;
+  const row = p => `<div class="tm-sq">${p.pid ? `<img class="pl2-photo tm-ph" src="https://media.api-sports.io/football/players/${p.pid}.png" alt="" width="40" height="40" loading="lazy" referrerpolicy="no-referrer" data-ini="${escapeHtml(plInitials(p.name))}">` : `<span class="pl2-photo pl2-ini tm-ph">${escapeHtml(plInitials(p.name))}</span>`}<div class="tm-sn"><b>${p.shirt ? '<i>' + p.shirt + '</i> ' : ''}${escapeHtml(p.name)}</b><span>${plFlag(p.nationality)}${escapeHtml(p.nationality || '')}${p.loan ? ' · loan' : ''}</span></div><div class="tm-age">${p.age != null ? p.age : ''}</div></div>`;
+  return (v.overview.coach ? `<div class="mv-card"><div class="mv-h">Coach <span class="tm-agh">Age</span></div><div class="tm-sq"><span class="pl2-photo pl2-ini tm-ph">${escapeHtml(plInitials(v.overview.coach.name))}</span><div class="tm-sn"><b>${escapeHtml(v.overview.coach.name)}</b><span>${plFlag(v.overview.coach.nationality)}${escapeHtml(v.overview.coach.nationality || '')}</span></div></div></div>` : '')
+    + v.squad.map(g => `<div class="mv-card"><div class="mv-h">${escapeHtml(g.group)} <span class="tm-agh">Age</span></div>${g.players.map(row).join('')}</div>`).join('');
+}
+function tmRender(v){ return ({ overview: tmOverview, matches: tmMatches, table: tmTable, stats: tmStats, squad: tmSquad }[MV.tab] || tmOverview)(v); }
+document.addEventListener('click', e => {
+  if (!MV.open || MV.kind !== 'team' || !TM.view) return;
+  const v = TM.view;
+  const fx = e.target.closest('.cp-fx'); if (fx){ TM.fromTeam = { view: v, tab: MV.tab }; const d = fx.dataset; openMatch({ id: d.id, date: d.d, home: d.h, away: d.a, round: d.r, competition: d.c || '', status: d.s, hg: d.hg === '' ? null : Number(d.hg), ag: d.ag === '' ? null : Number(d.ag) }, MV.opener); return; }
+  const tf = e.target.closest('[data-tmfx]'); if (tf){ TM.fx = tf.dataset.tmfx; mvRenderBody(); return; }
+  const sg = e.target.closest('[data-tmseg]'); if (sg){ TM.seg = sg.dataset.tmseg; mvRenderBody(); return; }
+  const tvb = e.target.closest('[data-tv]'); if (tvb){ tvSetView(tvb.dataset.tv); return; }
+  const pk = e.target.closest('[data-pk]'); if (pk){ openPlayer(pk.dataset.pk, pk.dataset.pn, pk.dataset.pc, pk, null, null); return; }
+  const tr = e.target.closest('.cp-tbl tr[data-team]'); if (tr && tr.dataset.team !== v.club){ openTeam(tr.dataset.team, MV.opener); return; }
+}, true);
+document.addEventListener('change', e => { if (e.target && e.target.id === 'tm-comp' && MV.kind === 'team'){ TM.comp = e.target.value; mvRenderBody(); } });
+
 function cpTableHtml(v){
   if (!v.table) return `<div class="mv-card">${mvEmpty('No table yet', 'No results are stored for this competition.')}</div>`;
-  return mvTableHtml({ table: v.table, match: { home: '', away: '' } }).replace('<table class="mv-tbl ', '<table class="mv-tbl cp-tbl ') + cpTieNote(v) + `<div class="mv-note" style="margin-top:8px">Tap a club to see its matches.</div>`;
+  return mvTableHtml({ table: v.table, match: { home: '', away: '' } }).replace('<table class="mv-tbl ', '<table class="mv-tbl cp-tbl ') + cpTieNote(v) + `<div class="mv-note" style="margin-top:8px">Tap a club to open its team page.</div>`;
 }
 /** La Liga (and other head-to-head leagues) order clubs level on points by the results between them before goal difference. Explain it when that puts a club with the worse goal difference higher. */
 function cpTieNote(v){
@@ -4451,7 +4581,7 @@ document.addEventListener('click', e => {
   const pk = e.target.closest('[data-pk]'); if (pk){ openPlayer(pk.dataset.pk, pk.dataset.pn, pk.dataset.pc, pk, pk.dataset.sg ? { goals: Number(pk.dataset.sg), played: pk.dataset.sp === '' ? null : Number(pk.dataset.sp), comp: pk.dataset.sc || 'the league' } : null, pk.dataset.sl); return; }
   const cs = e.target.closest('[data-cpcs]'); if (cs){ CP.cstat = cs.dataset.cpcs; repaint(); return; }
   const cl = e.target.closest('.cp-club[data-club]') || e.target.closest('.cp-tbl tr[data-team]');
-  if (cl){ CP.club = cl.dataset.club || cl.dataset.team; mvSetTab('fixtures'); return; }
+  if (cl){ openTeam(cl.dataset.club || cl.dataset.team, MV.opener); return; }
 }, true);
 document.addEventListener('keydown', e => {
   const card = e.target.closest && e.target.closest('.cp-card');
