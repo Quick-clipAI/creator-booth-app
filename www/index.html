@@ -1585,7 +1585,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.15';
+const APP_VERSION = '1.7.16';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3454,7 +3454,7 @@ function looksLikeDenial(text){
   const t = String(text || '').slice(0, 900);
   return /\b(slight |some |a bit of )?(confusion|mix-?up|misunderstanding)\b|\b(you may|you might|you could) (be|have)\b[^.]{0,30}\b(mistaken|confus\w*|mixing)|\b(is|was|has been) no (record|evidence|report) of\b|\bno such (event|match|game|final|thing)\b|\b(did(n['’]t| not)|has(n['’]t| not)|never) (actually )?(happen|take place|occur|been played|reach(ed)?|made it)\b|\bcommon misconception\b|\bassuming you['’]?re referring\b|\bfamously won\b/i.test(t);
 }
-const NO_SEARCH_NOTE = `LIVE SEARCH IS OFF FOR THIS ANSWER: you cannot browse the web and your own knowledge is out of date. Treat anything that may have happened recently (this season, the 2026 World Cup, transfers, injuries, rumours, results) as something you CANNOT confirm or deny. Never tell the person that an event "did not happen" or that a rumour is false because you do not remember it. Say plainly that you cannot verify it right now, share only background you are sure about, and suggest they try again in a few minutes. Never tell the person they are confused or mistaken, and never offer a different "correct" version of events from memory. Facts in a VERIFIED DATA block (if present) are still reliable.`;
+const NO_SEARCH_NOTE = `LIVE SEARCH IS OFF FOR THIS ANSWER: you cannot browse the web and your own knowledge is out of date. Treat anything that may have happened recently (this season, the 2026 World Cup, transfers, injuries, rumours, results) as something you CANNOT confirm or deny. Never tell the person that an event "did not happen" or that a rumour is false because you do not remember it. Say plainly that you cannot verify it right now, share only background you are sure about, and suggest they try again in a few minutes. Never tell the person they are confused or mistaken, and never offer a different "correct" version of events from memory. Facts in a VERIFIED DATA block (if present) are still reliable. Do not give exact numbers (age, height, goals, stats, fees, dates) or a player's current club unless they appear in a VERIFIED DATA BANK block; describe style and strengths in general terms only, and say they are general knowledge that could not be checked.`;
 /* ------------------------------------------------------------------ */
 /* Football mode context: reuses the API-Football proxy to pull real,  */
 /* hard match data for today's fixtures when the user's request        */

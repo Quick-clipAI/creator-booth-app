@@ -345,6 +345,12 @@ The player tool saves the players it could not match. Web files only.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
 
+## 1.7.16 — the backup AI now reads our data bank about players
+
+- **Player facts (lib/player-facts.js):** when a question names a player, the chat adds a `PLAYER (data bank)` line: club, position, shirt, nationality, birth date, age worked out for today, loan, and this season's appearances, goals, assists and average rating from the stored matches. A name counts only when it matches exactly one stored player (a surname shared by two players adds nothing). It goes to every answering AI, so Groq (the backup) no longer invents age or club. Test: `tests/player-facts.test.mjs`.
+- **Honest backup note:** without live search the AI is told not to give exact ages, heights, stats, fees or a current club unless they are in the data bank block.
+- **More Gemini rotation:** when every listed model is over its quota (429), gone (404) or busy, the server now tries other stable Flash models the key can use (each has its own free quota), not only after 404.
+
 ## Backup / Gemini model retirement (api/gemini.js)
 
 The chat showed "Backup AI used (Gemini model unavailable)": every model in `GEMINI_MODEL` answered 404 ("no longer available"), so the weaker backup (Groq, from memory) answered and made mistakes (e.g. Raphinha's foot). Google has been retiring Gemini 2.5 models early (reported from 9 July 2026). Now, when every listed model answers 404, the server asks Google for the Flash models the key can use, tries the newest stable ones, remembers the one that works for an hour and skips 404 models for an hour. `GEMINI_MODEL` still wins when its models work. Test: `tests/gemini-discover.test.mjs`.
