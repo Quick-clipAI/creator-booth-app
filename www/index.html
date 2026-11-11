@@ -1585,7 +1585,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.14';
+const APP_VERSION = '1.7.15';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -5436,7 +5436,7 @@ async function applyUpdate(btn){
       if (!tries.length) tries.push(...updBases());
       let lastErr = null;
       for (const base of tries){
-        try { bundle = await updTimeout(Updater.download({ url: base.url + 'bundle.zip', version }), 90000, 'the download from ' + base.name); if (bundle && bundle.id) break; }
+        try { bundle = await updTimeout(Updater.download(Object.assign({ url: base.url + 'bundle.zip', version }, remote.checksum ? { checksum: String(remote.checksum).toLowerCase() } : {})), 90000, 'the download from ' + base.name); if (bundle && bundle.id) break; }
         catch (e) { lastErr = e; try { const l2 = await Updater.list(); for (const b of ((l2 && l2.bundles) || [])) if (b && b.version === version && b.status !== 'success'){ try { await Updater.delete({ id: b.id }); } catch (e2) {} } } catch (e3) {} }
       }
       if (!bundle || !bundle.id){ const err = lastErr || new Error('the download did not finish'); upd.diag = await updProbe(); throw err; }

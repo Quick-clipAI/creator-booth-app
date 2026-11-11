@@ -87,6 +87,11 @@ jobs:
         run: |
           (cd www && zip -r ../bundle.zip . -x '.*')
           unzip -l bundle.zip | grep -E " index.html$" || (echo "index.html must be at the top of bundle.zip" && exit 1)
+          # The updater plugin refuses a download without a SHA-256 checksum ("Checksum required"), so publish it in version.json.
+          # (It is added after zipping: the copy inside bundle.zip cannot contain the hash of the zip itself.)
+          SUM=$(sha256sum bundle.zip | cut -d' ' -f1)
+          node -e "const fs=require('fs');const f='www/version.json';const j=JSON.parse(fs.readFileSync(f,'utf8'));j.checksum=process.argv[1];fs.writeFileSync(f,JSON.stringify(j)+'\n')" "$SUM"
+          echo "Published version.json: $(cat www/version.json)"
 
       - name: Upload update files to Supabase Storage (fast download for the app)
         env:
