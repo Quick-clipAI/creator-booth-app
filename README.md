@@ -345,6 +345,10 @@ The player tool saves the players it could not match. Web files only.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
 
+## Test: upcoming Champions League matches from StrikerAPI
+
+`striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
+
 ## 1.7.21 — stop the squad refresh, coach photos in two days
 
 - **Squad refresh stopped:** the 5-minute scheduler made the old weekly squad refresh run all day (3 clubs per run, 39 requests in one morning), and it only compared the answer with the stored squad and kept the old one. `REFRESH_DAYS` is now 60. Clubs that were never fetched are still done; the saved squads (with player photo ids) stay.
