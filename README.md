@@ -349,6 +349,10 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.22 — transfer sync paused
+
+The transfer sync (the part of the 5-minute cron that asks API-Football for player transfers) is now OFF by default. Each run logs "transfers paused". To turn it back on, set the Vercel env var SYNC_TRANSFERS to `on` (you set the value yourself) and redeploy. Squads, coach photos and match syncs are not affected.
+
 ## 1.7.21 — stop the squad refresh, coach photos in two days
 
 - **Squad refresh stopped:** the 5-minute scheduler made the old weekly squad refresh run all day (3 clubs per run, 39 requests in one morning), and it only compared the answer with the stored squad and kept the old one. `REFRESH_DAYS` is now 60. Clubs that were never fetched are still done; the saved squads (with player photo ids) stay.
