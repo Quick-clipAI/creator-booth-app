@@ -604,7 +604,7 @@ button.cp-pl{all:unset;cursor:pointer;display:block;font-weight:600;text-align:l
 .tm-pr{display:flex;align-items:center;gap:10px;width:100%;padding:8px 0;background:none;border:0;border-top:1px solid var(--border-soft);color:var(--text);font:500 14px var(--sans);text-align:left;cursor:pointer;min-height:48px}
 .tm-pr .mv-av{width:36px;height:36px;flex:none}.tm-pr .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tm-pr b{font-variant-numeric:tabular-nums}
 .tm-sq{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--border-soft)}
-.tm-ph{width:40px;height:40px;border-width:1px;flex:none;font-size:13px}.tm-sn{flex:1;min-width:0;display:flex;flex-direction:column}.tm-sn b{font-weight:600;font-size:14px}.tm-sn i{font-style:normal;color:var(--text-dim);font-weight:500;margin-right:4px}.tm-sn span{font-size:12px;color:var(--text-dim)}
+.tm-sq .pl2-photo,.tm-sq .pl2-ini,.tm-ph{width:40px!important;height:40px!important;min-width:40px;border-width:1px;flex:none;font-size:13px!important;border-radius:50%;object-fit:cover}.tm-sn{flex:1;min-width:0;display:flex;flex-direction:column}.tm-sn b{font-weight:600;font-size:14px}.tm-sn i{font-style:normal;color:var(--text-dim);font-weight:500;margin-right:4px}.tm-sn span{font-size:12px;color:var(--text-dim)}
 .tm-age{font-variant-numeric:tabular-nums;color:var(--text-dim)}.tm-agh{float:right;font-weight:500;color:var(--text-dim);font-size:11px}
 .tm-ct th:first-child,.tm-ct td:first-child{text-align:left;width:100%;white-space:normal}.tm-ct th:nth-child(2),.tm-ct td:nth-child(2){text-align:right;width:auto}.tm-head .mv-crest,.tm-head .fx-badge{width:52px;height:52px;flex:none}.tm-head{display:flex;align-items:center;gap:14px}
 .mv-tbl td{white-space:nowrap}.mv-tbl td.tm{white-space:normal}
@@ -1605,7 +1605,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.19';
+const APP_VERSION = '1.7.20';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4196,7 +4196,7 @@ function mvPlayoffsHtml(v){
 
 function mvRenderBody(){
   const v = MV.view, el = mvq('mv-body'); if (!v) return;
-  if (MV.kind === 'team' && v.overview){ el.innerHTML = tmRender(v); return; }
+  if (MV.kind === 'team' && v.overview){ el.innerHTML = tmRender(v); if (MV.tab === 'matches') tmScrollToNow(el); return; }
   if (v.kind === 'comp' || MV.kind === 'comp' && v.competition){ el.innerHTML = ({ table: cpTableHtml, fixtures: cpFixturesHtml, stats: cpStatsHtml, knockout: cpKnockoutHtml }[MV.tab] || cpTableHtml)(v); return; }
   el.innerHTML = ({ facts: mvFactsHtml, lineup: mvLineupHtml, table: mvTableHtml, stats: mvStatsHtml, playoffs: mvPlayoffsHtml }[MV.tab] || mvFactsHtml)(v);
 }
@@ -4455,7 +4455,7 @@ function tmOverview(v){
     const rows = lines.filter(l => l.length).map(l => `<div class="mv-row">${l.map(p => mvPlayerHtml({ id: p.pid, n: p.num, name: p.name, rating: p.rating, min: 90, pos: p.pos }, null)).join('')}</div>`).join('');
     h += `<div class="mv-card"><div class="mv-h">Best XI by rating</div><div class="mv-pitch tm-pitch" role="img" aria-label="Best starting eleven by average rating"><i class="mv-box b"></i><div class="mv-half">${rows}</div></div><div class="mv-note">Average Creator Booth rating, ${n < 11 ? 'only ' + n + ' players have 2 or more rated matches so far. ' : ''}Built from ${o.coverage.detailsHeld} of ${o.coverage.matchesPlayed} played matches whose details we hold. Positions are 4-3-3.</div></div>`;
   } else h += `<div class="mv-card"><div class="mv-h">Best XI by rating</div>${mvEmpty('Not enough rated matches yet', 'A player appears after two rated matches. Details are saved after each match.')}</div>`;
-  if (o.coach) h += `<div class="mv-card"><div class="mv-h">Coach</div><div class="tm-coach">${escapeHtml(o.coach.name)}${o.coach.nationality ? `<span>${plFlag(o.coach.nationality)}${escapeHtml(o.coach.nationality)}</span>` : ''}</div></div>`;
+  if (o.coach) h += `<div class="mv-card"><div class="mv-h">Coach</div>${tmPerson(o.coach, 'coachs')}</div>`;
   return (v.overview.form.length ? `<div class="mv-card"><div class="mv-h">Form</div>${mvFormPills(v.overview.form)}</div>` : '') + h;
 }
 function tmMatches(v){
@@ -4463,9 +4463,9 @@ function tmMatches(v){
   const chips = comps.length > 1 ? `<div class="mv-stages" role="group" aria-label="Competition"><button class="mv-chip" data-tmfx="" aria-pressed="${!TM.fx}">All</button>${comps.map(c => `<button class="mv-chip" data-tmfx="${escapeHtml(c.key)}" aria-pressed="${TM.fx === c.key}">${escapeHtml(c.name)}</button>`).join('')}</div>` : '';
   const list = v.fixtures.filter(m => !TM.fx || m.league === TM.fx);
   if (!list.length) return chips + `<div class="mv-card">${mvEmpty('No matches', 'Nothing is stored for this selection.')}</div>`;
-  const up = list.filter(m => !(m.status === 'finished')), done = list.filter(m => m.status === 'finished').reverse();
-  const card = (t, arr) => arr.length ? `<div class="mv-card"><div class="mv-h">${t}</div>${arr.map(tmFxRow).join('')}</div>` : '';
-  return chips + card('Upcoming', up) + card('Results', done);
+  const up = list.filter(m => !(m.status === 'finished')), done = list.filter(m => m.status === 'finished');   // both oldest first
+  const card = (t, arr, id) => arr.length ? `<div class="mv-card"${id ? ' id="' + id + '"' : ''}><div class="mv-h">${t}</div>${arr.map(tmFxRow).join('')}</div>` : '';
+  return chips + card('Results', done, up.length ? '' : 'tm-last-card') + card('Upcoming', up, 'tm-upc');
 }
 function tmTable(v){
   if (!v.tables.length) return `<div class="mv-card">${mvEmpty('No table', 'This club has no league table stored.')}</div>`;
@@ -4488,9 +4488,18 @@ function tmStats(v){
 }
 function tmSquad(v){
   if (!v.squad.length) return `<div class="mv-card">${mvEmpty('No squad stored', 'We have no squad list for this club yet.')}</div>`;
-  const row = p => `<div class="tm-sq">${p.pid ? `<img class="pl2-photo tm-ph" src="https://media.api-sports.io/football/players/${p.pid}.png" alt="" width="40" height="40" loading="lazy" referrerpolicy="no-referrer" data-ini="${escapeHtml(plInitials(p.name))}">` : `<span class="pl2-photo pl2-ini tm-ph">${escapeHtml(plInitials(p.name))}</span>`}<div class="tm-sn"><b>${p.shirt ? '<i>' + p.shirt + '</i> ' : ''}${escapeHtml(p.name)}</b><span>${plFlag(p.nationality)}${escapeHtml(p.nationality || '')}${p.loan ? ' · loan' : ''}</span></div><div class="tm-age">${p.age != null ? p.age : ''}</div></div>`;
-  return (v.overview.coach ? `<div class="mv-card"><div class="mv-h">Coach <span class="tm-agh">Age</span></div><div class="tm-sq"><span class="pl2-photo pl2-ini tm-ph">${escapeHtml(plInitials(v.overview.coach.name))}</span><div class="tm-sn"><b>${escapeHtml(v.overview.coach.name)}</b><span>${plFlag(v.overview.coach.nationality)}${escapeHtml(v.overview.coach.nationality || '')}</span></div></div></div>` : '')
+  const row = p => tmPerson(p, 'players', { shirt: p.shirt, age: p.age, loan: p.loan });
+  return (v.overview.coach ? `<div class="mv-card"><div class="mv-h">Coach</div>${tmPerson(v.overview.coach, 'coachs')}</div>` : '')
     + v.squad.map(g => `<div class="mv-card"><div class="mv-h">${escapeHtml(g.group)} <span class="tm-agh">Age</span></div>${g.players.map(row).join('')}</div>`).join('');
+}
+function tmScrollToNow(el){   // the Matches tab opens at the next match; results are above, scroll up to see them
+  const t = el.querySelector('#tm-upc') || el.querySelector('#tm-last-card');
+  if (!t) return; requestAnimationFrame(() => { try { t.scrollIntoView({ block: t.id === 'tm-upc' ? 'start' : 'end' }); } catch (e) { /* ignore */ } });
+}
+function tmPerson(p, kind, extra){
+  const ini = escapeHtml(plInitials(p.name));
+  const ph = p.pid ? `<img class="pl2-photo tm-ph" src="https://media.api-sports.io/football/${kind}/${p.pid}.png" alt="" width="40" height="40" loading="lazy" referrerpolicy="no-referrer" data-ini="${ini}">` : `<span class="pl2-photo pl2-ini tm-ph">${ini}</span>`;
+  return `<div class="tm-sq">${ph}<div class="tm-sn"><b>${extra && extra.shirt ? '<i>' + extra.shirt + '</i> ' : ''}${escapeHtml(p.name)}</b><span>${plFlag(p.nationality)}${escapeHtml(p.nationality || '')}${extra && extra.loan ? ' · loan' : ''}</span></div>${extra && extra.age != null ? `<div class="tm-age">${extra.age}</div>` : ''}</div>`;
 }
 function tmRender(v){ return ({ overview: tmOverview, matches: tmMatches, table: tmTable, stats: tmStats, squad: tmSquad }[MV.tab] || tmOverview)(v); }
 document.addEventListener('click', e => {

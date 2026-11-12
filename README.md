@@ -345,6 +345,15 @@ The player tool saves the players it could not match. Web files only.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
 
+## 1.7.20 — team screen polish
+
+- **Squad photos for the whole squad:** the squad list now takes each player's photo id from the API-Football squad we already saved for the club (id + shirt + name), so no new API requests. Players it cannot match show initials.
+- **No more duplicate players:** a player stored twice (abbreviated API name without a birth date, plus the full Transfermarkt name) is shown once, the complete one.
+- **Coach photo:** the coach row and the Overview coach card show a photo when `bank_coaches.api_id` is known (new column). `compactCoach` now keeps the coach id, so each club's next squad refresh (1 coach request) stores it. Clubs without it show initials.
+- **Initials circles** in the squad list were drawn too large when a photo failed to load; fixed.
+- **Matches tab order:** results first (oldest to newest), upcoming below, and the tab opens at the next match; scroll up for results.
+- **Champions League upcoming:** we hold no scheduled UCL fixtures (only the 73 finished ones; Europa and Conference League have theirs). API-Football's free plan refuses UCL 2026. A football-data.org fixture import for UCL is the proposed next step.
+
 ## 1.7.19 — team screen fix
 
 The team screen failed with "Cannot read properties of undefined (reading 'toUpperCase')": a player known only from goal events (no line-up position) broke the position check in `lib/team-view.js`. Every stored squad player (4,497) has a position. A missing line-up position is now handled and filled from the stored squad list. Test added to `tests/team-view.test.mjs`. Server-only fix: it works without a new APK (version number bumped for the record).
