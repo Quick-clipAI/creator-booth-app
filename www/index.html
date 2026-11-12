@@ -506,7 +506,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-av .mv-bd{position:absolute;bottom:-4px;display:flex;align-items:center;gap:2px;z-index:2}
 .mv-av .mv-bd.l{left:-8px}.mv-av .mv-bd.r{right:-8px}
 .mv-b{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:8px;background:#f2f2f2;color:#111;font:700 10px var(--sans);box-sizing:border-box;padding:0 3px}
-.mv-b.as{background:#5aa7ff;color:#0b0b0a}.mv-cd{display:inline-block;width:9px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}.mv-cd.y{background:#e8c437}.mv-cd.r{background:#d84a3a}
+.mv-b.as{background:#5aa7ff;color:#0b0b0a}.mv-b.as .mv-boot{display:block;margin-right:1px}.mv-cd{display:inline-block;width:9px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}.mv-cd.y{background:#e8c437}.mv-cd.r{background:#d84a3a}
 .mv-pn{margin-top:6px;font-size:11.5px;line-height:1.15;max-width:100%;white-space:nowrap;color:inherit}.mv-pitch .mv-pn{overflow:visible}.mv-bc .mv-pn{overflow:hidden;text-overflow:ellipsis}.mv-pn .no{opacity:.65;margin-right:3px;font-variant-numeric:tabular-nums}
 .mv-bnch{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;margin-top:6px}.mv-bc{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;color:var(--text)}.mv-bc .mv-pn{color:var(--text)}.mv-bc .mv-ps{font-size:11px;color:var(--text-dim)}
 .mv-bc .mv-av{width:42px;height:42px;border-color:var(--border,#555)}.mv-bc .mv-av .mv-so{color:var(--text)}
@@ -1605,7 +1605,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.23';
+const APP_VERSION = '1.7.24';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4083,6 +4083,7 @@ function mvSubMinutes(d, side, l){
 }
 const mvPlayed = p => !!p && (p.min == null ? Number(p.rating) > 0 : p.min > 0);
 const mvSurname = n => String(n || '').replace(/^(?:[^\s.]{1,2}\.\s*)+/, '').trim();
+const MV_BOOT = '<svg class="mv-boot" viewBox="0 0 24 24" width="11" height="11" aria-hidden="true"><path fill="currentColor" d="M3 4h6v6.5c0 1.2.9 1.9 2 2.2l6 1.6c1.9.5 4 1.5 4 3.7V20H3zM5 16v2h14.9c-.2-.6-.9-1-1.900-1.300L11 14.900c-1.600-.5-2.900-1.500-3.400-3L7 10.500V6H5z"/></svg>';
 function mvAv(p, o){
   o = o || {};
   const photo = p.id ? `<img class="mv-img" src="https://media.api-sports.io/football/players/${p.id}.png" alt="" loading="lazy" referrerpolicy="no-referrer">` : '';
@@ -4090,7 +4091,7 @@ function mvAv(p, o){
   const so = o.off ? `<span class="mv-so" title="Substituted off">${MV_ARR_OFF}${escapeHtml(o.off)}</span>` : o.on ? `<span class="mv-so" title="Substituted on">${MV_ARR_ON}${escapeHtml(o.on)}</span>` : '';
   const left = [], right = [];
   if (p.rc) left.push('<i class="mv-cd r" title="Red card"></i>'); else if (p.yc) left.push('<i class="mv-cd y" title="Yellow card"></i>');
-  if (p.a) left.push(`<b class="mv-b as" title="Assist">A${p.a > 1 ? p.a : ''}</b>`);
+  if (p.a) left.push(`<b class="mv-b as" title="Assist">${MV_BOOT}${p.a > 1 ? p.a : ''}</b>`);
   if (p.g) right.push(`<b class="mv-b" title="Goal">⚽${p.g > 1 ? p.g : ''}</b>`);
   return `<div class="mv-av"><span class="mv-ph">${MV_SIL}</span>${photo}${so}${rt}${left.length ? `<span class="mv-bd l">${left.join('')}</span>` : ''}${right.length ? `<span class="mv-bd r">${right.join('')}</span>` : ''}</div>`;
 }
@@ -4130,7 +4131,7 @@ function mvLineupHtml(v){
     return subs.map(p => ({ p, k: mvPlayed(p) ? key(p) : 1000 })).sort((a, b) => a.k - b.k).map(x => x.p); };
   const bh = benchOf(H, mh), ba = benchOf(A, ma), n = Math.max(bh.length, ba.length);
   let cells = ''; for (let i = 0; i < n; i++) cells += mvBenchCell(bh[i], bh[i] && mh.on.get(bh[i])) + mvBenchCell(ba[i], ba[i] && ma.on.get(ba[i]));
-  const legend = `<div class="mv-lg"><span>${MV_ARR_OFF} Subbed off</span><span>${MV_ARR_ON} Subbed on</span><span><b class="mv-b">⚽</b> Goal</span><span><b class="mv-b as">A</b> Assist</span><span><i class="mv-cd y"></i> Yellow card</span><span><i class="mv-cd r"></i> Red card</span></div>`;
+  const legend = `<div class="mv-lg"><span>${MV_ARR_OFF} Subbed off</span><span>${MV_ARR_ON} Subbed on</span><span><b class="mv-b">⚽</b> Goal</span><span><b class="mv-b as">${MV_BOOT}</b> Assist</span><span><i class="mv-cd y"></i> Yellow card</span><span><i class="mv-cd r"></i> Red card</span></div>`;
   return `<div class="mv-card mv-lu">${bar(hn, H, 'top')}`
     + `<div class="mv-pitch" role="img" aria-label="${escapeHtml('Starting line-ups: ' + hn + (H && H.formation ? ' ' + H.formation : '') + ' (top) against ' + an + (A && A.formation ? ' ' + A.formation : '') + ' (bottom)')}"><i class="mv-box t"></i><i class="mv-box b"></i>${half(H, true, mh.off)}${half(A, false, ma.off)}</div>`
     + bar(an, A, 'bottom')
@@ -4438,13 +4439,14 @@ function tmBack(){
   if (MV.kind === 'match' && TM.fromTeam){ const f = TM.fromTeam; TM.fromTeam = null; tmShow(f.view, f.tab); return true; }
   return false;
 }
+function tmDay(d){ const x = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return x ? new Date(Date.UTC(+x[1], +x[2] - 1, +x[3])).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }) : ''; }
 function tmFxRow(m){
   const done = m.status === 'finished' && m.hg != null;
   const me = m.mine; let cls = '';
   if (done){ const home = m.home === me; const gf = home ? m.hg : m.ag, ga = home ? m.ag : m.hg; cls = gf > ga ? 'w' : gf < ga ? 'l' : 'd'; }
   const mid = done ? `${m.hg} – ${m.ag}` : (mvTime(m) || 'v');
   const tag = m.status === 'postponed' ? ' · postponed' : m.status === 'cancelled' ? ' · cancelled' : '';
-  return `<button class="cp-fx tm-fx" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-c="${escapeHtml(m.competition || '')}" data-s="${escapeHtml(m.status)}" data-hg="${m.hg == null ? '' : m.hg}" data-ag="${m.ag == null ? '' : m.ag}"><span class="h">${escapeHtml(m.home)}${crest(m.home)}</span><span class="sc${done ? ' ' + cls : ' up'}">${escapeHtml(mid)}</span><span class="a">${crest(m.away)}${escapeHtml(m.away)}</span><small>${escapeHtml([m.competition, tag.slice(3)].filter(Boolean).join(' · '))}</small></button>`;
+  return `<button class="cp-fx tm-fx" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-c="${escapeHtml(m.competition || '')}" data-s="${escapeHtml(m.status)}" data-hg="${m.hg == null ? '' : m.hg}" data-ag="${m.ag == null ? '' : m.ag}"><span class="h">${escapeHtml(m.home)}${crest(m.home)}</span><span class="sc${done ? ' ' + cls : ' up'}">${escapeHtml(mid)}</span><span class="a">${crest(m.away)}${escapeHtml(m.away)}</span><small>${escapeHtml([tmDay(m.date), m.competition, tag.slice(3)].filter(Boolean).join(' · '))}</small></button>`;
 }
 function tmOverview(v){
   const o = v.overview; let h = '';
@@ -4452,8 +4454,11 @@ function tmOverview(v){
   if (o.lastFive.length) h += `<div class="mv-card"><div class="mv-h">Last ${o.lastFive.length} matches</div><div class="tm-last">${o.lastFive.slice().reverse().map(m => { const home = m.home === m.mine || (m.mine == null && m.home === v.club); const gf = home ? m.hg : m.ag, ga = home ? m.ag : m.hg; const cls = gf > ga ? 'w' : gf < ga ? 'l' : 'd'; const opp = home ? m.away : m.home; return `<button class="cp-fx tm-lf ${cls}" data-id="${escapeHtml(m.id)}" data-d="${escapeHtml(m.date)}" data-h="${escapeHtml(m.home)}" data-a="${escapeHtml(m.away)}" data-r="${escapeHtml(m.round || '')}" data-c="${escapeHtml(m.competition || '')}" data-s="finished" data-hg="${m.hg}" data-ag="${m.ag}" aria-label="${escapeHtml((home ? 'Home' : 'Away') + ' v ' + opp + ' ' + m.hg + '-' + m.ag)}">${clubMark(opp, 26)}<b>${m.hg}–${m.ag}</b></button>`; }).join('')}</div></div>`;
   const lines = o.xi.lines, n = lines.reduce((s, l) => s + l.length, 0);
   if (n){
-    const rows = lines.filter(l => l.length).map(l => `<div class="mv-row">${l.map(p => mvPlayerHtml({ id: p.pid, n: p.num, name: p.name, rating: p.rating, min: 90, pos: p.pos }, null)).join('')}</div>`).join('');
-    h += `<div class="mv-card"><div class="mv-h">Best XI by rating</div><div class="mv-pitch tm-pitch" role="img" aria-label="Best starting eleven by average rating"><i class="mv-box b"></i><div class="mv-half">${rows}</div></div><div class="mv-note">Average Creator Booth rating, ${n < 11 ? 'only ' + n + ' players have 2 or more rated matches so far. ' : ''}Built from ${o.coverage.detailsHeld} of ${o.coverage.matchesPlayed} played matches whose details we hold. Positions are 4-3-3.</div></div>`;
+    const rows = lines.filter(l => l.length).map(l => `<div class="mv-row">${l.map(p => mvPlayerHtml({ id: p.pid, n: p.num, name: p.name, rating: p.rating, g: p.goals, a: p.assists, min: 90, pos: p.pos }, null)).join('')}</div>`).join('');
+    const X = o.xi;
+    h += X.last
+      ? `<div class="mv-card"><div class="mv-h">Last starting XI${X.formation ? ' · ' + escapeHtml(X.formation) : ''}</div><div class="mv-pitch tm-pitch" role="img" aria-label="Starting eleven of the last match"><i class="mv-box b"></i><div class="mv-half">${rows}</div></div><div class="mv-note">The line-up and formation of the last match we hold (${escapeHtml(tmDay(X.date))}, v ${escapeHtml(X.vs)} ${escapeHtml(X.score)}). Ratings, goals and assists are season totals.</div></div>`
+      : `<div class="mv-card"><div class="mv-h">Best XI by rating</div><div class="mv-pitch tm-pitch" role="img" aria-label="Best starting eleven by average rating"><i class="mv-box b"></i><div class="mv-half">${rows}</div></div><div class="mv-note">Average Creator Booth rating, ${n < 11 ? 'only ' + n + ' players have 2 or more rated matches so far. ' : ''}Built from ${o.coverage.detailsHeld} of ${o.coverage.matchesPlayed} played matches whose details we hold. Positions are 4-3-3.</div></div>`;
   } else h += `<div class="mv-card"><div class="mv-h">Best XI by rating</div>${mvEmpty('Not enough rated matches yet', 'A player appears after two rated matches. Details are saved after each match.')}</div>`;
   if (o.coach) h += `<div class="mv-card"><div class="mv-h">Coach</div>${tmPerson(o.coach, 'coachs')}</div>`;
   return (v.overview.form.length ? `<div class="mv-card"><div class="mv-h">Form</div>${mvFormPills(v.overview.form)}</div>` : '') + h;

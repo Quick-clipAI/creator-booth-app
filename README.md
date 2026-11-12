@@ -349,6 +349,12 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.24 — team screen: dates, last starting XI, boot icon
+
+- Team > Matches: every row now shows the date (for example "Sat 21 Nov") with the competition, not only the time.
+- Team > Overview: "Best XI by rating" became "Last starting XI". It uses the line-up and formation of the club's last match whose line-up we hold (formation worked out from the pitch grid when the source gives none). Each player shows the SEASON average rating, goals and assists, not that match's rating. If no line-up is stored yet it falls back to the best-rated players in a 4-3-3.
+- Assists are now shown with a boot icon (like FotMob) instead of the letter A, on the pitch and in the legend.
+
 ## 1.7.23 — upcoming Champions League matches from StrikerAPI
 
 On the StrikerAPI test page there is a new button "Save the upcoming matches (2 credits)". It asks StrikerAPI for the scheduled 2026 Champions League matches and adds the ones we do not hold as `scheduled` matches. Rules: only club names we already know (by name or alias) are used, an unknown name is listed and skipped, a match we already hold (same two clubs within 3 days) is left alone, and finished matches are never changed. Safe to press again.
