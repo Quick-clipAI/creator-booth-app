@@ -349,6 +349,10 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.23 — upcoming Champions League matches from StrikerAPI
+
+On the StrikerAPI test page there is a new button "Save the upcoming matches (2 credits)". It asks StrikerAPI for the scheduled 2026 Champions League matches and adds the ones we do not hold as `scheduled` matches. Rules: only club names we already know (by name or alias) are used, an unknown name is listed and skipped, a match we already hold (same two clubs within 3 days) is left alone, and finished matches are never changed. Safe to press again.
+
 ## 1.7.22 — transfer sync paused
 
 The transfer sync (the part of the 5-minute cron that asks API-Football for player transfers) is now OFF by default. Each run logs "transfers paused". To turn it back on, set the Vercel env var SYNC_TRANSFERS to `on` (you set the value yourself) and redeploy. Squads, coach photos and match syncs are not affected.
