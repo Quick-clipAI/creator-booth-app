@@ -345,6 +345,12 @@ The player tool saves the players it could not match. Web files only.
 - Server side was checked on 2026-11-10: the release has `bundle.zip` (valid zip, `index.html` at the top) and `version.json`; the download works.
 - To see the new lines: install the APK of this version once, then press the update button and open Settings > App updates.
 
+## 1.7.21 — stop the squad refresh, coach photos in two days
+
+- **Squad refresh stopped:** the 5-minute scheduler made the old weekly squad refresh run all day (3 clubs per run, 39 requests in one morning), and it only compared the answer with the stored squad and kept the old one. `REFRESH_DAYS` is now 60. Clubs that were never fetched are still done; the saved squads (with player photo ids) stay.
+- **Coach photos, split over two days (`lib/sync-coaches.js`):** 1 `coachs?team=` request per club that has no coach id yet (about 144 clubs). At most 72 requests a day (`COACH_DAILY_CAP`, half the clubs), 3 per run, never below 15 requests left, and nothing on match days (15 or more matches today and tomorrow). The result is stored in `bank_coaches.api_id` (0 means the API has no coach, so it is not asked again). Logged as `sync-coaches` in the Log tab; the due-check answer has a `coaches` line.
+- Test: `tests/sync-coaches.test.mjs`.
+
 ## 1.7.20 — team screen polish
 
 - **Squad photos for the whole squad:** the squad list now takes each player's photo id from the API-Football squad we already saved for the club (id + shirt + name), so no new API requests. Players it cannot match show initials.
