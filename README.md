@@ -349,6 +349,13 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.27 — domestic league titles on the Trophies tab
+
+Added top-flight champions for England (1888-89 on), Spain (1928-29 on), Italy (1898 on), Germany (1902-03 on, the German championship, Bundesliga from 1963-64), France (1932-33 on), Saudi Arabia (1976-77 on), plus the MLS Cup (1996 on) and the MLS Supporters' Shield. 655 rows in `lib/data/domestic-trophies.js` with the source of each list.
+Rules: wartime and abandoned seasons are left out; revoked titles are not counted (Italy 1926-27 and 2004-05; France 1992-93); the Spezia 1944 decoration is not counted; Italy 1921-22 lists both Novese (FIGC) and Pro Vercelli (CCI); Germany 1940-41 lists Rapid Wien, who were the German champions that year.
+To load it: StrikerAPI test page > "Load league titles (no credits)" (admin action `trophies-seed`, safe to press again). No API-Football or StrikerAPI requests are used.
+Totals checked against the known counts, for example Liverpool and Manchester United 20 each, Real Madrid 36 in LaLiga, Juventus 36, Bayern 35, PSG 14.
+
 ## 1.7.26 — Trophies tab (European club trophies)
 
 New table `bank_club_trophies` (competition, season, club, runner-up, source) with every final of: European Cup / Champions League (1955-56 to 2025-26, 71), UEFA Cup / Europa League (1971-72 to 2025-26, 55), Conference League (2021-22 to 2025-26, 5) and the UEFA Super Cup (1972 to 2026, 52; not held 1974, 1981, 1985). Friendlies are not stored; the Inter-Cities Fairs Cup and the Cup Winners' Cup are not included.
