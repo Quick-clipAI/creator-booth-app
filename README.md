@@ -349,6 +349,15 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.28 — coach chain (follow a vacancy down the line)
+
+When a club loses its coach it goes on a WATCH list (table `bank_coach_watch`: Manchester United is on it now, since Carrick left on 12 Nov 2026). The cron checks each vacancy at most twice a day (1 API-Football request, `coachs?team=`). When a new coach shows up we:
+1. record him (`bank_coach_spells`: start date and the club he came from, from his career in the same API answer);
+2. if he came straight from another club or a national team (his last job ended no more than 90 days before the new one, or is still listed), that job is now vacant, so it goes on the watch list and the chain continues (Man United -> Chelsea -> Barcelona -> ...);
+3. if he was a free agent (no job for more than 90 days, or no earlier job), the chain ends and the log says so.
+Every move is written to the Log tab as `coach-watch`. The team screen shows "Joined <date> from <club>" under the current coach.
+Also: every club's coach is re-checked every 14 days (at most 8 requests a day, none on busy match days) so a sacking nobody told us about is noticed; the same daily coach cap (`COACH_DAILY_CAP`, default 72) covers photos, watch and re-checks, and the 15-request reserve is kept. Rumours are not stored: only facts.
+
 ## 1.7.27 — domestic league titles on the Trophies tab
 
 Added top-flight champions for England (1888-89 on), Spain (1928-29 on), Italy (1898 on), Germany (1902-03 on, the German championship, Bundesliga from 1963-64), France (1932-33 on), Saudi Arabia (1976-77 on), plus the MLS Cup (1996 on) and the MLS Supporters' Shield. 655 rows in `lib/data/domestic-trophies.js` with the source of each list.

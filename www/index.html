@@ -1605,7 +1605,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.27';
+const APP_VERSION = '1.7.28';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4464,6 +4464,7 @@ function tmOverview(v){
     const L = o.coach && o.coach.left;
     const prev = (o.coachHistory || []).map(c => `<div class="tm-cp">${tmPerson(c, 'coachs')}<div class="mv-note">${c.from ? escapeHtml(tmDay(c.from)) + ' – ' : 'Left '}${escapeHtml(fixtureDateText(c.to, ''))}${c.reason ? ' · ' + escapeHtml(c.reason) : ''}</div></div>`).join('');
     h += `<div class="mv-card"><div class="mv-h">Coach</div>${o.coach ? tmPerson(o.coach, 'coachs') : '<div class="mv-note">No head coach on record.</div>'}`
+      + (o.coach && o.coach.joined ? `<div class="mv-note">Joined${o.coach.joined.date ? ' ' + escapeHtml(fixtureDateText(o.coach.joined.date, '')) : ''}${o.coach.joined.from && o.coach.joined.origin === 'club' ? ' from ' + escapeHtml(o.coach.joined.from) : ''}</div>` : '')
       + (L ? `<div class="mv-note tm-left"><b>Left ${escapeHtml(fixtureDateText(L.date, ''))}</b>${L.reason ? ' · ' + escapeHtml(L.reason) : ''}. A new coach will show here once the source lists one.</div>` : '')
       + (prev ? `<div class="mv-h tm-prev">Previous coaches</div>${prev}` : '') + `</div>`;
   }
