@@ -349,6 +349,15 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.25 — coach history (nobody is erased when a coach leaves)
+
+Before: `bank_coaches` kept one row per club and season, so a new coach overwrote the old name and nothing said when or why he left.
+Now: a new table `bank_coach_spells` (club, coach, role, started_on, ended_on, end_reason, source). It is filled by:
+- the sync: when the source shows a different coach for a club, the old coach's spell is closed (date = the day we noticed, reason says "exact date and reason not recorded yet") and the new coach's spell opens;
+- the admin action `coach-spell` (club, name, league, started_on, ended_on, end_reason) which sets the real dates and reason and wins over the automatic note.
+Already recorded by hand from news reports: Rúben Amorim (Manchester United, left 5 Jan 2026) and Michael Carrick (left 12 Nov 2026, the club cited a disappointing start to the season).
+Team screen > Overview > Coach: shows the coach in charge, "Left <date> · <reason>" when the stored coach has left and no successor is listed yet, and a "Previous coaches" list.
+
 ## 1.7.24 — team screen: dates, last starting XI, boot icon
 
 - Team > Matches: every row now shows the date (for example "Sat 21 Nov") with the competition, not only the time.

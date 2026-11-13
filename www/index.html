@@ -506,7 +506,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-av .mv-bd{position:absolute;bottom:-4px;display:flex;align-items:center;gap:2px;z-index:2}
 .mv-av .mv-bd.l{left:-8px}.mv-av .mv-bd.r{right:-8px}
 .mv-b{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:8px;background:#f2f2f2;color:#111;font:700 10px var(--sans);box-sizing:border-box;padding:0 3px}
-.mv-b.as{background:#5aa7ff;color:#0b0b0a}.mv-b.as .mv-boot{display:block;margin-right:1px}.mv-cd{display:inline-block;width:9px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}.mv-cd.y{background:#e8c437}.mv-cd.r{background:#d84a3a}
+.mv-b.as{background:#5aa7ff;color:#0b0b0a}.mv-b.as .mv-boot{display:block;margin-right:1px}.tm-left{margin-top:8px;color:#e8c437}.tm-prev{margin-top:14px}.tm-cp{margin-top:8px}.mv-cd{display:inline-block;width:9px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}.mv-cd.y{background:#e8c437}.mv-cd.r{background:#d84a3a}
 .mv-pn{margin-top:6px;font-size:11.5px;line-height:1.15;max-width:100%;white-space:nowrap;color:inherit}.mv-pitch .mv-pn{overflow:visible}.mv-bc .mv-pn{overflow:hidden;text-overflow:ellipsis}.mv-pn .no{opacity:.65;margin-right:3px;font-variant-numeric:tabular-nums}
 .mv-bnch{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;margin-top:6px}.mv-bc{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;color:var(--text)}.mv-bc .mv-pn{color:var(--text)}.mv-bc .mv-ps{font-size:11px;color:var(--text-dim)}
 .mv-bc .mv-av{width:42px;height:42px;border-color:var(--border,#555)}.mv-bc .mv-av .mv-so{color:var(--text)}
@@ -1605,7 +1605,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.24';
+const APP_VERSION = '1.7.25';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4460,7 +4460,13 @@ function tmOverview(v){
       ? `<div class="mv-card"><div class="mv-h">Last starting XI${X.formation ? ' · ' + escapeHtml(X.formation) : ''}</div><div class="mv-pitch tm-pitch" role="img" aria-label="Starting eleven of the last match"><i class="mv-box b"></i><div class="mv-half">${rows}</div></div><div class="mv-note">The line-up and formation of the last match we hold (${escapeHtml(tmDay(X.date))}, v ${escapeHtml(X.vs)} ${escapeHtml(X.score)}). Ratings, goals and assists are season totals.</div></div>`
       : `<div class="mv-card"><div class="mv-h">Best XI by rating</div><div class="mv-pitch tm-pitch" role="img" aria-label="Best starting eleven by average rating"><i class="mv-box b"></i><div class="mv-half">${rows}</div></div><div class="mv-note">Average Creator Booth rating, ${n < 11 ? 'only ' + n + ' players have 2 or more rated matches so far. ' : ''}Built from ${o.coverage.detailsHeld} of ${o.coverage.matchesPlayed} played matches whose details we hold. Positions are 4-3-3.</div></div>`;
   } else h += `<div class="mv-card"><div class="mv-h">Best XI by rating</div>${mvEmpty('Not enough rated matches yet', 'A player appears after two rated matches. Details are saved after each match.')}</div>`;
-  if (o.coach) h += `<div class="mv-card"><div class="mv-h">Coach</div>${tmPerson(o.coach, 'coachs')}</div>`;
+  if (o.coach || (o.coachHistory && o.coachHistory.length)){
+    const L = o.coach && o.coach.left;
+    const prev = (o.coachHistory || []).map(c => `<div class="tm-cp">${tmPerson(c, 'coachs')}<div class="mv-note">${c.from ? escapeHtml(tmDay(c.from)) + ' – ' : 'Left '}${escapeHtml(fixtureDateText(c.to, ''))}${c.reason ? ' · ' + escapeHtml(c.reason) : ''}</div></div>`).join('');
+    h += `<div class="mv-card"><div class="mv-h">Coach</div>${o.coach ? tmPerson(o.coach, 'coachs') : '<div class="mv-note">No head coach on record.</div>'}`
+      + (L ? `<div class="mv-note tm-left"><b>Left ${escapeHtml(fixtureDateText(L.date, ''))}</b>${L.reason ? ' · ' + escapeHtml(L.reason) : ''}. A new coach will show here once the source lists one.</div>` : '')
+      + (prev ? `<div class="mv-h tm-prev">Previous coaches</div>${prev}` : '') + `</div>`;
+  }
   return (v.overview.form.length ? `<div class="mv-card"><div class="mv-h">Form</div>${mvFormPills(v.overview.form)}</div>` : '') + h;
 }
 function tmMatches(v){
