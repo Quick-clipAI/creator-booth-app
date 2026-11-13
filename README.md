@@ -349,6 +349,12 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.26 — Trophies tab (European club trophies)
+
+New table `bank_club_trophies` (competition, season, club, runner-up, source) with every final of: European Cup / Champions League (1955-56 to 2025-26, 71), UEFA Cup / Europa League (1971-72 to 2025-26, 55), Conference League (2021-22 to 2025-26, 5) and the UEFA Super Cup (1972 to 2026, 52; not held 1974, 1981, 1985). Friendlies are not stored; the Inter-Cities Fairs Cup and the Cup Winners' Cup are not included.
+Sources: Wikipedia lists (UEFA Cup/Europa League), a Champions League winners list up to 2022-23, RSSSF (Conference League, Super Cup), and news reports for the 2023-24 to 2025-26 Champions League finals (Real Madrid, PSG, PSG). Totals were checked against the known all-time counts (for example Real Madrid 15 Champions League titles, Sevilla 7 Europa League titles).
+Team screen > Trophies: for each competition the number of wins and the seasons, newest first. A club name is matched through a small alias list (AC Milan/Milan, Inter Milan/Internazionale Milano, Olympiacos/Olympiakos, and so on). Domestic leagues and cups, and the player trophies, are the next step.
+
 ## 1.7.25 — coach history (nobody is erased when a coach leaves)
 
 Before: `bank_coaches` kept one row per club and season, so a new coach overwrote the old name and nothing said when or why he left.

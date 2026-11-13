@@ -506,7 +506,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-av .mv-bd{position:absolute;bottom:-4px;display:flex;align-items:center;gap:2px;z-index:2}
 .mv-av .mv-bd.l{left:-8px}.mv-av .mv-bd.r{right:-8px}
 .mv-b{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:8px;background:#f2f2f2;color:#111;font:700 10px var(--sans);box-sizing:border-box;padding:0 3px}
-.mv-b.as{background:#5aa7ff;color:#0b0b0a}.mv-b.as .mv-boot{display:block;margin-right:1px}.tm-left{margin-top:8px;color:#e8c437}.tm-prev{margin-top:14px}.tm-cp{margin-top:8px}.mv-cd{display:inline-block;width:9px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}.mv-cd.y{background:#e8c437}.mv-cd.r{background:#d84a3a}
+.mv-b.as{background:#5aa7ff;color:#0b0b0a}.mv-b.as .mv-boot{display:block;margin-right:1px}.tm-tr{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-top:1px solid rgba(255,255,255,.08)}.tm-tr:first-of-type{border-top:0}.tm-tr b{min-width:26px;font:700 18px var(--sans);text-align:center}.tm-tr span{display:block;font-weight:600}.tm-tr small{display:block;color:#9a9a92;line-height:1.5;margin-top:2px}.tm-left{margin-top:8px;color:#e8c437}.tm-prev{margin-top:14px}.tm-cp{margin-top:8px}.mv-cd{display:inline-block;width:9px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}.mv-cd.y{background:#e8c437}.mv-cd.r{background:#d84a3a}
 .mv-pn{margin-top:6px;font-size:11.5px;line-height:1.15;max-width:100%;white-space:nowrap;color:inherit}.mv-pitch .mv-pn{overflow:visible}.mv-bc .mv-pn{overflow:hidden;text-overflow:ellipsis}.mv-pn .no{opacity:.65;margin-right:3px;font-variant-numeric:tabular-nums}
 .mv-bnch{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;margin-top:6px}.mv-bc{display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;color:var(--text)}.mv-bc .mv-pn{color:var(--text)}.mv-bc .mv-ps{font-size:11px;color:var(--text-dim)}
 .mv-bc .mv-av{width:42px;height:42px;border-color:var(--border,#555)}.mv-bc .mv-av .mv-so{color:var(--text)}
@@ -1605,7 +1605,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.25';
+const APP_VERSION = '1.7.26';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4512,7 +4512,14 @@ function tmPerson(p, kind, extra){
   const ph = p.pid ? `<img class="pl2-photo tm-ph" src="https://media.api-sports.io/football/${kind}/${p.pid}.png" alt="" width="40" height="40" loading="lazy" referrerpolicy="no-referrer" data-ini="${ini}">` : `<span class="pl2-photo pl2-ini tm-ph">${ini}</span>`;
   return `<div class="tm-sq">${ph}<div class="tm-sn"><b>${extra && extra.shirt ? '<i>' + extra.shirt + '</i> ' : ''}${escapeHtml(p.name)}</b><span>${plFlag(p.nationality)}${escapeHtml(p.nationality || '')}${extra && extra.loan ? ' · loan' : ''}</span></div>${extra && extra.age != null ? `<div class="tm-age">${extra.age}</div>` : ''}</div>`;
 }
-function tmRender(v){ return ({ overview: tmOverview, matches: tmMatches, table: tmTable, stats: tmStats, squad: tmSquad }[MV.tab] || tmOverview)(v); }
+function tmTrophies(v){
+  const t = v.trophies || [];
+  if (!t.length) return `<div class="mv-card">${mvEmpty('No European trophies on record', 'Only the Champions League, Europa League, Conference League and UEFA Super Cup are stored so far. Domestic titles and cups come next.')}</div>`;
+  const yr = s => String(s).replace(/^(\d{4})-(\d{2,4})$/, (m, a, b) => a + '/' + b.slice(-2));
+  return `<div class="mv-card"><div class="mv-h">Trophies</div>${t.map(x => `<div class="tm-tr"><b>${x.count}</b><div><span>${escapeHtml(x.name)}</span><small>${x.seasons.map(yr).join(' • ')}</small></div></div>`).join('')}</div>`
+    + `<div class="mv-note">European competitions only for now (all-time, winners of each final). Domestic leagues, cups and friendly tournaments are not included.</div>`;
+}
+function tmRender(v){ return ({ overview: tmOverview, matches: tmMatches, table: tmTable, stats: tmStats, squad: tmSquad, trophies: tmTrophies }[MV.tab] || tmOverview)(v); }
 document.addEventListener('click', e => {
   if (!MV.open || MV.kind !== 'team' || !TM.view) return;
   const v = TM.view;
