@@ -353,6 +353,7 @@ The player tool saves the players it could not match. Web files only.
 - 9 matches saved from Highlightly in La Liga, Ligue 1 and Serie A have events but no line-ups: Highlightly's own answer had empty line-ups when they were fetched (formation "Unknown"). Nothing else in our stack has line-ups for those August dates (API-Football's free plan only reaches a few days around today; StrikerAPI is Champions League only).
 - New Highlightly page button **Retry missing line-ups** (`highlightly-sync` step `lineups`, `hlRefetchLineups`): asks only `/lineups/{id}` again (1 request each, up to 12 a press, inside the daily cap) and saves when both teams have 9+ starters; otherwise nothing changes and the match is counted as still empty.
 - The 3 goals-differ matches (Villa–Arsenal, Rennes–Le Mans, Levante–Athletic) are applied by the existing "Fetch 15 matches now" button (it re-converts from saved data first, no requests); they have no line-up data at Highlightly at all.
+- **Timeout fix (60 s):** the first versions of the re-apply and line-up retry read every saved match one by one (hundreds of queries) and timed out on Vercel. They now do one query per league for matches and details, and read a raw Highlightly answer only for a match that needs it (`store.strikerRowFor`).
 - Test: `tests/highlightly.test.mjs`.
 
 ## 1.7.29 (server) — `get_events` answers are converted
