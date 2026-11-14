@@ -349,6 +349,13 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.29 (server fixes) — coach-watch error, goals-differ matches
+- **Log error fixed** ("null value in column club of bank_coach_watch"): the coach watch saved "last checked" as a partial upsert, which Postgres rejects before it reaches the conflict. Partial updates are now PATCHed. Before the fix the watch could not record that it had checked Manchester United, so it spent 1 request every 10 minutes (about 50 wasted today).
+- **Goals differ (Highlightly):** it lists a VAR-cancelled goal twice (a "VAR … Cancelled" row plus a nameless Goal). The nameless goal is now ignored when the same team has a cancelled row. Fixes Aston Villa 0-1 Arsenal and Rennes 3-2 Le Mans.
+- Levante 3-1 Athletic: Highlightly lacks the 4th goal. Added by hand from a named report in `lib/data/goal-patches.js` (Karl Etta Eyong, stoppage time, minute marked approximate); only used when the source is short by exactly that goal.
+- `hlReapply` re-converts saved raw answers with no requests. The Highlightly page's fetch buttons now send `reapply: true`.
+- Tests added to `tests/highlightly.test.mjs`.
+
 ## 1.7.29 — player trophies, fetched only for players people open
 - Opening a player card now shows a **Trophies** block: his club trophies grouped by club (like Messi's page in FotMob), with the count and the seasons of each.
 - How it is worked out: his transfer history (`transfers?player=ID`, 1 request, only when somebody opens him; kept 60 days in `bank_player_career`) gives the clubs and dates; every club trophy we store (European + 7 domestic leagues) is credited for the seasons he was at that club at the end of the season (left in January = not credited; loans count for the loan club).
