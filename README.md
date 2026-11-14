@@ -349,6 +349,13 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.29 — player trophies, fetched only for players people open
+- Opening a player card now shows a **Trophies** block: his club trophies grouped by club (like Messi's page in FotMob), with the count and the seasons of each.
+- How it is worked out: his transfer history (`transfers?player=ID`, 1 request, only when somebody opens him; kept 60 days in `bank_player_career`) gives the clubs and dates; every club trophy we store (European + 7 domestic leagues) is credited for the seasons he was at that club at the end of the season (left in January = not credited; loans count for the loan club).
+- Free-plan safety: at most `PLAYER_CAREER_DAILY_CAP` (default 25) player fetches a day, never below the 15-request reserve; over that the card says "queued". These requests also count in the coach daily cap.
+- Limits (stated on the card): counted by seasons at the club, not games played; no national-team trophies and no personal awards yet; clubs outside our stored trophies show nothing.
+- Files: `lib/player-trophies.js`, `lib/player-career.js`, `playerTransfersGetter` in `lib/apisports.js`, `GET /api/competition?trophiesof=<api id>`, table `bank_player_career`, test `tests/player-trophies.test.mjs`.
+
 ## 1.7.28 — coach chain (follow a vacancy down the line)
 
 When a club loses its coach it goes on a WATCH list (table `bank_coach_watch`: Manchester United is on it now, since Carrick left on 12 Nov 2026). The cron checks each vacancy at most twice a day (1 API-Football request, `coachs?team=`). When a new coach shows up we:
