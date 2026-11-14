@@ -349,6 +349,12 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.29 (server) — `get_events` answers are converted
+- The `get_events` answer is the whole play-by-play in ONE answer (e.g. 83 events, `next_offset` null): goals carry `is_goal`, cards, substitutions, VAR decisions, shots. `importStriker` now prefers it (`store.strikerEvents()`) over `key_events`, keeping goals, cards and substitutions only.
+- Still never guessed: events are saved only when the goals add up to the final score; a game with an own goal is left without events (the answer does not say which side an own goal is filed under).
+- StrikerAPI credits: real balance 120 of 500 (refills to 500 on 3 December); the earlier "about 470" came from an old header. 3 games were fetched (30 credits); with the 60-credit reserve 6 more can be fetched now, 29 more after the refill.
+- Test: `tests/striker-import.test.mjs`.
+
 ## 1.7.29 (server) — full goal lists for the Champions League games StrikerAPI left short
 - New StrikerAPI test-page button "Fetch full goal lists" (`striker-bulk` step `events`): asks `get_events` (10 credits) only for saved games whose `key_events` goals do not add up to the score, 3 per press, never below the 60-credit reserve, each game once. Answers are saved raw in `striker_results` (tool `get_events`).
 - The converter for the `get_events` answer is written after the first saved answer is inspected (its shape is not documented here), so nothing is guessed.
