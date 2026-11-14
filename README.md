@@ -349,6 +349,12 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.29 (server) — Champions League events from the StrikerAPI answers we already saved
+- Correction to an old note: StrikerAPI's `get_game` answer DOES carry `key_events` (goals with minute and assist, penalty/own-goal flags, cards, substitutions). `lib/striker-import.js` `eventsFromKey()` now converts them, no extra credits.
+- But `key_events` is only a subset: in our 63 saved games the goals add up to the final score in 25 only. A game's events are saved only when the goals add up (nothing guessed); the other 38 keep line-ups and stats but no event list. Filling them needs `get_events` (10 credits a game).
+- To apply: StrikerAPI test page, "import" button again (it re-saves StrikerAPI-sourced details only, never other sources).
+- Test: `tests/striker-import.test.mjs`.
+
 ## 1.7.29 (server fixes) — coach-watch error, goals-differ matches
 - **Log error fixed** ("null value in column club of bank_coach_watch"): the coach watch saved "last checked" as a partial upsert, which Postgres rejects before it reaches the conflict. Partial updates are now PATCHed. Before the fix the watch could not record that it had checked Manchester United, so it spent 1 request every 10 minutes (about 50 wasted today).
 - **Goals differ (Highlightly):** it lists a VAR-cancelled goal twice (a "VAR … Cancelled" row plus a nameless Goal). The nameless goal is now ignored when the same team has a cancelled row. Fixes Aston Villa 0-1 Arsenal and Rennes 3-2 Le Mans.
