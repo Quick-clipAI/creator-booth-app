@@ -349,6 +349,12 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## 1.7.29 (server) — retry missing line-ups (Highlightly)
+- 9 matches saved from Highlightly in La Liga, Ligue 1 and Serie A have events but no line-ups: Highlightly's own answer had empty line-ups when they were fetched (formation "Unknown"). Nothing else in our stack has line-ups for those August dates (API-Football's free plan only reaches a few days around today; StrikerAPI is Champions League only).
+- New Highlightly page button **Retry missing line-ups** (`highlightly-sync` step `lineups`, `hlRefetchLineups`): asks only `/lineups/{id}` again (1 request each, up to 12 a press, inside the daily cap) and saves when both teams have 9+ starters; otherwise nothing changes and the match is counted as still empty.
+- The 3 goals-differ matches (Villa–Arsenal, Rennes–Le Mans, Levante–Athletic) are applied by the existing "Fetch 15 matches now" button (it re-converts from saved data first, no requests); they have no line-up data at Highlightly at all.
+- Test: `tests/highlightly.test.mjs`.
+
 ## 1.7.29 (server) — `get_events` answers are converted
 - The `get_events` answer is the whole play-by-play in ONE answer (e.g. 83 events, `next_offset` null): goals carry `is_goal`, cards, substitutions, VAR decisions, shots. `importStriker` now prefers it (`store.strikerEvents()`) over `key_events`, keeping goals, cards and substitutions only.
 - Still never guessed: events are saved only when the goals add up to the final score; a game with an own goal is left without events (the answer does not say which side an own goal is filed under).
