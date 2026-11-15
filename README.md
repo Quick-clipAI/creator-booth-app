@@ -349,6 +349,10 @@ The player tool saves the players it could not match. Web files only.
 
 `striker-test.html` has a new button "Test: does it give upcoming matches? (2 credits)" (admin action `striker-bulk`, step `upcoming`, `lib/striker.js`). It asks StrikerAPI's list for status `scheduled`, shows how many matches come back, the dates and a sample, and saves nothing (so it cannot replace the saved season list). If matches come back, a later step can put them into the app as upcoming fixtures. Test: `tests/striker-upcoming.test.mjs`.
 
+## Admin 1.9.3 (server only) — export players & coaches
+
+Server change in the web/API repo, no app change (APP_VERSION stays 1.7.29, `www/index.html` unchanged). Admin → Players has a new "Export players & coaches (CSV)" button: name, role (Player/Coach), club, league and season for everything in the data bank.
+
 ## Admin 1.9.2 (server only) — coverage watch
 
 Server change in the web/API repo, no app change (APP_VERSION stays 1.7.29, `www/index.html` unchanged). The admin Overview now has a "Coverage watch" banner: finished matches without details and due matches without a result, with the hours left before API-Football's free window (yesterday to tomorrow) closes for them. The 20-minute job logs a `coverage-watch` line when something is closing or past the window, and asks the oldest day first. No API requests are spent on the watch.
