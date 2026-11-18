@@ -1605,7 +1605,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.29';
+const APP_VERSION = '1.7.30';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3135,6 +3135,7 @@ function wireUserEditButton(msgEl){
 function enterUserEditMode(msgEl){
   const textSpan = msgEl.querySelector('.bubble-user-text');
   if (!textSpan) return;
+  lpFired = false;   // opened from the long-press menu: make sure its flag cannot block the Cancel / Send taps
   const originalText = textSpan.textContent;
   const bubble = msgEl.querySelector('.bubble-user');
   const actionsRow = msgEl.querySelector('.user-actions');
@@ -5144,6 +5145,7 @@ let lpTimer = null, lpStart = null, lpFired = false;
 const isTouchUI = () => window.matchMedia('(pointer:coarse)').matches;
 thread.addEventListener('touchstart', (e) => {
   if (!isTouchUI()) return;
+  lpFired = false; clearTimeout(lpTimer); lpTimer = null;   // every new touch starts clean (a stale "long-press fired" flag used to swallow taps inside the edit box)
   const bubble = e.target.closest && e.target.closest('.bubble-assistant, .bubble-user');
   if (!bubble || e.target.closest('.edit-wrap, a, button') || bubble.classList.contains('typing')) return;
   const t = e.touches[0];
@@ -5163,7 +5165,9 @@ thread.addEventListener('touchmove', (e) => {
 }, { passive: true });
 ['touchend', 'touchcancel'].forEach(ev => thread.addEventListener(ev, (e) => {
   clearTimeout(lpTimer); lpTimer = null;
-  if (lpFired && e.cancelable) e.preventDefault(); // swallow the click that would follow the long-press
+  // swallow the click that would follow a long-press, but never inside the edit box, a button or a link
+  if (lpFired && e.cancelable && !(e.target.closest && e.target.closest('.edit-wrap, a, button, textarea, input'))) e.preventDefault();
+  lpFired = false;
 }, { passive: false }));
 thread.addEventListener('contextmenu', (e) => {
   if (isTouchUI() && e.target.closest && e.target.closest('.bubble-assistant, .bubble-user')) e.preventDefault();
