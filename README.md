@@ -361,6 +361,13 @@ Server change in the web/API repo, no app change (APP_VERSION stays 1.7.29, `www
 
 Server change in the web/API repo, no app change (APP_VERSION stays 1.7.29, `www/index.html` unchanged). The admin Overview now has a "Coverage watch" banner: finished matches without details and due matches without a result, with the hours left before API-Football's free window (yesterday to tomorrow) closes for them. The 20-minute job logs a `coverage-watch` line when something is closing or past the window, and asks the oldest day first. No API requests are spent on the watch.
 
+## Release rule — version numbers and README are now automatic
+
+- **Version numbers.** The last number only goes 0-9; after 9 it carries (`1.7.9` -> `1.8.0`, `1.9.9` -> `2.0.0`). `node tools/bump-version.mjs app "what changed"` raises `APP_VERSION` in `index.html`, updates `../creator-booth-app` (`package.json` and the `www/index.html` copy) and adds the README heading in both repos; `... admin "what changed"` does the same for `ADMIN_VERSION` in `admin.html`. The current `1.7.30` is above 9, so the next app bump gives `1.8.0`.
+- **Pre-commit hook (`tools/hooks/pre-commit`).** If `index.html` or `admin.html` is committed without a new version, the hook bumps it. Any commit that changes code without changing `README.md` is refused, so the README cannot be forgotten.
+- **Once per fresh clone:** `sh tools/install-hooks.sh` (sets `core.hooksPath`). Git does not copy hooks by itself, so a new session must run it before the first commit.
+- Limits: the hook cannot commit the app repo for you; it only updates its files. Tests: `tests/version.test.mjs`.
+
 ## 1.7.30 — fix: edit-message box froze after a long-press (Send, Cancel and copy/cut did nothing)
 
 - **Symptom.** After editing a message, the text box accepted typing but Send, Cancel and the phone's copy/cut pop-up did nothing.
