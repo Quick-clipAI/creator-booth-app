@@ -1607,7 +1607,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.8.2';
+const APP_VERSION = '1.8.3';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -3921,17 +3921,20 @@ function fixtureDateText(d, t){
   const dt = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
   return dt.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) + (t ? ' · ' + t : '');
 }
+const fxRoundLabel = r => { const x = String(r || '').trim(); const n = /^(?:regular season\s*-\s*|matchday\s*|round\s*)(\d+)$/i.exec(x); return n ? 'Matchday ' + n[1] : x; };
+const fxNoDate = m => !!m && m.status !== 'finished' && (m.dateUnknown === true || m.status === 'postponed' || (!m.kickoff && /provisional|date unknown/i.test(String(m.note || ''))));
 function fixtureCardsHtml(cards){
   const comps = (cards || []).filter(c => c && c.type === 'competition' && c.league).map(competitionCardHtml).join('');
   return comps + (cards || []).filter(c => c && c.home && c.away).map(c => {
     const done = c.status === 'finished' && c.hg != null && c.ag != null;
     const mid = done ? `<span class="fx-score">${Number(c.hg)} – ${Number(c.ag)}</span>` : `<span class="fx-vs">v</span>`;
-    const sub = done ? 'Full time' : 'Upcoming';
-    const meta = [c.competition, c.round].filter(Boolean).join(' · ');
+    const noDate = fxNoDate(c);
+    const sub = done ? 'Full time' : (noDate ? 'Date to be announced' : 'Upcoming');
+    const meta = [c.competition, noDate ? '' : fxRoundLabel(c.round) || c.round].filter(Boolean).join(' · ');
     return `<div class="fx-card${LG_CLASS(c.league)}" role="button" tabindex="0" aria-label="${escapeHtml(c.home + ' versus ' + c.away + ', open match details')}" data-fx="${escapeHtml(c.id || '')}" data-d="${escapeHtml(c.date || '')}" data-h="${escapeHtml(c.home)}" data-a="${escapeHtml(c.away)}" data-c="${escapeHtml(c.competition || '')}" data-s="${escapeHtml(c.status || '')}" data-hg="${c.hg == null ? '' : Number(c.hg)}" data-ag="${c.ag == null ? '' : Number(c.ag)}">`
       + `<div class="fx-meta">${escapeHtml(meta)}</div>`
       + `<div class="fx-row"><div class="fx-team">${clubBadgeHtml(c.home)}<span class="fx-name">${escapeHtml(c.home)}</span></div>${mid}<div class="fx-team">${clubBadgeHtml(c.away)}<span class="fx-name">${escapeHtml(c.away)}</span></div></div>`
-      + `<div class="fx-foot"><span>${escapeHtml(fixtureDateText(c.date, c.time))}</span><span class="fx-state${done ? '' : ' up'}">${sub}</span><span class="fx-go">Details ›</span></div></div>`;
+      + `<div class="fx-foot"><span>${escapeHtml(noDate ? (fxRoundLabel(c.round) || 'Matchday not known') : fixtureDateText(c.date, c.time))}</span><span class="fx-state${done ? '' : ' up'}">${sub}</span><span class="fx-go">Details ›</span></div></div>`;
   }).join('');
 }
 /* Fixture cards are snapshots made when the answer was written, so a card for a match that is played later would stay "Upcoming".
@@ -4004,9 +4007,9 @@ function mvStateText(m){
     const n = /penalt/i.test(m.note || '') ? ' · ' + m.note : (/extra time/i.test(m.note || '') ? ' · after extra time' : '');
     return { t: 'Full time' + n, up: false };
   }
-  if (m.status === 'postponed') return { t: 'Postponed', up: false };
+  if (m.status === 'postponed') return { t: 'Postponed · ' + (fxRoundLabel(m.round) || 'date to be announced'), up: false };
   if (m.status === 'cancelled') return { t: 'Cancelled', up: false };
-  return { t: fixtureDateText(m.date, ''), up: true };
+  return { t: fxNoDate(m) ? (fxRoundLabel(m.round) || 'Date to be announced') + ' · date to be announced' : fixtureDateText(m.date, ''), up: true };
 }
 function mvScorersHtml(v){
   const ev = v.detail && v.detail.events ? v.detail.events : [];
@@ -4040,7 +4043,7 @@ function mvRenderTabs(v){
 /* ---- Facts */
 function mvFactsHtml(v){
   const m = v.match, d = v.detail;
-  const rows = [['Competition', m.competition], ['Round', m.round], ['Date', fixtureDateText(m.date, '')], [m.status === 'finished' ? 'Kick-off' : 'Kick-off', mvTime(m)], ['Venue', d && d.venue ? [d.venue.name, d.venue.city].filter(Boolean).join(', ') : ''], ['Referee', d && d.referee ? d.referee : ''],
+  const rows = [['Competition', m.competition], ['Round', fxRoundLabel(m.round)], ['Date', fxNoDate(m) ? 'Not announced yet' : fixtureDateText(m.date, '')], [m.status === 'finished' ? 'Kick-off' : 'Kick-off', mvTime(m)], ['Venue', d && d.venue ? [d.venue.name, d.venue.city].filter(Boolean).join(', ') : ''], ['Referee', d && d.referee ? d.referee : ''],
     ['Half-time', m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : (d && d.halftime ? d.halftime.home + ' – ' + d.halftime.away : '')], ['Details', d && d.source === 'manual' ? 'Entered by hand' : (d && d.source === 'strikerapi' ? 'Team stats and player lines (no goal minutes)' : (d && d.source === 'openmatchday' ? 'Team stats only (no line-ups or ratings)' : ''))]].filter(r => r[1]);
   let out = `<div class="mv-card"><div class="mv-h">Match</div><div class="mv-meta">${rows.map(r => `<div><span>${r[0]}</span><span>${escapeHtml(r[1])}</span></div>`).join('')}</div></div>`;
   if (!d) return out + `<div class="mv-card">${mvNoDetail(v)}</div>`;

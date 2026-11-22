@@ -16,6 +16,11 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## 1.8.3 — Matches without a confirmed date show their matchday ('Matchday 14 · date to be announced') instead of a date
+
+- A match with no confirmed date (status `postponed`, or a schedule-guess date with no kick-off) is shown by its **matchday**, e.g. "Matchday 14 · Date to be announced", on the chat card, the match screen (Round / Date rows) and in the data given to the AI (`dateUnknown`, `roundLabel` in `lib/bank-context.js`). Postponed matches are now listed in a club's chat data ("postponed, no new date announced yet").
+- 9 Saudi Pro League matchday-14 matches set to `postponed` on 22 Nov 2026 (see Admin 1.9.5 notes). When the league announces dates and API-Football lists them, the daily sync is expected to move them; if not, set the date by hand.
+
 ## 1.8.2 — Match screen: 'Highest rated player' is now 'MVP' with the player's photo (initials while it loads)
 
 - Match screen: the "Highest rated player" card is now **MVP**, with the player's round photo (API-Football image from the line-up id; initials show while it loads or if there is no photo) and the rating on the right.
