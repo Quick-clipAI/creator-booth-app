@@ -16,6 +16,10 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## 1.8.1 — Match events: no 'yellow/red' text under cards; players going off are shown in red
+
+- Match events: the word "yellow"/"red" under a card is removed (the coloured card icon says it); the player going off (▼) is red, so it no longer looks like the grey assist line.
+
 ## 1.8.0 — Match screen: one timeline of goals (assist by), cards and substitutions (in and out) with Half-time and Full time divider lines
 
 - The match screen's "Goals and cards" block is now **Match events**: goals (with "assist by"), cards and substitutions (▲ in, ▼ out, with minute) in one timeline, with a **Half-time · score** line after the first half and a **Full time · score** line at the end. The separate collapsed Substitutions box is gone.

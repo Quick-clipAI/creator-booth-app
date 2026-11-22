@@ -475,7 +475,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-ev:first-of-type{border-top:0}
 .mv-ev .l{text-align:right}.mv-ev .r{text-align:left}.mv-ev .min{text-align:center;color:var(--text-dim);font-variant-numeric:tabular-nums;font-size:12px}
 .mv-div{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:9px 0;border-top:1px solid var(--border-soft)}.mv-div::before,.mv-div::after{content:'';flex:1;height:1px;background:var(--border)}.mv-div{border-top:0}
-.mv-in{color:#3fb96b}.mv-out{color:#e0645c}
+.mv-in{color:#3fb96b}.mv-ev small.mv-out{color:#e0645c}
 .mv-ev small{display:block;color:var(--text-dim);font-size:11.5px}
 .mv-ic{display:inline-block;width:10px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:5px}
 .mv-ic.y{background:#e8c437}.mv-ic.r{background:#d84a3a}.mv-ic.ball{width:auto;height:auto;background:none;font-style:normal;vertical-align:baseline}
@@ -1607,7 +1607,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.8.0';
+const APP_VERSION = '1.8.1';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4052,7 +4052,7 @@ function mvFactsHtml(v){
       cell = `<span class="mv-in">▲ ${escapeHtml(e.other || '')}</span><small class="mv-out">▼ ${escapeHtml(e.player || '')}</small>`;
     } else {
       const icon = e.type === 'goal' ? '<i class="mv-ic ball">⚽</i>' : e.type === 'card' ? `<i class="mv-ic ${/red/i.test(e.detail) ? 'r' : 'y'}"></i>` : '';
-      const sub = e.type === 'goal' ? (/^normal goal$/i.test(e.detail) ? (e.other ? 'assist by ' + escapeHtml(e.other) : '') : escapeHtml(String(e.detail).toLowerCase()) + (e.other ? ' · assist by ' + escapeHtml(e.other) : '')) : (e.type === 'var' ? escapeHtml(e.detail) : escapeHtml(e.detail.replace(/ card$/i, '').toLowerCase()));
+      const sub = e.type === 'goal' ? (/^normal goal$/i.test(e.detail) ? (e.other ? 'assist by ' + escapeHtml(e.other) : '') : escapeHtml(String(e.detail).toLowerCase()) + (e.other ? ' · assist by ' + escapeHtml(e.other) : '')) : (e.type === 'var' ? escapeHtml(e.detail) : (e.type === 'card' ? '' : escapeHtml(e.detail)));
       cell = `${icon}${escapeHtml(e.player || '')}${sub ? `<small>${sub}</small>` : ''}`;
     }
     return `<div class="mv-ev"><div class="l">${e.side === 'home' ? cell : ''}</div><div class="min">${mvMin(e)}</div><div class="r">${e.side === 'away' ? cell : ''}</div></div>`;
