@@ -481,7 +481,7 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-ic.y{background:#e8c437}.mv-ic.r{background:#d84a3a}.mv-ic.ball{width:auto;height:auto;background:none;font-style:normal;vertical-align:baseline}
 .mv-ht{text-align:center;font-size:12px;color:var(--text-dim);padding:8px 0}
 .mv-details summary{cursor:pointer;color:var(--text-dim);font-size:13px;min-height:36px;display:flex;align-items:center}
-.mv-potm{display:flex;align-items:center;gap:12px}.mv-potm .nm{font-weight:600}.mv-potm .cl{font-size:12.5px;color:var(--text-dim)}
+.mv-potm{display:flex;align-items:center;gap:12px}.mv-potm .mv-rt{margin-left:auto}.mv-mvp-ph{position:relative;flex:0 0 56px;width:56px;height:56px;border-radius:50%;background:#3a3b3f;display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--text-dim);font-size:15px}.mv-mvp-ph b{font-weight:600}.mv-mvp-ph .mv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transition:opacity .15s}.mv-mvp-ph .mv-img.ok{opacity:1}.mv-potm .nm{font-weight:600}.mv-potm .cl{font-size:12.5px;color:var(--text-dim)}
 .mv-rt{display:inline-block;min-width:34px;text-align:center;padding:2px 6px;border-radius:7px;font:700 12px var(--sans);font-variant-numeric:tabular-nums;color:#0b0b0a}
 .mv-rt.top{background:#5aa7ff}.mv-rt.good{background:#4fc17f}.mv-rt.ok{background:#f0a24a}.mv-rt.low{background:#e5695a}
 .mv-formation{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-weight:600}.mv-formation span{color:var(--text-dim);font-weight:500;font-size:13px}
@@ -1607,7 +1607,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.8.1';
+const APP_VERSION = '1.8.2';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4044,7 +4044,13 @@ function mvFactsHtml(v){
     ['Half-time', m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : (d && d.halftime ? d.halftime.home + ' – ' + d.halftime.away : '')], ['Details', d && d.source === 'manual' ? 'Entered by hand' : (d && d.source === 'strikerapi' ? 'Team stats and player lines (no goal minutes)' : (d && d.source === 'openmatchday' ? 'Team stats only (no line-ups or ratings)' : ''))]].filter(r => r[1]);
   let out = `<div class="mv-card"><div class="mv-h">Match</div><div class="mv-meta">${rows.map(r => `<div><span>${r[0]}</span><span>${escapeHtml(r[1])}</span></div>`).join('')}</div></div>`;
   if (!d) return out + `<div class="mv-card">${mvNoDetail(v)}</div>`;
-  if (d.best) out += `<div class="mv-card"><div class="mv-h">Highest rated player</div><div class="mv-potm">${mvRt(d.best.rating)}<div><div class="nm">${escapeHtml(d.best.name)}</div><div class="cl">${escapeHtml(d.best.side === 'home' ? m.home : m.away)}</div></div></div></div>`;
+  if (d.best) {
+    const lu = (d.lineups && d.lineups[d.best.side]) || {}, pool = [...(lu.xi || []), ...(lu.subs || [])];
+    const bp = pool.find(p => p.name === d.best.name) || pool.find(p => mvSameName(p.name, d.best.name)) || {};
+    const ini = String(d.best.name || '').split(/\s+/).filter(Boolean).slice(-2).map(w => w[0]).join('').toUpperCase();
+    const ph = `<span class="mv-mvp-ph"><b>${escapeHtml(ini)}</b>${bp.id ? `<img class="mv-img" src="https://media.api-sports.io/football/players/${bp.id}.png" alt="" loading="lazy" referrerpolicy="no-referrer">` : ''}</span>`;
+    out += `<div class="mv-card"><div class="mv-h">MVP</div><div class="mv-potm">${ph}<div><div class="nm">${escapeHtml(d.best.name)}</div><div class="cl">${escapeHtml(d.best.side === 'home' ? m.home : m.away)}</div></div>${mvRt(d.best.rating)}</div></div>`;
+  }
   const key = (d.events || []).filter(e => e.type === 'goal' || e.type === 'card' || e.type === 'var' || e.type === 'subst');
   const line = e => {
     let cell;

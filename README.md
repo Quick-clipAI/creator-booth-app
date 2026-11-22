@@ -16,6 +16,11 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## 1.8.2 — Match screen: 'Highest rated player' is now 'MVP' with the player's photo (initials while it loads)
+
+- Match screen: the "Highest rated player" card is now **MVP**, with the player's round photo (API-Football image from the line-up id; initials show while it loads or if there is no photo) and the rating on the right.
+- Coach check list for the 58 mismatching coaches: postponed by the owner to Monday so the busy-day API credits are not used.
+
 ## 1.8.1 — Match events: no 'yellow/red' text under cards; players going off are shown in red
 
 - Match events: the word "yellow"/"red" under a card is removed (the coloured card icon says it); the player going off (▼) is red, so it no longer looks like the grey assist line.
