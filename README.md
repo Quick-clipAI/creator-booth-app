@@ -16,6 +16,11 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## 1.8.0 — Match screen: one timeline of goals (assist by), cards and substitutions (in and out) with Half-time and Full time divider lines
+
+- The match screen's "Goals and cards" block is now **Match events**: goals (with "assist by"), cards and substitutions (▲ in, ▼ out, with minute) in one timeline, with a **Half-time · score** line after the first half and a **Full time · score** line at the end. The separate collapsed Substitutions box is gone.
+- Needs the new app file (web updates reach the app through the bundle; the installed app updates via the Update sheet).
+
 ## v1.6.6 - update sheet goes straight to the file download
 
 The quick update failed on the phone every time, so the update sheet now shows one button, Download update, which opens the APK. `OTA_ENABLED` in `www/index.html` turns the quick update back on. Install this APK once; the phone cannot receive it over the air.

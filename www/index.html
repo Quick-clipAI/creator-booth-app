@@ -474,6 +474,8 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 .mv-ev{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;gap:6px;padding:7px 0;border-top:1px solid var(--border-soft);font-size:13.5px}
 .mv-ev:first-of-type{border-top:0}
 .mv-ev .l{text-align:right}.mv-ev .r{text-align:left}.mv-ev .min{text-align:center;color:var(--text-dim);font-variant-numeric:tabular-nums;font-size:12px}
+.mv-div{display:flex;align-items:center;gap:10px;color:var(--text-dim);font-size:11px;text-transform:uppercase;letter-spacing:.07em;padding:9px 0;border-top:1px solid var(--border-soft)}.mv-div::before,.mv-div::after{content:'';flex:1;height:1px;background:var(--border)}.mv-div{border-top:0}
+.mv-in{color:#3fb96b}.mv-out{color:#e0645c}
 .mv-ev small{display:block;color:var(--text-dim);font-size:11.5px}
 .mv-ic{display:inline-block;width:10px;height:14px;border-radius:2px;vertical-align:-2px;margin-right:5px}
 .mv-ic.y{background:#e8c437}.mv-ic.r{background:#d84a3a}.mv-ic.ball{width:auto;height:auto;background:none;font-style:normal;vertical-align:baseline}
@@ -1605,7 +1607,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.7.30';
+const APP_VERSION = '1.8.0';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -4043,16 +4045,25 @@ function mvFactsHtml(v){
   let out = `<div class="mv-card"><div class="mv-h">Match</div><div class="mv-meta">${rows.map(r => `<div><span>${r[0]}</span><span>${escapeHtml(r[1])}</span></div>`).join('')}</div></div>`;
   if (!d) return out + `<div class="mv-card">${mvNoDetail(v)}</div>`;
   if (d.best) out += `<div class="mv-card"><div class="mv-h">Highest rated player</div><div class="mv-potm">${mvRt(d.best.rating)}<div><div class="nm">${escapeHtml(d.best.name)}</div><div class="cl">${escapeHtml(d.best.side === 'home' ? m.home : m.away)}</div></div></div></div>`;
-  const key = (d.events || []).filter(e => e.type === 'goal' || e.type === 'card' || e.type === 'var');
+  const key = (d.events || []).filter(e => e.type === 'goal' || e.type === 'card' || e.type === 'var' || e.type === 'subst');
   const line = e => {
-    const icon = e.type === 'goal' ? '<i class="mv-ic ball">⚽</i>' : e.type === 'card' ? `<i class="mv-ic ${/red/i.test(e.detail) ? 'r' : 'y'}"></i>` : '';
-    const sub = e.type === 'goal' ? (/^normal goal$/i.test(e.detail) ? (e.other ? 'assist ' + escapeHtml(e.other) : '') : escapeHtml(String(e.detail).toLowerCase())) : (e.type === 'var' ? escapeHtml(e.detail) : escapeHtml(e.detail.replace(/ card$/i, '').toLowerCase()));
-    const cell = `${icon}${escapeHtml(e.player || '')}${sub ? `<small>${sub}</small>` : ''}`;
+    let cell;
+    if (e.type === 'subst') {
+      cell = `<span class="mv-in">▲ ${escapeHtml(e.other || '')}</span><small class="mv-out">▼ ${escapeHtml(e.player || '')}</small>`;
+    } else {
+      const icon = e.type === 'goal' ? '<i class="mv-ic ball">⚽</i>' : e.type === 'card' ? `<i class="mv-ic ${/red/i.test(e.detail) ? 'r' : 'y'}"></i>` : '';
+      const sub = e.type === 'goal' ? (/^normal goal$/i.test(e.detail) ? (e.other ? 'assist by ' + escapeHtml(e.other) : '') : escapeHtml(String(e.detail).toLowerCase()) + (e.other ? ' · assist by ' + escapeHtml(e.other) : '')) : (e.type === 'var' ? escapeHtml(e.detail) : escapeHtml(e.detail.replace(/ card$/i, '').toLowerCase()));
+      cell = `${icon}${escapeHtml(e.player || '')}${sub ? `<small>${sub}</small>` : ''}`;
+    }
     return `<div class="mv-ev"><div class="l">${e.side === 'home' ? cell : ''}</div><div class="min">${mvMin(e)}</div><div class="r">${e.side === 'away' ? cell : ''}</div></div>`;
   };
-  out += `<div class="mv-card"><div class="mv-h">Goals and cards</div>${key.length ? key.map(line).join('') : '<div class="mv-ht">No goals or cards.</div>'}</div>`;
-  const subs = (d.events || []).filter(e => e.type === 'subst');
-  if (subs.length) out += `<div class="mv-card"><details class="mv-details"><summary>Substitutions (${subs.length})</summary>${subs.map(e => `<div class="mv-ev"><div class="l">${e.side === 'home' ? `${escapeHtml(e.other)}<small>on for ${escapeHtml(e.player)}</small>` : ''}</div><div class="min">${mvMin(e)}</div><div class="r">${e.side === 'away' ? `${escapeHtml(e.other)}<small>on for ${escapeHtml(e.player)}</small>` : ''}</div></div>`).join('')}</details></div>`;
+  const htScore = m.status === 'finished' && m.ht_h != null ? m.ht_h + ' – ' + m.ht_a : (d.halftime ? d.halftime.home + ' – ' + d.halftime.away : '');
+  const divider = (label, score) => `<div class="mv-div"><span>${label}${score ? ' · ' + escapeHtml(score) : ''}</span></div>`;
+  let body = '', htDone = false;
+  key.forEach(e => { if (!htDone && e.m > 45) { body += divider('Half-time', htScore); htDone = true; } body += line(e); });
+  if (key.length && !htDone) body += divider('Half-time', htScore);
+  if (m.status === 'finished' && m.hg != null && key.length) body += divider('Full time', m.hg + ' – ' + m.ag);
+  out += `<div class="mv-card"><div class="mv-h">Match events</div>${key.length ? body : '<div class="mv-ht">No goals, cards or substitutions.</div>'}</div>`;
   return out;
 }
 function mvRt(r){ if (r == null) return ''; const c = r >= 8 ? 'top' : r >= 7 ? 'good' : r >= 6 ? 'ok' : 'low'; return `<b class="mv-rt ${c}">${Number(r).toFixed(1)}</b>`; }
