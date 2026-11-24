@@ -1,5 +1,7 @@
 # Creator Booth — Android app (v1.4.2)
 
+**Note (24 Nov 2026):** no app change. Admin 1.9.9 fixes club and coach name mix-ups in the Admin Coach check and adds name merging (server side, web repo). App stays at 1.8.3.
+
 **Note (23 Nov 2026, later):** no app change. Admin 1.9.8 improves the coach list compare (server side, web repo). App stays at 1.8.3.
 
 **Note (23 Nov 2026):** no app change. Admin 1.9.7 adds a Coach check on the Admin Overview page (server side, web repo). App stays at 1.8.3.
