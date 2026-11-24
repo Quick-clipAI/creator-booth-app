@@ -1,5 +1,7 @@
 # Creator Booth — Android app (v1.4.2)
 
+**Note (24 Nov 2026, evening):** no app change. Admin coach history fix and four outgoing coaches recorded (server side, web repo). App stays at 1.8.3.
+
 **Note (24 Nov 2026, later):** no app change. Admin 2.0.0 keeps replaced coaches in the coach history and treats nicknames as spelling variants (server side, web repo). App stays at 1.8.3.
 
 **Note (24 Nov 2026):** no app change. Admin 1.9.9 fixes club and coach name mix-ups in the Admin Coach check and adds name merging (server side, web repo). App stays at 1.8.3.
