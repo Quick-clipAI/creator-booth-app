@@ -1,5 +1,7 @@
 # Creator Booth — Android app (v1.4.2)
 
+**Note (24 Nov 2026, night):** no app change. Admin merge-everywhere fix for names that differ only by a prefix (server side, web repo). App stays at 1.8.3.
+
 **Note (24 Nov 2026, evening):** no app change. Admin coach history fix and four outgoing coaches recorded (server side, web repo). App stays at 1.8.3.
 
 **Note (24 Nov 2026, later):** no app change. Admin 2.0.0 keeps replaced coaches in the coach history and treats nicknames as spelling variants (server side, web repo). App stays at 1.8.3.
