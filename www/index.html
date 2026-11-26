@@ -41,6 +41,7 @@
 <meta property="og:site_name" content="Creator Booth"/>
 <meta property="og:image" content="https://creator-boot.vercel.app/icon-512.png"/>
 <meta name="twitter:card" content="summary"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Creator Booth","alternateName":["CreatorBooth","Creator Booth Football AI"],"url":"https://creator-boot.vercel.app/","inLanguage":"en"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Creator Booth","url":"https://creator-boot.vercel.app/","description":"Creator Booth is a free football AI assistant for match analysis, player scouting, up-to-date research and video scripts. Use it on the web or as an Android app.","applicationCategory":"SportsApplication","operatingSystem":"Web, Android","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
 <script>
 /* Website-only visitor counts (Vercel Web Analytics: cookieless, anonymous). Never runs inside the Android app
@@ -528,6 +529,25 @@ body.new-chat .composer-card{box-shadow:0 14px 40px -14px rgba(0,0,0,.55)}
 
 /* ---- Player card (opens from the stats tab of a competition) ---- */
 .pl-sheet{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;flex-direction:column;color:var(--text)}.pl-sheet.open{display:flex}
+.qs-view{position:fixed;inset:0;z-index:40;background:var(--bg);display:none;flex-direction:column;color:var(--text)}.qs-view.open{display:flex}.qs-view[hidden]{display:none}
+.qs-top{flex-shrink:0;display:flex;align-items:center;gap:6px;padding:calc(8px + env(safe-area-inset-top)) 12px 10px 6px;border-bottom:1px solid var(--border-soft);background:linear-gradient(180deg,var(--surface2),var(--bg))}
+.qs-back{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:0;color:var(--text);cursor:pointer;border-radius:50%;flex-shrink:0}
+#qs-input{flex:1;min-width:0;height:44px;border-radius:22px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:16px;padding:0 16px}
+#qs-input:focus{outline:none;border-color:var(--accent)}#qs-input::-webkit-search-cancel-button{display:none}
+.qs-clear{width:36px;height:36px;border-radius:50%;border:0;background:var(--surface2);color:var(--text-dim);cursor:pointer;flex-shrink:0}
+.qs-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px calc(24px + env(safe-area-inset-bottom))}
+.qs-h{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin:18px 0 8px}.qs-h:first-child{margin-top:2px}
+.qs-ans{background:var(--surface);border:1px solid var(--border-soft);border-radius:14px;padding:12px 14px;margin:10px 0}.qs-ans b{display:block;font-size:15px;margin-bottom:6px}
+.qs-ans p{font-size:14px;line-height:1.5;color:var(--text);margin:0 0 7px}.qs-ans p:last-child{margin-bottom:0}
+.qs-chips{display:flex;flex-wrap:wrap;gap:8px}
+.qs-chip,.qs-row,.qs-ask{font:inherit;color:var(--text);cursor:pointer;text-align:left}
+.qs-chip{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 8px;border-radius:999px;background:var(--surface);border:1px solid var(--border-soft)}
+.qs-chip small,.qs-row small{display:block;font-size:12px;color:var(--text-dim)}
+.qs-row{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;margin:0 0 6px;border-radius:12px;background:var(--surface);border:1px solid var(--border-soft)}
+.qs-row .n{font-size:15px;min-width:0}.qs-row:active,.qs-chip:active{background:var(--surface2)}
+.qs-ask{display:block;width:100%;margin-top:18px;padding:13px 14px;border-radius:14px;border:1px dashed var(--accent-dim);background:none;color:var(--accent);font-size:14.5px}
+.qs-note{color:var(--text-dim);font-size:14px;line-height:1.5;padding:6px 2px}
+.qs-try{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.qs-try button{font:inherit;font-size:14px;color:var(--text);background:var(--surface);border:1px solid var(--border-soft);border-radius:999px;padding:8px 14px;cursor:pointer}
 .pl-top{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;border-bottom:1px solid var(--border-soft)}
 .pl-top button{min-width:44px;min-height:44px;border-radius:12px;border:1px solid var(--border-soft);background:var(--surface,var(--bg));color:var(--text);font:inherit;font-weight:700}
 .pl-body{flex:1;overflow:auto;padding:14px 14px calc(env(safe-area-inset-bottom,0px) + 24px)}
@@ -941,6 +961,7 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
 </style>
 </head>
 <body>
+<noscript><div style="max-width:640px;margin:40px auto;padding:0 20px;font:16px/1.5 system-ui,sans-serif;color:#222"><h1 style="font-size:24px">Creator Booth — Football AI</h1><p>Creator Booth is a free football assistant: match analysis, player scouting, up-to-date research and video scripts, with checked fixtures, results, tables, squads and head coaches. It needs JavaScript to run. Also available as an Android app.</p><p><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a></p></div></noscript>
 <div id="boot-splash" role="status" aria-label="Loading Creator Booth"><svg width="92" height="80" viewBox="236 262 782 681" aria-hidden="true"><g class="eq-star"><use href="#cb-star-g"/></g><g class="eq-ball"><use href="#cb-ball-g"/></g></svg></div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="cb-logo" viewBox="236 262 782 681"><g fill="currentColor" fill-rule="evenodd"><path d="M 559,267 L 562,524 L 559,525 L 527,493 L 527,490 L 521,484 L 517,483 L 515,478 L 512,477 L 509,472 L 507,472 L 474,439 L 474,436 L 468,433 L 410,374 L 410,372 L 402,366 L 386,349 L 380,346 L 299,427 L 299,430 L 301,430 L 304,435 L 307,435 L 314,442 L 314,444 L 317,444 L 417,529 L 466,573 L 485,588 L 483,596 L 475,598 L 243,598 L 243,672 L 241,673 L 241,681 L 243,682 L 243,713 L 493,679 L 494,682 L 454,721 L 450,722 L 436,738 L 332,832 L 324,837 L 320,844 L 406,927 L 408,927 L 482,842 L 507,811 L 511,811 L 511,806 L 517,800 L 521,793 L 525,791 L 525,788 L 530,784 L 553,753 L 558,750 L 558,747 L 570,733 L 574,732 L 583,744 L 583,749 L 588,750 L 590,756 L 593,757 L 602,769 L 602,772 L 604,772 L 613,784 L 613,787 L 618,790 L 618,794 L 624,798 L 626,804 L 628,804 L 634,812 L 634,817 L 637,817 L 638,820 L 642,822 L 644,827 L 648,830 L 712,916 L 730,938 L 732,938 L 882,841 L 882,839 L 847,837 L 836,838 L 835,836 L 829,837 L 806,832 L 771,819 L 742,803 L 720,786 L 710,776 L 710,774 L 708,774 L 694,760 L 658,712 L 657,707 L 654,706 L 648,697 L 648,694 L 642,688 L 641,683 L 713,682 L 787,722 L 791,722 L 857,688 L 857,652 L 860,650 L 857,588 L 792,557 L 713,603 L 640,603 L 639,600 L 645,593 L 645,590 L 651,580 L 655,578 L 656,573 L 663,563 L 667,560 L 679,543 L 690,533 L 690,531 L 719,504 L 757,477 L 794,457 L 827,444 L 859,436 L 883,433 L 911,433 L 911,431 L 897,424 L 893,420 L 889,420 L 855,408 L 826,403 L 788,403 L 763,407 L 742,413 L 710,426 L 692,438 L 689,438 L 684,434 L 684,422 L 682,421 L 684,418 L 684,415 L 682,414 L 682,331 L 683,324 L 685,323 L 685,316 L 683,315 L 683,267 Z"/><path d="M 940,725 L 862,699 L 796,734 L 773,790 L 771,800 L 797,811 L 817,816 L 831,817 L 832,819 L 852,819 L 853,817 L 867,816 L 893,808 L 911,799 L 938,778 Z"/><path d="M 780,480 L 800,547 L 862,578 L 872,575 L 942,543 L 942,527 L 938,495 L 916,477 L 889,464 L 863,458 L 833,459 L 805,467 Z"/><path d="M 1011,648 L 996,644 L 953,719 L 953,732 L 951,734 L 947,734 L 947,739 L 953,743 L 953,754 L 950,755 L 950,759 L 952,760 L 952,775 L 964,767 L 965,763 L 978,749 L 997,714 L 1009,675 Z"/><path d="M 953,502 L 956,550 L 981,595 L 992,623 L 999,631 L 1011,635 L 1013,630 L 1011,629 L 1011,614 L 1008,596 L 997,561 L 974,521 L 963,510 L 961,505 Z"/></g></symbol><defs><g id="cb-star-g" fill="currentColor" fill-rule="evenodd"><path d="M 559,267 L 562,524 L 559,525 L 527,493 L 527,490 L 521,484 L 517,483 L 515,478 L 512,477 L 509,472 L 507,472 L 474,439 L 474,436 L 468,433 L 410,374 L 410,372 L 402,366 L 386,349 L 380,346 L 299,427 L 299,430 L 301,430 L 304,435 L 307,435 L 314,442 L 314,444 L 317,444 L 417,529 L 466,573 L 485,588 L 483,596 L 475,598 L 243,598 L 243,672 L 241,673 L 241,681 L 243,682 L 243,713 L 493,679 L 494,682 L 454,721 L 450,722 L 436,738 L 332,832 L 324,837 L 320,844 L 406,927 L 408,927 L 482,842 L 507,811 L 511,811 L 511,806 L 517,800 L 521,793 L 525,791 L 525,788 L 530,784 L 553,753 L 558,750 L 558,747 L 570,733 L 574,732 L 583,744 L 583,749 L 588,750 L 590,756 L 593,757 L 602,769 L 602,772 L 604,772 L 613,784 L 613,787 L 618,790 L 618,794 L 624,798 L 626,804 L 628,804 L 634,812 L 634,817 L 637,817 L 638,820 L 642,822 L 644,827 L 648,830 L 712,916 L 730,938 L 732,938 L 882,841 L 882,839 L 847,837 L 836,838 L 835,836 L 829,837 L 806,832 L 771,819 L 742,803 L 720,786 L 710,776 L 710,774 L 708,774 L 694,760 L 658,712 L 657,707 L 654,706 L 648,697 L 648,694 L 642,688 L 641,683 L 713,682 L 787,722 L 791,722 L 857,688 L 857,652 L 860,650 L 857,588 L 792,557 L 713,603 L 640,603 L 639,600 L 645,593 L 645,590 L 651,580 L 655,578 L 656,573 L 663,563 L 667,560 L 679,543 L 690,533 L 690,531 L 719,504 L 757,477 L 794,457 L 827,444 L 859,436 L 883,433 L 911,433 L 911,431 L 897,424 L 893,420 L 889,420 L 855,408 L 826,403 L 788,403 L 763,407 L 742,413 L 710,426 L 692,438 L 689,438 L 684,434 L 684,422 L 682,421 L 684,418 L 684,415 L 682,414 L 682,331 L 683,324 L 685,323 L 685,316 L 683,315 L 683,267 Z"/></g><g id="cb-ball-g" fill="currentColor" fill-rule="evenodd"><path d="M 940,725 L 862,699 L 796,734 L 773,790 L 771,800 L 797,811 L 817,816 L 831,817 L 832,819 L 852,819 L 853,817 L 867,816 L 893,808 L 911,799 L 938,778 Z"/><path d="M 780,480 L 800,547 L 862,578 L 872,575 L 942,543 L 942,527 L 938,495 L 916,477 L 889,464 L 863,458 L 833,459 L 805,467 Z"/><path d="M 1011,648 L 996,644 L 953,719 L 953,732 L 951,734 L 947,734 L 947,739 L 953,743 L 953,754 L 950,755 L 950,759 L 952,760 L 952,775 L 964,767 L 965,763 L 978,749 L 997,714 L 1009,675 Z"/><path d="M 953,502 L 956,550 L 981,595 L 992,623 L 999,631 L 1011,635 L 1013,630 L 1011,629 L 1011,614 L 1008,596 L 997,561 L 974,521 L 963,510 L 961,505 Z"/></g></defs></svg>
 
@@ -952,6 +973,14 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
     <div class="mv-tabs" id="mv-tabs" role="tablist" aria-label="Match sections"></div>
   </div>
   <div class="mv-body" id="mv-body" role="tabpanel" aria-live="polite"></div>
+</div>
+<div class="qs-view" id="qs-view" role="dialog" aria-modal="true" aria-label="Search" hidden>
+  <div class="qs-top">
+    <button class="qs-back" id="qs-back" type="button" aria-label="Close search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <input id="qs-input" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Club, player, coach or a question…" aria-label="Search"/>
+    <button class="qs-clear" id="qs-clear" type="button" aria-label="Clear" hidden>✕</button>
+  </div>
+  <div class="qs-body" id="qs-body" aria-live="polite"></div>
 </div>
 <div class="overlay" id="overlay"></div>
 <div class="drawer" id="drawer">
@@ -1060,6 +1089,7 @@ body.new-chat .hero{padding-bottom:calc(var(--composer-h,150px) + var(--composer
     <span class="hdr-version" id="hdr-version"></span>
   </div>
   <div class="hdr-right" id="hdr-right">
+    <svg class="hdr-icon" id="header-search-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" role="button" aria-label="Search clubs, players and football questions" tabindex="0"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
     <svg class="hdr-icon" id="incognito-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" title="Temporary chat">
       <path d="M5 20V11a7 7 0 0114 0v9l-2.5-2-2 2-2-2-2 2-2-2L5 20z"/>
       <circle cx="9.5" cy="11" r=".9" fill="currentColor" stroke="none"/><circle cx="14.5" cy="11" r=".9" fill="currentColor" stroke="none"/>
@@ -1607,7 +1637,7 @@ const composerEl = document.querySelector('.composer');
 
 // Single source of truth for the version shown in the header and in Settings.
 // Bump this on every deploy — see README.md's "Versioning" section.
-const APP_VERSION = '1.8.3';
+const APP_VERSION = '1.8.4';
 document.getElementById('hdr-version').textContent = 'v' + APP_VERSION;
 const settingsVersionEl = document.getElementById('settings-app-version');
 if (settingsVersionEl) settingsVersionEl.textContent = 'Creator Booth v' + APP_VERSION;
@@ -5716,6 +5746,79 @@ showView('chat');
 // Tell the updater this version started fine. If a downloaded update ever broke startup, this line
 // would never run and the app rolls back to the previous working version by itself.
 if (NATIVE){ try { const U = nativePlugin('CapacitorUpdater'); if (U) U.notifyAppReady(); } catch (e) {} }
+
+/* ------------------------------------------------------------------ */
+/* Search: clubs, players, coaches and football questions, answered   */
+/* from our own data bank only (no AI, no API-Football request).      */
+/* ------------------------------------------------------------------ */
+const QS = { open: false, t: null, ctl: null, q: '' };
+const qsq = id => document.getElementById(id);
+function qsHome(){
+  qsq('qs-body').innerHTML = '<div class="qs-note">Type a club, player or coach, or ask something like the examples below. Answers come from our own checked data, so they are instant and free.</div>'
+    + '<div class="qs-try">' + ['Arsenal', 'Premier League table', 'Who plays today', 'Real Madrid next match', 'La Liga top scorers'].map(x => '<button type="button" data-qs-try="' + escapeHtml(x) + '">' + escapeHtml(x) + '</button>').join('') + '</div>';
+}
+function qsOpen(){
+  if (QS.open) return; QS.open = true;
+  const v = qsq('qs-view'); v.hidden = false; v.classList.add('open');
+  try { history.pushState({ qs: 1 }, ''); } catch (e) { /* history unavailable */ }
+  if (!qsq('qs-body').innerHTML.trim()) qsHome();
+  setTimeout(() => qsq('qs-input').focus(), 60);
+}
+function qsClose(fromPop){
+  if (!QS.open) return; QS.open = false;
+  const v = qsq('qs-view'); v.classList.remove('open'); qsq('qs-input').blur();
+  if (!fromPop){ try { history.back(); } catch (e) { /* history unavailable */ } }
+}
+function qsAsk(q){
+  qsClose(false);
+  setTimeout(() => { const i = document.getElementById('input'); i.value = q; i.dispatchEvent(new Event('input', { bubbles: true })); submit(); }, 120);
+}
+function qsRender(d, q){
+  const out = [];
+  const cards = fixtureCardsHtml(d.cards || []);
+  if (cards) out.push('<div class="qs-h">Matches</div>' + cards);
+  const ans = (d.answer || []).map(a => '<div class="qs-ans"><b>' + escapeHtml(a.club) + '</b>' + a.items.map(i => '<p>' + escapeHtml(i) + '</p>').join('') + '</div>').join('');
+  if (ans) out.push('<div class="qs-h">Answer from our data</div>' + ans);
+  if ((d.clubs || []).length) out.push('<div class="qs-h">Clubs</div><div class="qs-chips">' + d.clubs.map(c => '<button type="button" class="qs-chip" data-qs-club="' + escapeHtml(c.club) + '">' + clubBadgeHtml(c.club) + '<span>' + escapeHtml(c.club) + '<small>' + escapeHtml((c.leagues || []).join(' · ')) + '</small></span></button>').join('') + '</div>');
+  if ((d.players || []).length) out.push('<div class="qs-h">Players</div>' + d.players.map(p => '<button type="button" class="qs-row" data-qs-pk="' + escapeHtml(p.key) + '" data-pn="' + escapeHtml(p.name) + '" data-pc="' + escapeHtml(p.club) + '"><span class="n">' + escapeHtml(p.name) + '<small>' + escapeHtml([p.position, p.club, p.league].filter(Boolean).join(' · ')) + '</small></span></button>').join(''));
+  if ((d.coaches || []).length) out.push('<div class="qs-h">Coaches</div>' + d.coaches.map(c => '<button type="button" class="qs-row" data-qs-club="' + escapeHtml(c.club) + '"><span class="n">' + escapeHtml(c.name) + '<small>Head coach · ' + escapeHtml(c.club) + '</small></span></button>').join(''));
+  if (!out.length) out.push('<div class="qs-note">Nothing in our data matches “' + escapeHtml(q) + '”. That does not mean it is wrong, only that we have not stored it. You can ask Creator Booth, which can also search the web.</div>');
+  out.push('<button type="button" class="qs-ask" data-qs-ask="1">Ask Creator Booth: “' + escapeHtml(q.length > 60 ? q.slice(0, 57) + '…' : q) + '” ›</button>');
+  qsq('qs-body').innerHTML = out.join('');
+}
+async function qsRun(q){
+  QS.q = q;
+  if (q.length < 2){ qsHome(); return; }
+  if (QS.ctl) QS.ctl.abort();
+  const ctl = QS.ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), 9000);
+  qsq('qs-body').insertAdjacentHTML('afterbegin', '');
+  try {
+    const r = await fetch(API_ORIGIN + '/api/bank?mode=quick&q=' + encodeURIComponent(q) + '&today=' + todayDateStr(), { signal: ctl.signal });
+    if (!r.ok) throw new Error('bad status');
+    const d = await r.json();
+    if (q !== QS.q) return;
+    qsRender(d, q);
+  } catch (e) {
+    if (e && e.name === 'AbortError' && q !== QS.q) return;
+    qsq('qs-body').innerHTML = '<div class="qs-note">Search could not reach our data just now. Check your connection and try again, or ask Creator Booth.</div><button type="button" class="qs-ask" data-qs-ask="1">Ask Creator Booth: “' + escapeHtml(q.slice(0, 60)) + '” ›</button>';
+  } finally { clearTimeout(timer); }
+}
+(function(){
+  const inp = qsq('qs-input'), clr = qsq('qs-clear');
+  const btn = document.getElementById('header-search-btn');
+  btn.addEventListener('click', qsOpen); btn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); qsOpen(); } });
+  qsq('qs-back').addEventListener('click', () => qsClose(false));
+  inp.addEventListener('input', () => { const q = inp.value.trim(); clr.hidden = !inp.value; clearTimeout(QS.t); QS.t = setTimeout(() => qsRun(q), 320); });
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter'){ clearTimeout(QS.t); qsRun(inp.value.trim()); inp.blur(); } });
+  clr.addEventListener('click', () => { inp.value = ''; clr.hidden = true; QS.q = ''; qsHome(); inp.focus(); });
+  qsq('qs-body').addEventListener('click', e => {
+    const t = e.target.closest('[data-qs-try]'); if (t){ inp.value = t.dataset.qsTry; clr.hidden = false; qsRun(inp.value); return; }
+    const c = e.target.closest('[data-qs-club]'); if (c){ openTeam(c.dataset.qsClub, c); return; }
+    const p = e.target.closest('[data-qs-pk]'); if (p){ openPlayer(p.dataset.qsPk, p.dataset.pn, p.dataset.pc, p, null, null); return; }
+    if (e.target.closest('[data-qs-ask]')) qsAsk(QS.q || inp.value.trim());
+  });
+  window.addEventListener('popstate', e => { if (QS.open && !(e.state && e.state.qs)) qsClose(true); });
+})();
 </script>
 </body>
 </html>

@@ -28,6 +28,12 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## 1.8.4 — Search box: clubs, players, coaches and football questions answered from our own data
+
+- **Search box** (magnifier icon in the top bar). Clubs, players, coaches and football questions are answered from our own data (`/api/bank?mode=quick`), with no AI and no API-Football request. Tap a result to open the club, player or match screen; "Ask Creator Booth" sends the question to the chat. Uses the Android back button like the other screens.
+- Google: WebSite data and a `<noscript>` description added to the page (the same `index.html`).
+- **Owner steps for Google (cannot be done from code):** 1) In Google Search Console open the property for https://creator-boot.vercel.app/ and check it says Verified (the file `google2e20e9a7c27dd296.html` is on the site). 2) Sitemaps -> add `sitemap.xml` and check it says Success. 3) URL Inspection -> paste the home address -> Request indexing. 4) Check later with the search `site:creator-boot.vercel.app`.
+
 ## 1.8.3 — Matches without a confirmed date show their matchday ('Matchday 14 · date to be announced') instead of a date
 
 - A match with no confirmed date (status `postponed`, or a schedule-guess date with no kick-off) is shown by its **matchday**, e.g. "Matchday 14 · Date to be announced", on the chat card, the match screen (Round / Date rows) and in the data given to the AI (`dateUnknown`, `roundLabel` in `lib/bank-context.js`). Postponed matches are now listed in a club's chat data ("postponed, no new date announced yet").
