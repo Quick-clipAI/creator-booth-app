@@ -28,6 +28,11 @@ Only native changes (a new plugin, permission or icon) need the APK: raise `minA
 by itself. Install the APK from the v1.3.4 build ONCE (Releases -> Creator Booth (latest) -> creator-booth.apk, or `/download` on the
 website). It installs over the existing app and keeps your login and chats. From then on the notice works.
 
+## 1.8.5 — Page address spelled Creator Booth for Google
+
+- Page address metadata now uses `creator-booth.vercel.app` (the app itself still calls the old `creator-boot.vercel.app` for data, which keeps working).
+- **Owner steps (Google Search Console), for the new address `https://creator-booth.vercel.app/`:** 1) Add property -> URL prefix -> that address -> verify with the HTML file already on the site (`google2e20e9a7c27dd296.html`). 2) Sitemaps -> add `sitemap.xml` (it now lists the league and club pages). 3) URL Inspection -> the home address, `/football` and `/football/premier-league-table` -> Request indexing. 4) After a week or two search `site:creator-booth.vercel.app`.
+
 ## 1.8.4 — Search box: clubs, players, coaches and football questions answered from our own data
 
 - **Search box** (magnifier icon in the top bar). Clubs, players, coaches and football questions are answered from our own data (`/api/bank?mode=quick`), with no AI and no API-Football request. Tap a result to open the club, player or match screen; "Ask Creator Booth" sends the question to the chat. Uses the Android back button like the other screens.
