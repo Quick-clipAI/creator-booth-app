@@ -1,5 +1,7 @@
 # Creator Booth — Android app (v1.4.2)
 
+**Note (28 Nov 2026, later):** no app change. Admin 2.0.5: outgoing coaches no longer flagged, Same person button, Champions League results from football-data.org (server side, web repo). App stays at 1.8.5.
+
 **Note (28 Nov 2026):** no app change. Admin 2.0.4 sends a phone alert when API-Football refuses our requests (server side, web repo). App stays at 1.8.5.
 
 **Note (24 Nov 2026, night):** no app change. Admin merge-everywhere fix for names that differ only by a prefix (server side, web repo). App stays at 1.8.3.
